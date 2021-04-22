@@ -1,0 +1,127 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: CEACustomizationUtil
+--
+--  File   : C_EA_Customization_Util_API.api
+--
+--  IFS Developer Studio Template Version 2.6
+--
+--  Date     Sign    History
+--  ------   ------  --------------------------------------------------
+--  210422   EA      Created
+--  ------   ------  --------------------------------------------------
+-----------------------------------------------------------------------------
+
+DEFINE MODULE        = CONFIG
+DEFINE LU            = CEACustomizationUtil
+DEFINE PKG           = C_EA_Customization_Util_API
+
+PROMPT Creating &PKG SPECIFICATION
+
+CREATE OR REPLACE PACKAGE &PKG IS
+
+module_  CONSTANT VARCHAR2(25) := '&MODULE';
+lu_name_ CONSTANT VARCHAR2(25) := '&LU';
+lu_type_ CONSTANT VARCHAR2(15) := 'Utility';
+
+-----------------------------------------------------------------------------
+-------------------- LU SPECIFIC PRIVATE METHODS ----------------------------
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- LU SPECIFIC PROTECTED METHODS --------------------------
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- LU SPECIFIC PUBLIC METHODS -----------------------------
+-----------------------------------------------------------------------------
+
+PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
+                                               identity_ IN VARCHAR2);
+
+  PROCEDURE Update_Follow_Up_Date__(calender_id_    IN VARCHAR2,
+                                    company_        IN VARCHAR2,
+                                    invoice_id_     IN VARCHAR2,
+                                    note_id_        IN NUMBER,
+                                    note_status_id_ IN NUMBER);
+
+  PROCEDURE Create_Equipment_Object__(order_no_ IN VARCHAR2);
+
+  PROCEDURE Create_Serial_Object__(catalog_no_     IN VARCHAR2,
+                                   order_no_       IN VARCHAR2,
+                                   line_no_        IN VARCHAR2,
+                                   line_item_no_   IN VARCHAR2,
+                                   rel_no_         IN VARCHAR2,
+                                   warranty_id_    IN VARCHAR2,
+                                   object_id_      IN VARCHAR2,
+                                   object_created_ IN VARCHAR2,
+                                   col_objid_      IN VARCHAR2,
+                                   real_ship_date_ IN DATE);
+
+  PROCEDURE Create_Functional_Object_(catalog_no_     IN VARCHAR2,
+                                      order_no_       IN VARCHAR2,
+                                      line_no_        IN VARCHAR2,
+                                      rel_no_         IN VARCHAR2,
+                                      real_ship_date_ IN DATE,
+                                      warranty_id_    IN VARCHAR2,
+                                      object_id_      IN VARCHAR2,
+                                      catalog_desc_   IN VARCHAR2,
+                                      contract_       IN VARCHAR2,
+                                      buy_qty_due_    IN NUMBER,
+                                      object_created_ in VARCHAR2,
+                                      col_objid_      IN VARCHAR2);
+
+  FUNCTION Transf_Part_To_Inv_Part(target_key_ref_ IN VARCHAR2,
+                                   service_name_   IN VARCHAR2)
+    RETURN VARCHAR2;
+
+  FUNCTION Get_Update_Follow_Up_Date_Sql__(calender_id_    IN VARCHAR2,
+                                           company_        IN VARCHAR2,
+                                           invoice_id_     IN VARCHAR2,
+                                           note_id_        IN NUMBER,
+                                           note_status_id_ IN NUMBER)
+    RETURN VARCHAR2;
+
+  FUNCTION Get_First_Time_Fix_Percentage__(start_date_      IN VARCHAR2,
+                                           end_Date_        IN VARCHAR2,
+                                           customer_id_     IN VARCHAR2 DEFAULT NULL,
+                                           organization_id_ IN VARCHAR2 DEFAULT NULL,
+                                           work_type_id_    IN VARCHAR2 DEFAULT NULL,
+                                           work_task_       IN VARCHAR2 DEFAULT NULL,
+                                           resource_id_     IN VARCHAR2 DEFAULT NULL)
+    RETURN NUMBER;
+
+  PROCEDURE Close_Non_Finance_User_Group;
+
+  FUNCTION Transf_Mansup_Attach_To_PO(target_key_ref_ IN VARCHAR2,
+                                      service_name_   IN VARCHAR2)
+    RETURN VARCHAR2;
+
+  FUNCTION Get_End_Date__(year_    IN VARCHAR2,
+                          quarter_ IN VARCHAR2,
+                          month_   IN VARCHAR2,
+                          week_    IN VARCHAR2) RETURN DATE DETERMINISTIC;
+
+  FUNCTION Get_Begin_Date__(year_    IN VARCHAR2,
+                            quarter_ IN VARCHAR2,
+                            month_   IN VARCHAR2,
+                            week_    IN VARCHAR2) RETURN DATE DETERMINISTIC;
+                            
+
+ PROCEDURE Sales_Contract_Auto_Closure;
+
+-----------------------------------------------------------------------------
+-------------------- FOUNDATION1 METHODS ------------------------------------
+-----------------------------------------------------------------------------
+
+PROCEDURE Init;
+
+END &PKG;
+/
+SHOW ERROR
+
+UNDEFINE MODULE
+UNDEFINE LU
+UNDEFINE PKG
