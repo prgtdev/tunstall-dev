@@ -1186,6 +1186,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                          AND b.cf$_customer = :3)
                  AND COMPANY = :4)';
       IF Database_SYS.View_Exist('SALES_PART_TAX_CODE_CLV') AND Database_SYS.View_Exist('CUST_APPLICABLE_TAX_CODE_CLV') THEN
+         --@ApproveDynamicStatement('2021-04-26',entpragg);
          EXECUTE IMMEDIATE stmt_    
             INTO allowed_tax_codes_
            USING catalog_no_,company_,customer_,company_;
