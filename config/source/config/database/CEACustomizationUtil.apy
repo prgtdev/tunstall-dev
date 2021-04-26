@@ -1162,7 +1162,39 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     END LOOP;
   
   END Sales_Contract_Auto_Closure;
-
+  
+   FUNCTION Get_Allowed_Tax_Codes__(
+      company_    IN VARCHAR2,
+      customer_   IN VARCHAR2,
+      catalog_no_ IN VARCHAR2) RETURN VARCHAR2
+   IS
+      allowed_tax_codes_ VARCHAR2(2000);
+      stmt_ VARCHAR2(2000);
+   BEGIN
+      stmt_ := 
+       'SELECT LISTAGG(fee_code, '', '') WITHIN GROUP(ORDER BY fee_code) fee_code
+        FROM (SELECT fee_code
+                FROM tax_code_restricted
+               WHERE fee_code IN
+                     (SELECT a.cf$_Tax_Code
+                        FROM sales_part_tax_code_clv a
+                       WHERE a.cf$_sales_part_no = :1)
+                 AND fee_code IN
+                     (SELECT b.cf$_tax_code
+                        FROM cust_applicable_tax_code_clv b
+                       WHERE b.cf$_company = :2
+                         AND b.cf$_customer = :3)
+                 AND COMPANY = :4)';
+      IF Database_SYS.View_Exist('SALES_PART_TAX_CODE_CLV') AND Database_SYS.View_Exist('CUST_APPLICABLE_TAX_CODE_CLV') THEN
+         EXECUTE IMMEDIATE stmt_    
+            INTO allowed_tax_codes_
+           USING catalog_no_,company_,customer_,company_;
+      END IF;          
+      RETURN allowed_tax_codes_;
+   EXCEPTION
+      WHEN OTHERS THEN
+         RETURN NULL;
+   END Get_Allowed_Tax_Codes__;
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------

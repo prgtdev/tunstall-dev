@@ -104,14 +104,18 @@ PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
                           month_   IN VARCHAR2,
                           week_    IN VARCHAR2) RETURN DATE DETERMINISTIC;
 
-  FUNCTION Get_Begin_Date__(year_    IN VARCHAR2,
-                            quarter_ IN VARCHAR2,
-                            month_   IN VARCHAR2,
-                            week_    IN VARCHAR2) RETURN DATE DETERMINISTIC;
+   FUNCTION Get_Begin_Date__(year_    IN VARCHAR2,
+                             quarter_ IN VARCHAR2,
+                             month_   IN VARCHAR2,
+                             week_    IN VARCHAR2) RETURN DATE DETERMINISTIC;
                             
 
  PROCEDURE Sales_Contract_Auto_Closure;
-
+ 
+  FUNCTION Get_Allowed_Tax_Codes__(
+      company_    IN VARCHAR2,  
+      customer_   IN VARCHAR2,
+      catalog_no_ IN VARCHAR2) RETURN VARCHAR2;
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
