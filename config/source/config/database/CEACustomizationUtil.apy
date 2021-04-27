@@ -1464,6 +1464,120 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                    warranty_period_objkey_);
       END LOOP;
    END Create_Functional_Object__;
+   
+   PROCEDURE Copy_Circuit_Reference__(
+      part_no_  IN VARCHAR2,
+      part_rev_ IN VARCHAR2) 
+   IS
+      stmt_ VARCHAR2(32000);
+   BEGIN
+      stmt_ := 
+         'DECLARE
+            part_no_  VARCHAR2(20);
+            part_rev_ VARCHAR2(20);
+
+            sub_part_no_  VARCHAR2(20);
+            sub_part_rev_ VARCHAR2(20);
+            structure_id_ VARCHAR2(20);
+            pos_          VARCHAR2(20);
+
+            objkey_        VARCHAR2(50);
+            source_objkey_ VARCHAR2(50);
+
+            PROCEDURE Remove_Copy_Circuit_Ref_Flag___(
+               objkey_ IN VARCHAR2) 
+            IS
+            BEGIN
+               UPDATE eng_part_structure_cft
+                  SET cf$_copy_circuit_reference = NULL
+                WHERE rowkey = objkey_;
+            END Remove_Copy_Circuit_Ref_Flag___;
+
+            PROCEDURE Copy_Circuit_Reference___(
+               objkey_      IN VARCHAR2,
+               circuit_ref_ IN VARCHAR2) 
+            IS
+               info_    VARCHAR2(4000);
+               objid_   VARCHAR2(200);
+               attr_cf_ VARCHAR2(4000);
+               rec_     Eng_Part_Structure_API.Public_Rec;
+            BEGIN
+               rec_   := Eng_Part_Structure_API.Get_By_Rowkey(objkey_);
+               objid_ := rec_."rowid";
+
+               Client_SYS.Clear_Attr(attr_cf_);
+               Client_SYS.Add_To_Attr(''CF$_CIRCUIT_REF'', circuit_ref_, attr_cf_);
+
+               Eng_Part_Structure_CFP.Cf_New__(info_, objid_, attr_cf_, '''', ''DO'');
+            END Copy_Circuit_Reference___;
+
+            FUNCTION Get_Source_Eng_Part_Struc_Objkey___(
+               part_no_      IN VARCHAR2,
+               sub_part_no_  IN VARCHAR2,
+               sub_part_rev_ IN VARCHAR2,
+               structure_id_ IN VARCHAR2,
+               pos_          IN VARCHAR2) RETURN VARCHAR2 
+            IS
+               objkey_ VARCHAR2(50);
+            BEGIN
+               SELECT objkey
+                 INTO objkey_
+                 FROM eng_part_structure_ext_cfv
+                WHERE part_no = part_no_
+                  AND sub_part_no = sub_part_no_
+                  AND sub_part_rev = sub_part_rev_
+                  AND structure_id = structure_id_
+                  AND pos = pos_
+                  AND cf$_copy_circuit_reference_db = ''TRUE'';
+            RETURN objkey_;
+            EXCEPTION
+               WHEN OTHERS THEN
+                 RETURN NULL;
+            END Get_Source_Eng_Part_Struc_Objkey___;
+         BEGIN
+            part_no_ := :part_no_;      
+            part_rev_ := :part_rev_;      
+
+            FOR rec_ IN (SELECT *
+                           FROM eng_part_structure_ext
+                          WHERE part_no = part_no_
+                            AND part_rev = part_rev_) LOOP
+               sub_part_no_  := rec_.sub_part_no;
+               sub_part_rev_ := rec_.sub_part_rev;
+               structure_id_ := rec_.structure_id;
+               pos_          := rec_.pos;
+
+               objkey_ := Eng_Part_Structure_API.Get_Objkey(part_no_,
+                                                            part_rev_,
+                                                            sub_part_no_,
+                                                            sub_part_rev_,
+                                                            structure_id_,
+                                                            pos_);
+
+               source_objkey_ := Get_Source_Eng_Part_Struc_objkey___(part_no_,
+                                                                     sub_part_no_,
+                                                                     sub_part_rev_,
+                                                                     structure_id_,
+                                                                     pos_);
+
+               IF source_objkey_ IS NOT NULL THEN
+                  IF Eng_Part_Structure_CFP.Get_Cf$_Copy_Circuit_Reference(source_objkey_) = ''TRUE'' THEN
+                     Copy_Circuit_Reference___(objkey_,
+                                               Eng_Part_Structure_CFP.Get_Cf$_Circuit_Ref(source_objkey_));
+                     Remove_Copy_Circuit_Ref_Flag___(source_objkey_);
+                   END IF;
+               END IF;
+            END LOOP;
+         END;';
+      IF (Database_SYS.View_Exist('ENG_PART_STRUCTURE_EXT_CFV') AND
+                Database_SYS.Package_Exist('ENG_PART_STRUCTURE_CFP')) THEN
+         --@ApproveDynamicStatement('2021-04-27',entpragg);
+         EXECUTE IMMEDIATE stmt_
+           USING IN part_no_, IN part_rev_;
+      ELSE
+         Error_Sys.Appl_General(lu_name_, 'Custom Objects are not published!');
+      END IF;   
+   END Copy_Circuit_Reference__;
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
