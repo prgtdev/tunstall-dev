@@ -123,8 +123,12 @@ PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
    
    PROCEDURE Copy_Circuit_Reference__(
       part_no_  IN VARCHAR2,
-      part_rev_ IN VARCHAR2);   
-
+      part_rev_ IN VARCHAR2);  
+   
+FUNCTION Check_Cause_Discount(wo_no_   IN NUMBER,
+                                company_ IN varchar2,
+                                site_    IN VARCHAR2,
+                                type_    IN varchar2) return VARCHAR2 ;
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------

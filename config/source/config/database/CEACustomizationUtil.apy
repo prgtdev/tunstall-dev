@@ -1578,6 +1578,88 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          Error_Sys.Appl_General(lu_name_, 'Custom Objects are not published!');
       END IF;   
    END Copy_Circuit_Reference__;
+   
+     FUNCTION Check_Cause_Discount(wo_no_   IN NUMBER,
+                                company_ IN varchar2,
+                                site_    IN VARCHAR2,
+                                type_    IN varchar2) return VARCHAR2 IS
+  
+    temp_               VARCHAR2(5) := 'FALSE';
+    cause_discount_     number;
+    material_discount_  number;
+    personnel_discount_ number;
+    cause_objkey_       varchar2(2000);
+  
+    cursor get_wo_tasks is
+      select task_seq
+        from JT_TASK_UIV_CFV
+       where wo_no = wo_no_
+         and company like NVL(company_, '%')
+         and site like NVL(site_, '%')
+         and ERROR_CAUSE is not null
+         and CF$_SERVICE_PACKAGE is not null;
+  
+    cursor get_cause_details(in_wo_no_ number, task_seq_ number) is
+      SELECT cf$_material_discount, cf$_personnel_discount
+        FROM SERVICE_PACKAGE_DETAIL_CLT
+       WHERE cf$_cause in
+             (select objkey
+                from IFSAPP.MAINTENANCE_CAUSE_CODE
+               where ERR_CAUSE in (select ERROR_CAUSE
+                                     from IFSAPP.JT_TASK_UIV_CFV
+                                    where wo_no = in_wo_no_
+                                      and TASK_SEQ = task_seq_))
+         and CF$_SERVICE_PACKAGE in
+             (select OBJKEY
+                from IFSAPP.SERVICE_PACKAGE_CLV
+               where CF$_NAME in (select CF$_SERVICE_PACKAGE
+                                    from IFSAPP.JT_TASK_UIV_CFV
+                                   where wo_no = in_wo_no_
+                                     and TASK_SEQ = task_seq_));
+  
+    cursor get_wo_task_cause(in_wo_no_ number) is
+      select error_cause, REPORTED_OBJ_CONN_ROWKEY
+        from JT_TASK_UIV
+       where wo_no = in_wo_no_
+         and error_cause is not null;
+  
+    cursor get_cause(error_cause_              varchar2,
+                     reported_obj_conn_rowkey_ varchar2) is
+      select objkey
+        from SERVICE_PACKAGE_DETAIL_CLV t
+       where cf$_cause = error_cause_
+         and cf$_Service_package =
+             Jt_Task_Cfp.Get_Cf$_Service_Package(reported_obj_conn_rowkey_);
+  
+  BEGIN
+
+    for tasks_ in get_wo_tasks loop
+      if (get_wo_tasks%notfound) then
+        temp_ := 'FALSE';
+        exit;
+      else
+        open get_cause_details(wo_no_, tasks_.task_seq);
+        fetch get_cause_details
+          into material_discount_, personnel_discount_;
+        close get_cause_details;
+      
+        if (type_ = 'Chargeable') then
+          if (material_discount_ = 0 and personnel_discount_ = 0) then
+            temp_ := 'TRUE';
+            exit;
+          end if;
+        elsif (type_ = 'Non-Chargeable') then
+          if (material_discount_ = 1 and personnel_discount_ = 1) then
+            temp_ := 'TRUE';
+            exit;
+          end if;
+        end if;
+      end if;
+    
+    end loop;
+
+    return temp_;
+  END Check_Cause_Discount;
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
