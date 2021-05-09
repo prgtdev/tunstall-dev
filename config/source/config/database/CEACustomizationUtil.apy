@@ -1203,7 +1203,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
    IS
       company_ VARCHAR2(20);
       object_id_              VARCHAR2(20);
-      sub_proj_inst_site_     VARCHAR2(20);
+      --sub_proj_inst_site_     VARCHAR2(20);
       sales_contract_no_      VARCHAR2(20);
       project_default_site_   VARCHAR2(20);
       installation_site_      VARCHAR2(10);
@@ -1276,7 +1276,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       IS
          installation_site_ VARCHAR2(50);
       BEGIN
-         SELECT cf$_installation_site
+         SELECT cf$_installation_site_no
            INTO installation_site_
            FROM sub_project_cfv
           WHERE project_id = project_id_
@@ -1418,6 +1418,34 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          END IF;
          NULL;
       END Create_Funct_Equip_Obj___;
+      
+      PROCEDURE Validate_Prerequisites___(
+         istallation_site_ IN VARCHAR2,
+         contract_no_      IN VARCHAR2,
+         hand_over_date_   IN DATE,
+         warranty_period_  IN NUMBER)             
+      IS
+      BEGIN
+         IF installation_site_ IS NULL THEN
+            Error_SYS.Appl_General('Custom','ERROR_NO_INSTALLATION_SITE: Sub project installation site is not set');
+         END IF;
+      
+         IF sales_contract_site_rec_.cf$_contract_no IS NULL THEN
+            Error_SYS.Appl_General('Custom',
+                                   'ERROR_NO_INSTALLATION_SITE: Installation site :P1 is not found in installation sites of sales contract',
+                                   installation_site_);
+         END IF;
+
+         IF hand_over_date_ IS NULL THEN
+            Error_SYS.Appl_General('Custom',
+                                   'ERROR_COMPLETE_DATE: Completion/Handover date of installation site of the sales contract is not set');
+         END IF;
+
+         IF warranty_period_ IS NULL THEN
+            Error_SYS.Appl_General('Custom',
+                                   'ERROR_WARRANTY_PERIOD: Warranty Period of installation site of the sales contract is not set');
+         END IF;   
+      END Validate_Prerequisites___;
    BEGIN
       company_ := Project_API.Get_Company(project_id_);
       object_id_ := Get_Object_Id___(project_id_, sub_project_id_);
@@ -1426,7 +1454,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          Error_SYS.Appl_General('custom',
                                 'ERROR_OBJ_ID: This operation is only possible for sub projects with Object ID');
       END IF;
-      sub_proj_inst_site_ := Get_Installation_Site___(project_id_, sub_project_id_);    
+      --sub_proj_inst_site_ := Get_Installation_Site___(project_id_, sub_project_id_);    
       sales_contract_no_ := Get_Sales_Contract_No___(project_id_, company_);    
       project_default_site_ := Get_Default_Project_Site___(company_, project_id_);   
       installation_site_ := Get_Installation_Site___(project_id_,sub_project_id_);   
@@ -1434,23 +1462,9 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
 
       hand_over_date_  := sales_contract_site_rec_.cf$_delivered_on;
       warranty_period_ := sales_contract_site_rec_.cf$_warranty_period;
-
-
-      IF sales_contract_site_rec_.cf$_contract_no IS NULL THEN
-         Error_SYS.Appl_General('Custom',
-                                'ERROR_NO_INSTALLATION_SITE: Installation site :P1 is not found in installation sites of the connected sales contract',
-                                installation_site_);
-      END IF;
-
-      IF hand_over_date_ IS NULL THEN
-         Error_SYS.Appl_General('Custom',
-                                'ERROR_COMPLETE_DATE: Completion/Handover date of the installation site of connected sales contract is empty');
-      END IF;
-
-      IF warranty_period_ IS NULL THEN
-         Error_SYS.Appl_General('Custom',
-                                'ERROR_WARRANTY_PERIOD: Warranty Period of the installation site of connected sales contract is empty');
-      END IF;
+      
+      Validate_Prerequisites___(installation_site_,sales_contract_site_rec_.cf$_contract_no,hand_over_date_,warranty_period_);
+      
       warranty_period_objkey_ := Get_Service_warranty_Objkey___(warranty_period_);
 
       FOR rec_ IN get_activity_misc_parts LOOP
