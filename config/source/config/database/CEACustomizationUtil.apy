@@ -469,7 +469,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     objversion_  VARCHAR2(3200);
     attr_        VARCHAR2(3200);
     warr_objkey_ VARCHAR2(3200);
-  
+    contract_2_  VARCHAR2(3200) := '2013';
+
     --to get lot number and qty 
     CURSOR get_lot_batch_dets(order_no_   IN VARCHAR2,
                               line_no_    IN VARCHAR2,
@@ -505,14 +506,14 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
   
   BEGIN
-    IF (object_id_ is not null AND object_created_ = 'False') THEN
+    IF (object_id_ is not null AND (object_created_ = 'False' OR object_created_ IS NULL)) THEN
     
       status_ := Cust_Warranty_API.Get_Objstate(warranty_id_);
       OPEN get_lot_batch_dets(order_no_,
                               line_no_,
                               rel_no_,
                               catalog_no_,
-                              contract_);
+                              contract_2_);
       FETCH get_lot_batch_dets
         INTO lot_no_;
       CLOSE get_lot_batch_dets;
@@ -647,7 +648,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
   
   BEGIN
-    IF (object_id_ is not null AND object_created_ = 'False') THEN
+    IF (object_id_ is not null AND (object_created_ = 'False' OR object_created_ IS NULL)) THEN
       --create serial object
     
       FOR obj IN get_serial_objects_col(catalog_no_,
