@@ -584,13 +584,13 @@
                   <properties>
                      <number-columns-spanned>6</number-columns-spanned>
                   </properties>
-                  <data>tns:CF_SUPPLIER_NAME</data>
+                  <data>tns:CF_SUPPLIER_NAME_MRB_REP</data>
                   <text-field>
                      <properties>
                         <left>0cm</left>
                         <top>0pt</top>
                      </properties>
-                     <data>tns:CF_SUPPLIER_NAME</data>
+                     <data>tns:CF_SUPPLIER_NAME_MRB_REP</data>
                   </text-field>
                </table-cell>
                <table-cell>
