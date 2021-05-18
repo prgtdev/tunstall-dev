@@ -1368,7 +1368,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          Client_SYS.Add_To_Attr('MCH_NAME', part_desc_, attr_);
          Client_SYS.Add_To_Attr('CONTRACT', site_, attr_);
          Client_SYS.Add_To_Attr('PRODUCTION_DATE', production_date_, attr_);
-         Client_SYS.Add_To_Attr('SUP_CONTRACT', '2012', attr_);
+         Client_SYS.Add_To_Attr('SUP_CONTRACT', site_, attr_);
          Client_SYS.Add_To_Attr('OBJ_LEVEL', object_level_, attr_);
          Client_SYS.Add_To_Attr('OPERATIONAL_STATUS_DB',operational_status_,attr_);
          Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
