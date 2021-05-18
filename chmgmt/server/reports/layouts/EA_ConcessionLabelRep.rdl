@@ -493,7 +493,7 @@
                                  <line-height>1.2</line-height>
                                  <number-columns-spanned>4</number-columns-spanned>
                               </properties>
-                              <data>'Product Serail No.'</data>
+                              <data>'Product Serial No.'</data>
                               <text-field>
                                  <properties>
                                     <left>0cm</left>
