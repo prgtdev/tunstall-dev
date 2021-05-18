@@ -356,7 +356,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     END IF;
   END Update_Follow_Up_Date__;
 
-  --C0446
+  --C0446 EntChamuA (START)
   PROCEDURE Create_Equipment_Object__(order_no_ IN VARCHAR2) IS
     temps_      NUMBER;
     seriliazed_ NUMBER;
@@ -399,20 +399,20 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       FETCH check_sales_part
         INTO temps_;
       CLOSE check_sales_part;
-    
       object_id_ := SUBSTR(rec_.CF$_OBJECT_ID,
                            INSTR(rec_.CF$_OBJECT_ID, '^') + 1,
                            length(rec_.CF$_OBJECT_ID));
-    
+
       IF (object_id_ is not null) THEN
         --Create objects only if site 2013 and serviceable
         IF (temps_ = 1) THEN
+
           OPEN check_serialized(rec_.catalog_no);
           FETCH check_serialized
             INTO seriliazed_;
         
           IF (check_serialized%FOUND) THEN
-          
+
             Create_Serial_Object__(rec_.catalog_no,
                                    order_no_,
                                    rec_.line_no,
@@ -423,8 +423,9 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                    rec_.CF$_OBJECT_CREATED,
                                    rec_.objid,
                                    rec_.real_ship_date);
+            temps_ := 0;
           ELSE
-          
+             
             Create_Functional_Object_(rec_.catalog_no,
                                       order_no_,
                                       rec_.line_no,
@@ -437,6 +438,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                       rec_.buy_qty_due,
                                       rec_.CF$_OBJECT_CREATED,
                                       rec_.objid);
+            temps_ := 0;
+
           END IF;
           CLOSE check_serialized;
         END IF;
@@ -737,6 +740,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       END LOOP;
     END IF;
   END Create_Serial_Object__;
+    --C0446 EntChamuA (END)
 
   FUNCTION Transf_Part_To_Inv_Part(target_key_ref_ IN VARCHAR2,
                                    service_name_   IN VARCHAR2)
@@ -1364,7 +1368,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          Client_SYS.Add_To_Attr('MCH_NAME', part_desc_, attr_);
          Client_SYS.Add_To_Attr('CONTRACT', site_, attr_);
          Client_SYS.Add_To_Attr('PRODUCTION_DATE', production_date_, attr_);
-         Client_SYS.Add_To_Attr('SUP_CONTRACT', '2012', attr_);
+         Client_SYS.Add_To_Attr('SUP_CONTRACT', site_, attr_);
          Client_SYS.Add_To_Attr('OBJ_LEVEL', object_level_, attr_);
          Client_SYS.Add_To_Attr('OPERATIONAL_STATUS_DB',operational_status_,attr_);
          Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
