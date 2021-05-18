@@ -4,17 +4,17 @@
    <properties>
       <font-family>Times New Roman</font-family>
       <font-size>11pt</font-size>
-      <height>35.7mm</height>
+      <height>41.3mm</height>
       <initial-page-number>1</initial-page-number>
-      <margin-bottom>0mm</margin-bottom>
-      <margin-left>1.7mm</margin-left>
-      <margin-right>1mm</margin-right>
-      <margin-top>4mm</margin-top>
+      <margin-bottom>1.1mm</margin-bottom>
+      <margin-left>0.6mm</margin-left>
+      <margin-right>0.2mm</margin-right>
+      <margin-top>0.7mm</margin-top>
       <report-id>ARRIVAL_REPORT_REP</report-id>
       <report-title>Portrait</report-title>
       <schema>ArrivalReportRep.xsd</schema>
       <version>9.0</version>
-      <width>88.5mm</width>
+      <width>88.9mm</width>
    </properties>
    <history>
    </history>
@@ -30,163 +30,200 @@
             <border-color>#000000</border-color>
             <border-style>solid</border-style>
             <border-width>0.1mm</border-width>
-            <left>1.5mm</left>
+            <left>0mm</left>
+            <margin-right>0mm</margin-right>
+            <padding>0mm</padding>
             <table-layout>fixed</table-layout>
             <top>2mm</top>
          </properties>
          <table-column>
             <properties>
-               <width>10.504696mm</width>
+               <width>11.86235mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>2.582821mm</width>
+               <width>2.440475mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>2.582821mm</width>
+               <width>2.440475mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>5.223446mm</width>
+               <width>5.0811mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>5.223446mm</width>
+               <width>8mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>5.223446mm</width>
+               <width>5.0811mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>5.223446mm</width>
+               <width>5.0811mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>4.165113mm</width>
+               <width>4.022767mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>2.831779mm</width>
+               <width>2.689433mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.386987mm</width>
+               <width>1.244641mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.386987mm</width>
+               <width>1.244641mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0.673246mm</width>
+               <width>0.5309mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0.673246mm</width>
+               <width>0.5309mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.346493mm</width>
+               <width>1.204147mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.346493mm</width>
+               <width>1.204147mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.346493mm</width>
+               <width>1.204147mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0.644344mm</width>
+               <width>0.501998mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0.644344mm</width>
+               <width>0.501998mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.346493mm</width>
+               <width>1.204147mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>2.75079mm</width>
+               <width>2.608444mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>7.472405mm</width>
+               <width>3.665029mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>9.324488mm</width>
+               <width>1.832515mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>2.287769mm</width>
+               <width>0.458129mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>2.287769mm</width>
+               <width>0.458129mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0.557491mm</width>
+               <width>0.916257mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0.557491mm</width>
+               <width>10.866953mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.114982mm</width>
+               <width>2.145423mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0mm</width>
+               <width>2.410006mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>1.878964mm</width>
+               <width>0.150562mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0mm</width>
+               <width>0.415145mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>0mm</width>
+               <width>0.972636mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>-0.142346mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>2.036602mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>0.50915mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>0.50915mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>1.018301mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>0.660703mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>-0.142346mm</width>
             </properties>
          </table-column>
          <table-body>
@@ -194,14 +231,16 @@
             <table-row>
                <properties>
                   <font-family>Arial</font-family>
-                  <font-size>7pt</font-size>
+                  <font-size>12pt</font-size>
                   <font-weight>bold</font-weight>
-                  <height>3.8mm</height>
+                  <height>6.23164mm</height>
+                  <padding-top>1mm</padding-top>
                </properties>
                <table-cell>
                   <properties>
                      <background-color>#000000</background-color>
                      <color>#ffffff</color>
+                     <font-size>10pt</font-size>
                      <font-weight>bold</font-weight>
                      <number-columns-spanned>8</number-columns-spanned>
                      <padding-left>1mm</padding-left>
@@ -214,7 +253,7 @@
                      <background-color>#000000</background-color>
                      <color>#ffffff</color>
                      <font-weight>bold</font-weight>
-                     <number-columns-spanned>12</number-columns-spanned>
+                     <number-columns-spanned>11</number-columns-spanned>
                   </properties>
                   <datetime-format>
                      <custom-date-time>dd/MM/yyyy</custom-date-time>
@@ -231,10 +270,11 @@
                   <properties>
                      <background-color>#000000</background-color>
                      <color>#ffffff</color>
+                     <font-size>10pt</font-size>
                      <font-weight>bold</font-weight>
-                     <line-height>0</line-height>
-                     <number-columns-spanned>9</number-columns-spanned>
-                     <padding-top>2mm</padding-top>
+                     <line-height>1.2</line-height>
+                     <number-columns-spanned>16</number-columns-spanned>
+                     <padding-top>0.5mm</padding-top>
                   </properties>
                   <data>format:currentDateAndTime()</data>
                   <text-field>
@@ -252,8 +292,8 @@
             <table-row>
                <properties>
                   <font-family>Arial</font-family>
-                  <font-size>7pt</font-size>
-                  <height>3.8mm</height>
+                  <font-size>10pt</font-size>
+                  <height>2mm</height>
                   <padding-top>1mm</padding-top>
                </properties>
                <table-cell>
@@ -311,9 +351,13 @@
                         <data>tns:ARRIVAL_DETAILS/tns:ARRIVAL_DETAIL</data>
                         <table-row>
                            <properties>
+                              <font-size>8pt</font-size>
                               <height>3.8mm</height>
                            </properties>
                            <table-cell>
+                              <properties>
+                                 <font-size>10pt</font-size>
+                              </properties>
                               <data>'Del Id.'</data>
                               <text-field>
                                  <properties>
@@ -324,6 +368,9 @@
                               </text-field>
                            </table-cell>
                            <table-cell>
+                              <properties>
+                                 <font-size>10pt</font-size>
+                              </properties>
                               <data>tns:HANDLING_UNIT_ID</data>
                               <text-field>
                                  <properties>
@@ -335,12 +382,14 @@
                            </table-cell>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
                                  <number-columns-spanned>1</number-columns-spanned>
                               </properties>
                            </table-cell>
                            <table-cell>
                               <properties>
-                                 <number-columns-spanned>2</number-columns-spanned>
+                                 <font-size>9pt</font-size>
+                                 <number-columns-spanned>4</number-columns-spanned>
                               </properties>
                               <data>tns:HANDLING_UNIT_ID</data>
                               <barcode>
@@ -372,10 +421,9 @@
                               </barcode>
                            </table-cell>
                            <table-cell>
-                           </table-cell>
-                           <table-cell>
-                           </table-cell>
-                           <table-cell>
+                              <properties>
+                                 <font-size>9pt</font-size>
+                              </properties>
                            </table-cell>
                         </table-row>
                      </table-body>
@@ -383,7 +431,7 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
                      <line-height>1.2</line-height>
                      <number-columns-spanned>9</number-columns-spanned>
                   </properties>
@@ -398,12 +446,8 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <number-columns-spanned>1</number-columns-spanned>
-                  </properties>
-               </table-cell>
-               <table-cell>
-                  <properties>
-                     <number-columns-spanned>5</number-columns-spanned>
+                     <font-size>10pt</font-size>
+                     <number-columns-spanned>9</number-columns-spanned>
                   </properties>
                   <data>tns:SOURCE_REF1</data>
                   <text-field>
@@ -421,7 +465,8 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <number-columns-spanned>2</number-columns-spanned>
+                     <font-size>9pt</font-size>
+                     <number-columns-spanned>6</number-columns-spanned>
                   </properties>
                   <data>tns:SOURCE_REF1</data>
                   <barcode>
@@ -453,14 +498,9 @@
                   </barcode>
                </table-cell>
                <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
+                  <properties>
+                     <number-columns-spanned>4</number-columns-spanned>
+                  </properties>
                </table-cell>
                <table-cell>
                   <properties>
@@ -471,13 +511,12 @@
             <table-row>
                <properties>
                   <font-family>Arial</font-family>
-                  <font-size>7pt</font-size>
-                  <height>4mm</height>
-                  <padding-bottom>0.8mm</padding-bottom>
+                  <font-size>9pt</font-size>
+                  <height>2mm</height>
                </properties>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
                      <number-columns-spanned>4</number-columns-spanned>
                      <padding-left>1mm</padding-left>
                   </properties>
@@ -492,9 +531,11 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
+                     <font-weight>bold</font-weight>
                      <line-height>1.2</line-height>
-                     <number-columns-spanned>5</number-columns-spanned>
+                     <number-columns-spanned>16</number-columns-spanned>
+                     <padding-top>0.5mm</padding-top>
                   </properties>
                   <data>tns:PART_NO</data>
                   <text-field>
@@ -507,7 +548,7 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <number-columns-spanned>2</number-columns-spanned>
+                     <number-columns-spanned>3</number-columns-spanned>
                   </properties>
                   <data>tns:PART_NO</data>
                   <barcode>
@@ -543,6 +584,72 @@
                <table-cell>
                </table-cell>
                <table-cell>
+                  <properties>
+                     <number-columns-spanned>11</number-columns-spanned>
+                  </properties>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+            </table-row>
+            <table-row>
+               <properties>
+                  <height>1.5mm</height>
+               </properties>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
+               </table-cell>
+               <table-cell>
                </table-cell>
                <table-cell>
                </table-cell>
@@ -558,25 +665,8 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <number-columns-spanned>3</number-columns-spanned>
                   </properties>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-                  <properties>
-                     <number-columns-spanned>2</number-columns-spanned>
-                  </properties>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
                </table-cell>
                <table-cell>
                </table-cell>
@@ -589,13 +679,12 @@
                   <border-top-style>solid</border-top-style>
                   <border-top-width>0.1mm</border-top-width>
                   <font-family>Arial</font-family>
-                  <font-size>8pt</font-size>
-                  <height>3.8mm</height>
-                  <padding-top>1mm</padding-top>
+                  <font-size>9pt</font-size>
+                  <height>3.5mm</height>
                </properties>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
                      <number-columns-spanned>4</number-columns-spanned>
                      <padding-left>1mm</padding-left>
                   </properties>
@@ -610,7 +699,7 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>9pt</font-size>
                      <number-columns-spanned>4</number-columns-spanned>
                   </properties>
                   <data>../../../tns:PROCESSING_INFO/tns:PROCESSING_ATTRIBUTES/tns:PRINTED_BY</data>
@@ -629,19 +718,19 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <number-columns-spanned>20</number-columns-spanned>
+                     <number-columns-spanned>27</number-columns-spanned>
                   </properties>
                </table-cell>
             </table-row>
             <table-row>
                <properties>
                   <font-family>Arial</font-family>
-                  <font-size>8pt</font-size>
-                  <height>3.8mm</height>
+                  <font-size>9pt</font-size>
+                  <height>3.5mm</height>
                </properties>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
                      <number-columns-spanned>4</number-columns-spanned>
                      <padding-left>1mm</padding-left>
                   </properties>
@@ -656,7 +745,7 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
                      <line-height>1.2</line-height>
                      <number-columns-spanned>4</number-columns-spanned>
                   </properties>
@@ -676,20 +765,20 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <number-columns-spanned>20</number-columns-spanned>
+                     <number-columns-spanned>27</number-columns-spanned>
                   </properties>
                </table-cell>
             </table-row>
             <table-row>
                <properties>
                   <font-family>Arial</font-family>
-                  <font-size>8pt</font-size>
-                  <height>4mm</height>
-                  <padding-bottom>0.8mm</padding-bottom>
+                  <font-size>9pt</font-size>
+                  <height>5.5mm</height>
+                  <padding-bottom>1mm</padding-bottom>
                </properties>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>9pt</font-size>
                      <number-columns-spanned>4</number-columns-spanned>
                      <padding-left>1mm</padding-left>
                   </properties>
@@ -704,7 +793,7 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
                      <number-columns-spanned>4</number-columns-spanned>
                   </properties>
                   <data>tns:RECEIVER</data>
@@ -724,7 +813,8 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>10pt</font-size>
+                     <number-columns-spanned>5</number-columns-spanned>
                   </properties>
                   <data>'Qty.'</data>
                   <text-field>
@@ -737,9 +827,11 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <font-size>7pt</font-size>
+                     <font-size>9pt</font-size>
+                     <font-weight>bold</font-weight>
                      <line-height>1.2</line-height>
                      <number-columns-spanned>2</number-columns-spanned>
+                     <padding-top>0.5mm</padding-top>
                   </properties>
                   <data>tns:QTY_ARRIVED</data>
                   <text-field>
@@ -752,7 +844,7 @@
                </table-cell>
                <table-cell>
                   <properties>
-                     <number-columns-spanned>2</number-columns-spanned>
+                     <number-columns-spanned>8</number-columns-spanned>
                   </properties>
                   <data>tns:QTY_ARRIVED</data>
                   <barcode>
@@ -782,12 +874,6 @@
                         <barcode-width-wide>2.0</barcode-width-wide>
                      </properties>
                   </barcode>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
-               </table-cell>
-               <table-cell>
                </table-cell>
                <table-cell>
                </table-cell>
