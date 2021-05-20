@@ -117,9 +117,9 @@ PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
       customer_   IN VARCHAR2,
       catalog_no_ IN VARCHAR2) RETURN VARCHAR2;
    
-   PROCEDURE Create_Functional_Object__ (
-      project_id_     IN VARCHAR2,
-      sub_project_id_ IN VARCHAR2);
+ PROCEDURE Create_Functional_Object__ (
+      project_id_      IN VARCHAR2,
+      sub_project_id_  IN VARCHAR2);
    
    PROCEDURE Copy_Circuit_Reference__(
       part_no_  IN VARCHAR2,

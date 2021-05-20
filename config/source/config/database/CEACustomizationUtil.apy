@@ -1203,8 +1203,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
    END Get_Allowed_Tax_Codes__;
    
    PROCEDURE Create_Functional_Object__ (
-      project_id_     IN VARCHAR2,
-      sub_project_id_ IN VARCHAR2)
+      project_id_      IN VARCHAR2,
+      sub_project_id_  IN VARCHAR2)
    IS
       company_ VARCHAR2(20);
       object_id_              VARCHAR2(20);
@@ -1217,7 +1217,10 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
 
       hand_over_date_          DATE;
       sales_contract_site_rec_ Sales_Contract_Site_CLP.Public_Rec;
-
+      object_count_ NUMBER := 0;
+      eligible_parts_exist_ BOOLEAN := FALSE;  
+      object_list_ VARCHAR2(32000);
+           
       CURSOR get_activity_misc_parts IS
          SELECT part_no, part_desc, SUM(require_qty) quantity
            FROM (SELECT t.part_no,
@@ -1238,7 +1241,14 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                             AND t.project_id = project_id_)
                     AND t.part_no IS NOT NULL)
        GROUP BY part_no, part_desc;
-
+      
+      PROCEDURE Add_To_Object_List___(
+         object_id_ IN VARCHAR2)
+      IS
+      BEGIN
+         object_list_ := object_list_ ||CHR(10)||CHR(13)||object_id_;
+      END Add_To_Object_List___;
+      
       FUNCTION Get_Object_Id___(
         project_id_     IN VARCHAR2,
         sub_project_id_ IN VARCHAR2) RETURN VARCHAR2 
@@ -1355,7 +1365,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          project_id_      IN VARCHAR2,
          sub_project_id_  IN VARCHAR2,
          sup_mch_code_    IN VARCHAR2,
-         production_date_ IN DATE) RETURN VARCHAR2 
+         production_date_ IN DATE,
+         mode_            IN VARCHAR2 DEFAULT 'NEW') RETURN VARCHAR2 
       IS
          attr_               VARCHAR2(32000);
          site_               VARCHAR2(20) := '2013';
@@ -1363,15 +1374,19 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          operational_status_ VARCHAR2(20) := 'IN_OPERATION';
       BEGIN
          Client_SYS.Clear_Attr(attr_);
-         Client_SYS.Add_To_Attr('PART_NO', part_no_, attr_);
-         Client_SYS.Add_To_Attr('MCH_CODE',part_no_ || project_id_ || sub_project_id_,attr_);
-         Client_SYS.Add_To_Attr('MCH_NAME', part_desc_, attr_);
-         Client_SYS.Add_To_Attr('CONTRACT', site_, attr_);
-         Client_SYS.Add_To_Attr('PRODUCTION_DATE', production_date_, attr_);
-         Client_SYS.Add_To_Attr('SUP_CONTRACT', site_, attr_);
-         Client_SYS.Add_To_Attr('OBJ_LEVEL', object_level_, attr_);
-         Client_SYS.Add_To_Attr('OPERATIONAL_STATUS_DB',operational_status_,attr_);
-         Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
+         IF mode_ = 'NEW' THEN
+            Client_SYS.Add_To_Attr('PART_NO', part_no_, attr_);
+            Client_SYS.Add_To_Attr('MCH_CODE',part_no_ || project_id_ || sub_project_id_,attr_);
+            Client_SYS.Add_To_Attr('MCH_NAME', part_desc_, attr_);
+            Client_SYS.Add_To_Attr('CONTRACT', site_, attr_);
+            Client_SYS.Add_To_Attr('PRODUCTION_DATE', production_date_, attr_);
+            Client_SYS.Add_To_Attr('SUP_CONTRACT', site_, attr_); -- TO BE REMOVED
+            Client_SYS.Add_To_Attr('OBJ_LEVEL', object_level_, attr_);
+            Client_SYS.Add_To_Attr('OPERATIONAL_STATUS_DB',operational_status_,attr_);
+            Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
+         ELSE
+            Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
+         END IF;
          RETURN attr_;
       END Get_Attr___;
 
@@ -1407,18 +1422,37 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          attr_       VARCHAR2(32000);
          attr_cf_    VARCHAR2(32000);
          site_       VARCHAR2(20) := '2013';
+         current_sup_mch_code_ VARCHAR2(100);
+         mch_code_ VARCHAR2(50);
+         equip_func_obj_rec_ Equipment_Functional_API.Public_Rec;
       BEGIN
-         IF NOT Equipment_Functional_API.Exists(site_,part_no_ || project_id_ || sub_project_id_) THEN
+         mch_code_ := part_no_ || project_id_ || sub_project_id_;
+         IF NOT Equipment_Functional_API.Exists(site_,mch_code_) THEN            
             attr_ := Get_Attr___(part_no_,
                                  part_desc_,
                                  project_id_,
                                  sub_project_id_,
                                  sup_mch_code_,
                                  production_date_);
-            Equipment_Functional_API.New__(info_,objid_,objversion_,attr_,'DO');
+            Equipment_Functional_API.New__(info_,objid_,objversion_,attr_,'DO');            
             IF objid_ IS NOT NULL THEN             
                attr_cf_ := Get_Cf_Attr___(project_id_,sub_project_id_,equipment_qty_,service_warranty_);
                Equipment_Functional_CFP.Cf_New__(info_,objid_,attr_cf_,'','DO');
+            END IF;           
+            Add_To_Object_List___(mch_code_);            
+         ELSE
+            current_sup_mch_code_:= Equipment_Functional_API.Get_Sup_Mch_Code(site_,mch_code_);
+            IF sup_mch_code_ != current_sup_mch_code_ THEN
+               attr_ := Get_Attr___(part_no_,
+                                    part_desc_,
+                                    project_id_,
+                                    sub_project_id_,
+                                    sup_mch_code_,
+                                    production_date_,
+                                    'MODIFY');
+               equip_func_obj_rec_ := Equipment_Functional_API.Get(site_,mch_code_);
+               Equipment_Functional_API.Modify__(info_,equip_func_obj_rec_."rowid",equip_func_obj_rec_.rowversion,attr_,'DO');
+               Add_To_Object_List___(mch_code_);               
             END IF;
          END IF;
          NULL;
@@ -1473,6 +1507,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       warranty_period_objkey_ := Get_Service_warranty_Objkey___(warranty_period_);
 
       FOR rec_ IN get_activity_misc_parts LOOP
+         eligible_parts_exist_ := TRUE;
          Create_Funct_Equip_Obj___(rec_.part_no,
                                    rec_.part_desc,
                                    project_id_,
@@ -1482,6 +1517,17 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                    rec_.quantity,
                                    warranty_period_objkey_);
       END LOOP;
+      IF object_list_ IS NOT NULL THEN
+         Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
+                                                    Fnd_Session_API.Get_Fnd_User,
+                                                    'Functional Objects Created','Following Functional Objects were created/modified for Sub Project '
+                                                    || project_id_ ||' - '||sub_project_id_ || CHR(13)||CHR(10)||object_list_,'');
+      ELSIF eligible_parts_exist_ THEN
+         Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
+                                                    Fnd_Session_API.Get_Fnd_User,
+                                                    'No Functional Objects Created','Functional Objects are already created for Sub Project ' || project_id_ ||' - '||sub_project_id_,'');
+      END IF;
+      
    END Create_Functional_Object__;
    
    PROCEDURE Copy_Circuit_Reference__(
