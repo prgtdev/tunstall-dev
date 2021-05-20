@@ -1507,15 +1507,17 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       warranty_period_objkey_ := Get_Service_warranty_Objkey___(warranty_period_);
 
       FOR rec_ IN get_activity_misc_parts LOOP
-         eligible_parts_exist_ := TRUE;
-         Create_Funct_Equip_Obj___(rec_.part_no,
-                                   rec_.part_desc,
-                                   project_id_,
-                                   sub_project_id_,
-                                   object_id_,
-                                   hand_over_date_,
-                                   rec_.quantity,
-                                   warranty_period_objkey_);
+         IF rec_.quantity > 0 THEN 
+            eligible_parts_exist_ := TRUE;
+            Create_Funct_Equip_Obj___(rec_.part_no,
+                                      rec_.part_desc,
+                                      project_id_,
+                                      sub_project_id_,
+                                      object_id_,
+                                      hand_over_date_,
+                                      rec_.quantity,
+                                      warranty_period_objkey_);
+         END IF;
       END LOOP;
       IF object_list_ IS NOT NULL THEN
          Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
