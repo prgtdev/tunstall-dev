@@ -129,6 +129,57 @@ FUNCTION Check_Cause_Discount(wo_no_   IN NUMBER,
                                 company_ IN varchar2,
                                 site_    IN VARCHAR2,
                                 type_    IN varchar2) return VARCHAR2 ;
+
+--C0367 EntChathI (START)
+ 
+FUNCTION Check_Inv_Header_CA(
+   identity_       IN VARCHAR2, 
+   credit_analyst_ IN VARCHAR2, 
+   company_        IN VARCHAR2) RETURN VARCHAR2;
+  
+FUNCTION Get_Largest_Overdue_Debt(
+   identity_ IN VARCHAR2, 
+   company_  IN VARCHAR2) RETURN VARCHAR2;
+  
+FUNCTION Get_Oldest_Overdue_Debt(
+   identity_ IN VARCHAR2, 
+   company_  IN VARCHAR2) RETURN VARCHAR2;
+  
+FUNCTION Get_Oldest_Followup_Date(
+   identity_ IN VARCHAR2, 
+   company_  IN VARCHAR2) RETURN VARCHAR2;
+  
+FUNCTION Check_Credit_Escalated(
+   company_        IN VARCHAR2,
+   credit_analyst_ IN VARCHAR2, 
+   identity_       IN VARCHAR2) RETURN VARCHAR2;
+  
+FUNCTION Check_Credit_Note_Queries(
+   company_        IN VARCHAR2,
+   credit_analyst_ IN VARCHAR2,
+   identity_       IN VARCHAR2,
+   type_           IN varchar2) RETURN  VARCHAR2;
+  
+FUNCTION Check_Credit_Legal(
+   company_        IN VARCHAR2,
+   credit_analyst_ IN VARCHAR2,
+   identity_       IN VARCHAR2) RETURN VARCHAR2;
+  
+FUNCTION Check_Credit_Escalated_FC(
+   company_        IN VARCHAR2,
+   credit_analyst_ IN VARCHAR2,
+   identity_       IN VARCHAR2) RETURN VARCHAR2;
+
+FUNCTION Get_Period_Target(
+   credit_analyst_ IN VARCHAR2,
+   company_        IN VARCHAR2,
+   target_period_  IN VARCHAR2) RETURN NUMBER;
+    
+FUNCTION Get_Cash_Collected(
+   credit_analyst_ IN VARCHAR2,
+   company_        IN VARCHAR2,
+   target_period_  IN VARCHAR2) RETURN NUMBER;
+ --C0367 EntChathI (END)
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
