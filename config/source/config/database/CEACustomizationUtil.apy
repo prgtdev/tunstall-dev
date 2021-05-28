@@ -2209,6 +2209,57 @@ BEGIN
       RETURN NVL(cash_collected_, 0);
 END Get_Cash_Collected;
 --C0367 EntChathI (END)
+
+--C0448 EntPrageG (START)
+
+FUNCTION Get_Evaluation_Category_(
+   task_seq_ IN VARCHAR2) RETURN VARCHAR2
+IS
+   eval_category_ VARCHAR2(10);
+BEGIN
+   SELECT (CASE
+             WHEN survey_answer = '10' THEN
+              'Promotor'
+             WHEN survey_answer IN ('9', '8', '7') THEN
+              'Neutral'
+             ELSE
+              'Detractors'
+          END) eval_category
+     INTO eval_category_ 
+     FROM (SELECT a.wo_no,
+                  a.task_seq,               
+                  survey_id,
+                  Survey_Question_API.Get_Question_No(survey_id,
+                                                      question_id) question_no,
+                  question,
+                  Case
+                     WHEN Survey_Question_API.Get_Survey_Answer_Type_Db(survey_id,
+                                                                        question_id) =
+                          'DATE' THEN
+                      substr(answer, 1, 10)
+                     WHEN Survey_Question_API.Get_Survey_Answer_Type_Db(survey_id,
+                                                                        question_id) =
+                          'TIME' THEN
+                      substr(answer, 12, 19)
+                     ELSE
+                      answer
+                  END survey_answer
+             FROM jt_task_survey_answers a, jt_task_uiv b
+            WHERE a.wo_no = b.wo_no
+              AND a.task_seq = b.task_seq
+              AND survey_id IN (SELECT survey_id
+                                  FROM work_task_surveys
+                                  WHERE Work_Task_Survey = 'TRUE')
+              AND a.task_seq = task_seq_)
+    WHERE question_no = 2
+      AND survey_id = 'CUSTOMER_SATISFAC';   
+   RETURN eval_category_;
+EXCEPTION
+   WHEN OTHERS THEN
+      RETURN NULL;
+END Get_Evaluation_Category_;
+
+--C0448 EntPrageG (END)
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------

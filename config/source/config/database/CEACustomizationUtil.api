@@ -177,7 +177,14 @@ FUNCTION Get_Cash_Collected(
    credit_analyst_ IN VARCHAR2,
    company_        IN VARCHAR2,
    target_period_  IN VARCHAR2) RETURN NUMBER;
- --C0367 EntChathI (END)
+--C0367 EntChathI (END)
+
+--C0448 EntPrageG (START)
+
+FUNCTION Get_Evaluation_Category_(
+   task_seq_ IN VARCHAR2) RETURN VARCHAR2;
+
+--C0448 EntPrageG (END)
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
