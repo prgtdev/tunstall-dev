@@ -374,7 +374,6 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
              catalog_desc,
              CF$_OBJECT_ID,
              BUY_QTY_DUE,
-             CF$_OBJECT_CREATED,
              objid
         FROM customer_order_line_cfv a
        WHERE order_no = order_no_
@@ -420,7 +419,6 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                    rec_.rel_no,
                                    rec_.cust_warranty_id,
                                    object_id_,
-                                   rec_.CF$_OBJECT_CREATED,
                                    rec_.objid,
                                    rec_.real_ship_date);
             temps_ := 0;
@@ -436,7 +434,6 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                       rec_.catalog_desc,
                                       rec_.contract,
                                       rec_.buy_qty_due,
-                                      rec_.CF$_OBJECT_CREATED,
                                       rec_.objid);
             temps_ := 0;
 
@@ -457,7 +454,6 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                       catalog_desc_   IN VARCHAR2,
                                       contract_       IN VARCHAR2,
                                       buy_qty_due_    IN NUMBER,
-                                      object_created_ IN VARCHAR2,
                                       col_objid_      IN VARCHAR2) IS
   
     status_      VARCHAR2(100);
@@ -509,7 +505,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
   
   BEGIN
-    IF (object_id_ is not null AND (object_created_ = 'False' OR object_created_ IS NULL)) THEN
+    IF (object_id_ is not null) THEN
     
       status_ := Cust_Warranty_API.Get_Objstate(warranty_id_);
       OPEN get_lot_batch_dets(order_no_,
@@ -588,7 +584,6 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                    rel_no_         IN VARCHAR2,
                                    warranty_id_    IN VARCHAR2,
                                    object_id_      IN VARCHAR2,
-                                   object_created_ IN VARCHAR2,
                                    col_objid_      IN VARCHAR2,
                                    real_ship_date_ IN DATE) IS
   
@@ -651,7 +646,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
   
   BEGIN
-    IF (object_id_ is not null AND (object_created_ = 'False' OR object_created_ IS NULL)) THEN
+    IF (object_id_ is not null) THEN
       --create serial object
     
       FOR obj IN get_serial_objects_col(catalog_no_,

@@ -56,7 +56,6 @@ PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
                                    rel_no_         IN VARCHAR2,
                                    warranty_id_    IN VARCHAR2,
                                    object_id_      IN VARCHAR2,
-                                   object_created_ IN VARCHAR2,
                                    col_objid_      IN VARCHAR2,
                                    real_ship_date_ IN DATE);
 
@@ -70,7 +69,6 @@ PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
                                       catalog_desc_   IN VARCHAR2,
                                       contract_       IN VARCHAR2,
                                       buy_qty_due_    IN NUMBER,
-                                      object_created_ in VARCHAR2,
                                       col_objid_      IN VARCHAR2);
 
   FUNCTION Transf_Part_To_Inv_Part(target_key_ref_ IN VARCHAR2,
