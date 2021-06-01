@@ -185,6 +185,11 @@ FUNCTION Get_Evaluation_Category_(
    task_seq_ IN VARCHAR2) RETURN VARCHAR2;
 
 --C0448 EntPrageG (END)
+
+-- C0641 EA Maheshi (START)
+FUNCTION Get_Pack_Qty ( 
+   receipt_sequence_ NUMBER) RETURN NUMBER;  
+---- C0641 EA Maheshi (END) 
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------

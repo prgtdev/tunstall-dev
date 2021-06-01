@@ -1,0 +1,504 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: ApprovedLabel
+--
+--  Report:       ApprovedLabel
+--
+--  IFS Developer Studio Template Version 1.3
+--
+--  NOTE: This file is generated and will be overwritten at next model change
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE SPECIFICATION ----------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating APPROVED_LABEL_RPI specification
+
+CREATE OR REPLACE PACKAGE APPROVED_LABEL_RPI AS
+
+module_ CONSTANT VARCHAR2(6) := 'RCEIPT';
+lu_name_ CONSTANT VARCHAR2(25) := 'ApprovedLabel';
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 );
+
+FUNCTION Test (
+   receipt_sequence_         IN NUMBER,
+   contract_                 IN VARCHAR2,
+   part_no_                  IN VARCHAR2,
+   configuration_id_         IN VARCHAR2,
+   location_no_              IN VARCHAR2,
+   lot_batch_no_             IN VARCHAR2,
+   serial_no_                IN VARCHAR2,
+   e_c_                      IN VARCHAR2,
+   w_d_r_no_                 IN VARCHAR2,
+   activity_seq_             IN NUMBER,
+   handling_unit_id_         IN NUMBER,
+   origin_pack_size_         IN NUMBER,
+   no_of_copies_             IN NUMBER)
+   RETURN NUMBER;
+
+PROCEDURE Init;
+
+END APPROVED_LABEL_RPI;
+/
+SHOW ERROR
+
+-----------------------------------------------------------------------------
+-------------------- VIEWS FOR REPORT META DATA -----------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating report table APPROVED_LABEL_RPT
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'APPROVED_LABEL_RPT';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'RECEIPT_SEQUENCE', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONTRACT', 'VARCHAR2(5)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_NO', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONFIGURATION_ID', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LOCATION_NO', 'VARCHAR2(35)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LOT_BATCH_NO', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SERIAL_NO', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'E_C', 'VARCHAR2(6)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'W_D_R_NO', 'VARCHAR2(15)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ACTIVITY_SEQ', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'HANDLING_UNIT_ID', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ORIGIN_PACK_SIZE', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'NO_OF_COPIES', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PACK_QTY', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BATCH_NO', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'RECEIVER', 'VARCHAR2(30)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OWNERSHIP', 'VARCHAR2(200)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'EXPIRATION_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'APPROVED_DATE', 'DATE', 'Y');
+   Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
+END;
+/
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'APPROVED_LABEL_RPT';
+   index_name_ VARCHAR2(30) := 'APPROVED_LABEL_RPK';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO');
+   Database_SYS.Create_Constraint(table_name_, index_name_, columns_, 'P', '&IFSAPP_REPORT_INDEX', NULL, TRUE, TRUE);
+   Database_SYS.Reset_Column_Table(columns_);
+END;
+/
+
+PROMPT Creating report view APPROVED_LABEL_REP
+
+CREATE OR REPLACE VIEW APPROVED_LABEL_REP AS
+SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
+   ,RECEIPT_SEQUENCE,CONTRACT,PART_NO,CONFIGURATION_ID,LOCATION_NO,LOT_BATCH_NO,SERIAL_NO,E_C,W_D_R_NO,ACTIVITY_SEQ,HANDLING_UNIT_ID,ORIGIN_PACK_SIZE,NO_OF_COPIES,PACK_QTY,BATCH_NO,RECEIVER,OWNERSHIP,EXPIRATION_DATE,APPROVED_DATE
+FROM   APPROVED_LABEL_RPT t
+WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
+WITH   read only;
+
+COMMENT ON TABLE APPROVED_LABEL_REP
+   IS 'LU=ApprovedLabel^PROMPT=Approved Label^MODULE=RCEIPT^TITLETEXT=Approved Label^';
+
+COMMENT ON COLUMN APPROVED_LABEL_REP.result_key
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.row_no
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.receipt_sequence
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Receipt Sequence^QUERY=Receipt Sequence:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.contract
+   IS 'FLAGS=A----^DATATYPE=STRING(5)^TITLE=Contract^QUERY=Contract:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.part_no
+   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^QUERY=Part No:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.configuration_id
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Configuration Id^QUERY=Configuration Id:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.location_no
+   IS 'FLAGS=A----^DATATYPE=STRING(35)^TITLE=Location No^QUERY=Location No:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.lot_batch_no
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Lot Batch No^QUERY=Lot Batch No:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.serial_no
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Serial No^QUERY=Serial No:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.e_c
+   IS 'FLAGS=A----^DATATYPE=STRING(6)^TITLE=E C^QUERY=E C:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.w_d_r_no
+   IS 'FLAGS=A----^DATATYPE=STRING(15)^TITLE=W D R No^QUERY=W D R No:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.activity_seq
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Activity Seq^QUERY=Activity Seq:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.handling_unit_id
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Handling Unit Id^QUERY=Handling Unit Id:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.origin_pack_size
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Origin Pack Size^QUERY=Origin Pack Size:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.no_of_copies
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=No Of Copies^QUERY=No Of Copies:^QFLAGS=OW---^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.pack_qty
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Pack Qty^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.batch_no
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Batch No^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.receiver
+   IS 'FLAGS=A----^DATATYPE=STRING(30)^TITLE=Receiver^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.ownership
+   IS 'FLAGS=A----^DATATYPE=STRING(200)^TITLE=Ownership^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.expiration_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Expiration Date^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.approved_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Approved Date^';
+
+-----------------------------------------------------------------------------
+-------------------- REPORT REGISTRATION ------------------------------------
+-----------------------------------------------------------------------------
+
+BEGIN
+   Report_SYS.Define_Report_('APPROVED_LABEL_REP', 'RCEIPT', 'ApprovedLabel', 'Approved Label', 'APPROVED_LABEL_RPT', 'APPROVED_LABEL_RPI.Execute_Report', 0);
+   Report_SYS.Define_Report_Text_('APPROVED_LABEL_REP', 'APPROVED_LABEL', 'Sample');
+   Report_SYS.Refresh_('APPROVED_LABEL_REP');
+   Report_Lu_Definition_API.Clear_Custom_Fields_For_Report('APPROVED_LABEL_REP');
+END;
+/
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE IMPLEMENTATION ---------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating APPROVED_LABEL_RPI implementation
+
+CREATE OR REPLACE PACKAGE BODY APPROVED_LABEL_RPI IS
+
+   TYPE binds$ IS RECORD (
+      receipt_sequence          NUMBER,
+      contract                  VARCHAR2(32000),
+      part_no                   VARCHAR2(32000),
+      configuration_id          VARCHAR2(32000),
+      location_no               VARCHAR2(32000),
+      lot_batch_no              VARCHAR2(32000),
+      serial_no                 VARCHAR2(32000),
+      e_c                       VARCHAR2(32000),
+      w_d_r_no                  VARCHAR2(32000),
+      activity_seq              NUMBER,
+      handling_unit_id          NUMBER,
+      origin_pack_size          NUMBER,
+      no_of_copies              NUMBER);
+
+   CURSOR get_detail IS
+      SELECT 
+         NULL part_no,
+         NULL pack_qty,
+         NULL location_no,
+         NULL batch_no,
+         NULL receiver,
+         NULL ownership,
+         NULL serial_no,
+         NULL expiration_date,
+         NULL approved_date
+      from dual;
+
+-----------------------------------------------------------------------------
+-------------------- RESULT SET METHODS -------------------------------------
+-----------------------------------------------------------------------------
+
+--@IgnoreWrongParamOrder
+PROCEDURE Add_Result_Row___ (
+   result_key$_               IN NUMBER,
+   binds$_                    IN binds$,
+   rec_detail_                IN get_detail%ROWTYPE DEFAULT NULL,
+   row_no$_                   IN OUT NUMBER)
+IS
+BEGIN
+   INSERT INTO APPROVED_LABEL_RPT (
+      result_key,
+      receipt_sequence,
+      contract,
+      part_no,
+      configuration_id,
+      location_no,
+      lot_batch_no,
+      serial_no,
+      e_c,
+      w_d_r_no,
+      activity_seq,
+      handling_unit_id,
+      origin_pack_size,
+      no_of_copies,
+      pack_qty,
+      batch_no,
+      receiver,
+      ownership,
+      expiration_date,
+      approved_date,
+      row_no, parent_row_no)
+   VALUES (
+      result_key$_,
+      binds$_.receipt_sequence,
+      binds$_.contract,
+      nvl(rec_detail_.part_no,
+      binds$_.part_no),
+      binds$_.configuration_id,
+      nvl(rec_detail_.location_no,
+      binds$_.location_no),
+      binds$_.lot_batch_no,
+      nvl(rec_detail_.serial_no,
+      binds$_.serial_no),
+      binds$_.e_c,
+      binds$_.w_d_r_no,
+      binds$_.activity_seq,
+      binds$_.handling_unit_id,
+      binds$_.origin_pack_size,
+      binds$_.no_of_copies,
+      rec_detail_.pack_qty,
+      rec_detail_.batch_no,
+      rec_detail_.receiver,
+      rec_detail_.ownership,
+      rec_detail_.expiration_date,
+      rec_detail_.approved_date,
+      row_no$_, 0);
+   row_no$_ := row_no$_+1;
+END Add_Result_Row___;
+
+-----------------------------------------------------------------------------
+-------------------- REPORT EXECUTION ---------------------------------------
+-----------------------------------------------------------------------------
+FUNCTION Get_Label_Count___(
+   qty_to_pack_   IN NUMBER,
+   pack_size_     IN NUMBER ) RETURN NUMBER
+IS
+   CURSOR get_remaining IS
+      SELECT MOD(qty_to_pack_, pack_size_) FROM dual;
+   remaining_count_  NUMBER;
+BEGIN
+   IF (qty_to_pack_ <= 0) THEN
+      RETURN 0;
+   ELSIF (pack_size_ <= 0) THEN   
+      RETURN 0; 
+   ELSIF (qty_to_pack_/pack_size_ < 1) THEN  
+      RETURN 1; 
+   END IF;
+   OPEN  get_remaining;
+   FETCH get_remaining INTO remaining_count_;
+   CLOSE get_remaining;   
+   IF (remaining_count_ = 0) THEN    
+      RETURN qty_to_pack_/pack_size_;
+   ELSIF (remaining_count_/pack_size_ >= 0.5) THEN
+      RETURN ROUND((qty_to_pack_/pack_size_), 0);
+   ELSE
+      RETURN ROUND((qty_to_pack_/pack_size_), 0) + 1;
+   END IF;  
+END Get_Label_Count___;
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 )
+IS
+   result_key$_              NUMBER;
+   row_no$_                  NUMBER := 1;
+   binds$_                   binds$;
+   xml$_                     CLOB;
+   outer_filter_attr$_       VARCHAR2(32000);
+   outer_filter_where$_      VARCHAR2(32000);
+   inner_filter_attr$_       VARCHAR2(32000);
+   inner_filter_where$_      VARCHAR2(32000);   
+   rec_detail_ get_detail%ROWTYPE;   
+   part_ownership_           Purchase_Order_Line_Part.part_ownership%TYPE;  
+   pack_size_                purchase_part_supplier.standard_pack_size%TYPE; 
+   bar_code_id_              inventory_part_barcode.barcode_id%TYPE;
+   source_ref1_              receipt_info.source_ref1%TYPE;
+   source_ref2_              receipt_info.source_ref2%TYPE;
+   source_ref3_              receipt_info.source_ref3%TYPE;
+   source_ref4_              receipt_info.source_ref4%TYPE;
+   source_ref_type_          receipt_info.source_ref_type_db%TYPE;   
+   receipt_info_rec_         Receipt_Info_API.Public_Rec;
+   no_of_labels_             NUMBER; 
+   inv_qty_in_store_         NUMBER;       
+   expiration_date_          DATE;
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'APPROVED_LABEL_RPI', 'Execute_Report');
+   result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
+   binds$_.receipt_sequence     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RECEIPT_SEQUENCE', parameter_attr_));
+   binds$_.contract             := Client_SYS.Get_Item_Value('CONTRACT', parameter_attr_); 
+   binds$_.part_no              := Client_SYS.Get_Item_Value('PART_NO', parameter_attr_); 
+   binds$_.configuration_id     := Client_SYS.Get_Item_Value('CONFIGURATION_ID', parameter_attr_); 
+   binds$_.location_no          := Client_SYS.Get_Item_Value('LOCATION_NO', parameter_attr_); 
+   binds$_.lot_batch_no         := Client_SYS.Get_Item_Value('LOT_BATCH_NO', parameter_attr_); 
+   binds$_.serial_no            := Client_SYS.Get_Item_Value('SERIAL_NO', parameter_attr_); 
+   binds$_.e_c                  := Client_SYS.Get_Item_Value('E_C', parameter_attr_); 
+   binds$_.w_d_r_no             := Client_SYS.Get_Item_Value('W_D_R_NO', parameter_attr_); 
+   binds$_.activity_seq         := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('ACTIVITY_SEQ', parameter_attr_));
+   binds$_.handling_unit_id     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('HANDLING_UNIT_ID', parameter_attr_));
+   binds$_.origin_pack_size     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('ORIGIN_PACK_SIZE', parameter_attr_));
+   binds$_.no_of_copies         := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('NO_OF_COPIES', parameter_attr_));
+
+   Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'APPROVED_LABEL_REP', 'Approved Label');
+
+   Xml_Record_Writer_SYS.Start_Element(xml$_, 'ITEMS');
+   
+   receipt_info_rec_ := Receipt_Info_API.Get(binds$_.receipt_sequence);
+   source_ref1_ := receipt_info_rec_.source_ref1; 
+   source_ref2_ := receipt_info_rec_.source_ref2;
+   source_ref3_ := receipt_info_rec_.source_ref3;
+   source_ref4_ := receipt_info_rec_.source_ref4;
+   source_ref_type_ := receipt_info_rec_.source_ref_type;   
+   
+   inv_qty_in_store_ := Receipt_Inv_Location_API.Get_Inv_Qty_In_Store(binds$_.receipt_sequence ,
+                                                                      binds$_.contract,
+                                                                      binds$_.part_no,
+                                                                      binds$_.configuration_id,
+                                                                      binds$_.location_no,
+                                                                      binds$_.lot_batch_no,
+                                                                      binds$_.serial_no,
+                                                                      binds$_.e_c,
+                                                                      binds$_.w_d_r_no,
+                                                                      binds$_.activity_seq,
+                                                                      binds$_.handling_unit_id);
+
+   no_of_labels_ := Get_Label_Count___(inv_qty_in_store_, binds$_.origin_pack_size);
+   
+   FOR label_count_ IN 1 .. no_of_labels_ LOOP
+      bar_code_id_ := NULL;
+      Inventory_Part_Barcode_API.New(bar_code_id_, 
+                                     binds$_.contract, 
+                                     binds$_.part_no, 
+                                     binds$_.configuration_id, 
+                                     binds$_.lot_batch_no, 
+                                     binds$_.serial_no, 
+                                     binds$_.e_c, 
+                                     binds$_.w_d_r_no, 
+                                     binds$_.origin_pack_size, 
+                                     binds$_.activity_seq);
+      
+      FOR copy_count_ IN 1 .. binds$_.no_of_copies LOOP  
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'DETAIL');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_NO', binds$_.part_no);    
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PACK_QTY', binds$_.origin_pack_size);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'LOCATION_NO',  binds$_.location_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BATCH_NO', binds$_.lot_batch_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIVER', Receipt_Info_API.Get_Receiver(binds$_.receipt_sequence));
+         part_ownership_ := Part_Ownership_API.Decode(Receipt_Info_Manager_API.Get_Part_Ownership_Db(source_ref1_, source_ref2_, source_ref3_, source_ref4_, source_ref_type_));
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OWNERSHIP', part_ownership_);      
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', binds$_.serial_no);
+         expiration_date_ := Inventory_Part_In_Stock_API.Get_Expiration_Date(binds$_.contract, 
+                                                                             binds$_.part_no, 
+                                                                             binds$_.configuration_id, 
+                                                                             binds$_.location_no,
+                                                                             binds$_.lot_batch_no, 
+                                                                             binds$_.serial_no, 
+                                                                             binds$_.e_c, 
+                                                                             binds$_.w_d_r_no,                                       
+                                                                             binds$_.activity_seq,
+                                                                             binds$_.handling_unit_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'EXPIRATION_DATE', expiration_date_);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'APPROVED_DATE', Receipt_Info_API.Get_Approved_Date(binds$_.receipt_sequence));
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'DETAIL');
+         Add_Result_Row___(result_key$_,
+                           binds$_ => binds$_,
+                           rec_detail_ => rec_detail_,
+                           row_no$_ => row_no$_);
+      END LOOP;
+   END LOOP;   
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'ITEMS');   
+
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'APPROVED_LABEL_REP');
+   Report_SYS.Finish_Xml_Report('APPROVED_LABEL_REP', result_key$_, xml$_);
+   EXCEPTION
+      WHEN OTHERS THEN
+         IF get_detail%ISOPEN THEN
+            CLOSE get_detail;
+         END IF;
+         RAISE;
+END Execute_Report;
+
+
+-----------------------------------------------------------------------------
+-------------------- FOUNDATION1 METHODS ------------------------------------
+-----------------------------------------------------------------------------
+-- Test
+--   Invokes the report method for testing purposes.
+-- Init
+--   Dummy procedure that can be called at database startup to ensure that
+--   this package is loaded into memory for performance reasons only.
+-----------------------------------------------------------------------------
+
+FUNCTION Test (
+   receipt_sequence_         IN NUMBER,
+   contract_                 IN VARCHAR2,
+   part_no_                  IN VARCHAR2,
+   configuration_id_         IN VARCHAR2,
+   location_no_              IN VARCHAR2,
+   lot_batch_no_             IN VARCHAR2,
+   serial_no_                IN VARCHAR2,
+   e_c_                      IN VARCHAR2,
+   w_d_r_no_                 IN VARCHAR2,
+   activity_seq_             IN NUMBER,
+   handling_unit_id_         IN NUMBER,
+   origin_pack_size_         IN NUMBER,
+   no_of_copies_             IN NUMBER)
+RETURN NUMBER
+IS
+   result_key_     NUMBER;
+   report_attr_    VARCHAR2(200);
+   parameter_attr_ VARCHAR2(32000);
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'APPROVED_LABEL_RPI', 'Test');
+   Report_SYS.Get_Result_Key__(result_key_);
+   Client_SYS.Add_To_Attr('RESULT_KEY', result_key_, report_attr_);
+   IF (receipt_sequence_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('RECEIPT_SEQUENCE', receipt_sequence_, parameter_attr_);
+   END IF;
+   IF (contract_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('CONTRACT', contract_, parameter_attr_);
+   END IF;
+   IF (part_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('PART_NO', part_no_, parameter_attr_);
+   END IF;
+   IF (configuration_id_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('CONFIGURATION_ID', configuration_id_, parameter_attr_);
+   END IF;
+   IF (location_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('LOCATION_NO', location_no_, parameter_attr_);
+   END IF;
+   IF (lot_batch_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('LOT_BATCH_NO', lot_batch_no_, parameter_attr_);
+   END IF;
+   IF (serial_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('SERIAL_NO', serial_no_, parameter_attr_);
+   END IF;
+   IF (e_c_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('E_C', e_c_, parameter_attr_);
+   END IF;
+   IF (w_d_r_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('W_D_R_NO', w_d_r_no_, parameter_attr_);
+   END IF;
+   IF (activity_seq_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('ACTIVITY_SEQ', activity_seq_, parameter_attr_);
+   END IF;
+   IF (handling_unit_id_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('HANDLING_UNIT_ID', handling_unit_id_, parameter_attr_);
+   END IF;
+   IF (origin_pack_size_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('ORIGIN_PACK_SIZE', origin_pack_size_, parameter_attr_);
+   END IF;
+   IF (no_of_copies_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('NO_OF_COPIES', no_of_copies_, parameter_attr_);
+   END IF;
+   Execute_Report(report_attr_, parameter_attr_);
+   RETURN result_key_;
+END Test;
+
+
+PROCEDURE Init
+IS
+BEGIN
+   NULL;
+END Init;
+
+END APPROVED_LABEL_RPI;
+/
+SHOW ERROR
