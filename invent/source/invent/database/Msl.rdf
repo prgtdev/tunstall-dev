@@ -1,0 +1,366 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: TransportTask
+--
+--  Report:       Msl
+--
+--  IFS Developer Studio Template Version 1.3
+--
+--  NOTE: This file is generated and will be overwritten at next model change
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE SPECIFICATION ----------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating MSL_RPI specification
+
+CREATE OR REPLACE PACKAGE MSL_RPI AS
+
+module_ CONSTANT VARCHAR2(6) := 'INVENT';
+lu_name_ CONSTANT VARCHAR2(25) := 'TransportTask';
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 );
+
+FUNCTION Test (
+   transport_task_id_        IN NUMBER)
+   RETURN NUMBER;
+
+PROCEDURE Init;
+
+END MSL_RPI;
+/
+SHOW ERROR
+
+-----------------------------------------------------------------------------
+-------------------- VIEWS FOR REPORT META DATA -----------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating report table MSL_RPT
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'MSL_RPT';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TRANSPORT_TASK_ID', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CREATE_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_PART_NO', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_TO_LOCATION_NO', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_LOT_BATCH_NO', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_QUANTITY', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'USE_BY_DATE', 'DATE', 'Y'); 
+   Database_SYS.Set_Table_Column(columns_, 'AVAILABLE_BY_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_FROM_LOCATION_NO', 'VARCHAR2(4000)', 'Y'); 
+   Database_SYS.Set_Table_Column(columns_, 'EXECUTED_DATE', 'DATE', 'Y');    
+   Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
+END;
+/
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'MSL_RPT';
+   index_name_ VARCHAR2(30) := 'MSL_RPK';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO');
+   Database_SYS.Create_Constraint(table_name_, index_name_, columns_, 'P', '&IFSAPP_REPORT_INDEX', NULL, TRUE, TRUE);
+   Database_SYS.Reset_Column_Table(columns_);
+END;
+/
+
+PROMPT Creating report view MSL_REP
+
+CREATE OR REPLACE VIEW MSL_REP AS
+SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
+   ,TRANSPORT_TASK_ID,CREATE_DATE,LINE_NO,LINE_PART_NO,LINE_TO_LOCATION_NO,LINE_LOT_BATCH_NO,LINE_QUANTITY,USE_BY_DATE,AVAILABLE_BY_DATE,LINE_FROM_LOCATION_NO,EXECUTED_DATE
+FROM   MSL_RPT t
+WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
+WITH   read only;
+
+COMMENT ON TABLE MSL_REP
+   IS 'LU=TransportTask^PROMPT=Msl^MODULE=INVENT^TITLETEXT=Msl Label^';
+
+COMMENT ON COLUMN MSL_REP.result_key
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN MSL_REP.row_no
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN MSL_REP.transport_task_id
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Transport Task Id^QUERY=Transport Task Id:^QFLAGS=OW---^';
+COMMENT ON COLUMN MSL_REP.create_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Create Date^';
+COMMENT ON COLUMN MSL_REP.line_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Line No^';
+COMMENT ON COLUMN MSL_REP.line_part_no
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Line Part No^';
+COMMENT ON COLUMN MSL_REP.line_to_location_no
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Line To Location No^';
+COMMENT ON COLUMN MSL_REP.line_lot_batch_no
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Line Lot Batch No^';
+COMMENT ON COLUMN MSL_REP.line_quantity
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Line Quantity^';
+COMMENT ON COLUMN MSL_REP.use_by_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Use By Date^';
+COMMENT ON COLUMN MSL_REP.available_by_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Available By Date^';
+COMMENT ON COLUMN MSL_REP.line_from_location_no
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Line From Location No^';
+COMMENT ON COLUMN MSL_REP.executed_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Executed Date^';
+
+-----------------------------------------------------------------------------
+-------------------- REPORT REGISTRATION ------------------------------------
+-----------------------------------------------------------------------------
+
+BEGIN
+   Report_SYS.Define_Report_('MSL_REP', 'INVENT', 'TransportTask', 'Msl', 'MSL_RPT', 'MSL_RPI.Execute_Report', 0);
+   Report_SYS.Define_Report_Text_('MSL_REP', 'MSL', 'Sample');
+   Report_SYS.Refresh_('MSL_REP');
+   Report_Lu_Definition_API.Clear_Custom_Fields_For_Report('MSL_REP');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('MSL_REP', 'TransportTaskLine', 'TRANSPORT_TASK_REP/TASK_LINES/TASK_LINE');
+   
+END;
+/
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE IMPLEMENTATION ---------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating MSL_RPI implementation
+
+CREATE OR REPLACE PACKAGE BODY MSL_RPI IS
+
+   TYPE binds$ IS RECORD (
+      transport_task_id         NUMBER,
+      create_date               VARCHAR2(32000));
+
+   CURSOR get_task_line (transport_task_id_ NUMBER) IS
+      SELECT
+          line_no            line_no,            
+          part_no            line_part_no,    
+          to_location_no     line_to_location_no,
+          lot_batch_no       line_lot_batch_no,     
+          quantity           line_quantity,
+          NULL               use_by_date,
+          NULL               available_by_date,
+          from_location_no   line_from_location_no,
+          NULL               executed_date,
+          rowkey          
+      FROM Transport_Task_Line_Tab
+      WHERE transport_task_id     = transport_task_id_;
+
+-----------------------------------------------------------------------------
+-------------------- RESULT SET METHODS -------------------------------------
+-----------------------------------------------------------------------------
+
+--@IgnoreWrongParamOrder
+PROCEDURE Add_Result_Row___ (
+   result_key$_               IN NUMBER,
+   binds$_                    IN binds$,
+   rec_task_line_             IN get_task_line%ROWTYPE DEFAULT NULL,
+   row_no$_                   IN OUT NUMBER)
+IS
+BEGIN
+   INSERT INTO MSL_RPT (
+      result_key,
+      transport_task_id,
+      create_date,
+      line_no,
+      line_part_no,
+      line_to_location_no,
+      line_lot_batch_no,
+      line_quantity,
+      use_by_date,
+      available_by_date,
+      line_from_location_no,
+      executed_date,
+      row_no, parent_row_no)
+   VALUES (
+      result_key$_,
+      nvl(binds$_.transport_task_id, binds$_.transport_task_id),
+      binds$_.create_date,
+      rec_task_line_.line_no,
+      rec_task_line_.line_part_no,
+      rec_task_line_.line_to_location_no,
+      rec_task_line_.line_lot_batch_no,
+      rec_task_line_.line_quantity,
+      rec_task_line_.use_by_date,
+      rec_task_line_.available_by_date,
+      rec_task_line_.line_from_location_no,
+      rec_task_line_.executed_date,
+      row_no$_, 0);
+   row_no$_ := row_no$_+1;
+END Add_Result_Row___;
+
+-----------------------------------------------------------------------------
+-------------------- REPORT EXECUTION ---------------------------------------
+-----------------------------------------------------------------------------
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 )
+IS
+   result_key$_              NUMBER;
+   row_no$_                  NUMBER := 1;
+   binds$_                   binds$;
+   xml$_                     CLOB;
+   outer_filter_attr$_       VARCHAR2(32000);
+   outer_filter_where$_      VARCHAR2(32000);
+   inner_filter_attr$_       VARCHAR2(32000);
+   inner_filter_where$_      VARCHAR2(32000);
+   has_task_line_ BOOLEAN;
+   rec_task_line_ get_task_line%ROWTYPE;
+   par_task_line_ binds$;
+   created_date_             DATE;
+   use_by_date_              DATE;
+   available_by_date_        DATE;
+   executed_date_            DATE;
+   stmt_                     VARCHAR2(2000);
+   stmt1_                    VARCHAR2(2000);
+   TYPE Get_Dates            IS REF CURSOR;
+   get_dates_                Get_Dates;   
+   TYPE Get_Executed_Date    IS REF CURSOR;
+   get_executed_date_        Get_Executed_Date;
+ 
+   CURSOR get_created_date(transport_task_id_ NUMBER) IS
+      SELECT create_date
+      FROM TRANSPORT_TASK
+      WHERE transport_task_id = transport_task_id_;
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'MSL_RPI', 'Execute_Report');
+   result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
+   binds$_.transport_task_id    := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('TRANSPORT_TASK_ID', parameter_attr_));
+   
+   OPEN  get_created_date(binds$_.transport_task_id);
+   FETCH get_created_date INTO created_date_;
+   CLOSE get_created_date; 
+   
+   Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'MSL_REP', 'Msl');
+   Xml_Record_Writer_SYS.Add_Element(xml$_, 'TRANSPORT_TASK_ID', binds$_.transport_task_id);
+   --Xml_Record_Writer_SYS.Add_Element(xml$_, 'CREATE_DATE', binds$_.create_date);
+   Xml_Record_Writer_SYS.Add_Element(xml$_, 'CREATE_DATE', created_date_);
+      
+   has_task_line_ := FALSE;
+   par_task_line_ := binds$_;
+   Xml_Record_Writer_SYS.Start_Element(xml$_, 'TASK_LINES');
+   OPEN get_task_line(binds$_.transport_task_id);
+   LOOP
+      FETCH get_task_line INTO rec_task_line_;
+      has_task_line_ := get_task_line%FOUND OR get_task_line%ROWCOUNT > 0;
+      EXIT WHEN get_task_line%NOTFOUND;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'TASK_LINE');
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_NO', rec_task_line_.line_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_PART_NO', rec_task_line_.line_part_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_FROM_LOCATION_NO', rec_task_line_.line_from_location_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_TO_LOCATION_NO', rec_task_line_.line_to_location_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_LOT_BATCH_NO', rec_task_line_.line_lot_batch_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_QUANTITY', rec_task_line_.line_quantity);
+
+
+      stmt_ := 'SELECT TO_DATE(:created_date_, ''DD/MM/YY'') + cf$_before_days, ' ||
+               'TO_DATE(:created_date_, ''DD/MM/YY'') + cf$_after_days ' ||  
+               'FROM M_S_L_TYPE_MAINTENANCE_CLV '|| 
+               'WHERE cf$_msl_level = (SELECT cf$_msl_level '|| 
+                                     ' FROM PART_CATALOG_CFV '||
+                                     ' WHERE part_no = :part_no_)';
+                                     
+      --@ApproveDynamicStatement('2021-05-06',eamaheshi);
+      OPEN get_dates_ FOR stmt_ USING created_date_, created_date_, rec_task_line_.line_part_no;
+      LOOP 
+         FETCH get_dates_ INTO use_by_date_, available_by_date_;
+         EXIT WHEN get_dates_%NOTFOUND;
+      END LOOP;
+      CLOSE get_dates_; 
+      
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'USE_BY_DATE', use_by_date_);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'AVAILABLE_BY_DATE', available_by_date_);
+      
+      stmt1_ := 'SELECT c.cf$_executed_date ' ||
+                'FROM transport_task_line_cfv c, transport_task_line t '||
+                'WHERE t.transport_task_id = :transport_task_id_ '||
+                'AND t.line_no = :line_no '||
+                'AND c.objkey = t.objkey';                
+                 
+      --@ApproveDynamicStatement('2021-05-13',eamaheshi);
+      OPEN get_executed_date_ FOR stmt1_ USING binds$_.transport_task_id, rec_task_line_.line_no;
+      LOOP 
+         FETCH get_executed_date_ INTO executed_date_;
+         EXIT WHEN get_executed_date_%NOTFOUND;
+      END LOOP;
+      CLOSE get_executed_date_; 
+      
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'EXECUTED_DATE', executed_date_);
+      Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'TransportTaskLine', rec_task_line_.rowkey, 'MSL_REP'); 
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'TASK_LINE');
+      Add_Result_Row___(result_key$_,
+                        binds$_ => binds$_,
+                        rec_task_line_ => rec_task_line_,
+                        row_no$_ => row_no$_);
+   END LOOP;
+   CLOSE get_task_line;
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'TASK_LINES');
+   binds$_ := par_task_line_;
+   IF NOT has_task_line_ THEN
+      Add_Result_Row___(result_key$_,
+                        binds$_ => binds$_,
+                        row_no$_ => row_no$_);
+   END IF;
+
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'MSL_REP');
+   Report_SYS.Finish_Xml_Report('MSL_REP', result_key$_, xml$_);
+   EXCEPTION
+      WHEN OTHERS THEN
+         IF get_task_line%ISOPEN THEN
+            CLOSE get_task_line;
+         END IF;
+         RAISE;
+END Execute_Report;
+
+-----------------------------------------------------------------------------
+-------------------- FOUNDATION1 METHODS ------------------------------------
+-----------------------------------------------------------------------------
+-- Test
+--   Invokes the report method for testing purposes.
+-- Init
+--   Dummy procedure that can be called at database startup to ensure that
+--   this package is loaded into memory for performance reasons only.
+-----------------------------------------------------------------------------
+
+FUNCTION Test (
+   transport_task_id_        IN NUMBER)
+RETURN NUMBER
+IS
+   result_key_     NUMBER;
+   report_attr_    VARCHAR2(200);
+   parameter_attr_ VARCHAR2(32000);
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'MSL_RPI', 'Test');
+   Report_SYS.Get_Result_Key__(result_key_);
+   Client_SYS.Add_To_Attr('RESULT_KEY', result_key_, report_attr_);
+   IF (transport_task_id_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('TRANSPORT_TASK_ID', transport_task_id_, parameter_attr_);
+   END IF;
+   Execute_Report(report_attr_, parameter_attr_);
+   RETURN result_key_;
+END Test;
+
+
+PROCEDURE Init
+IS
+BEGIN
+   NULL;
+END Init;
+
+END MSL_RPI;
+/
+SHOW ERROR
