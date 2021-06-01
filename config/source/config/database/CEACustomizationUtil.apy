@@ -2299,7 +2299,7 @@ IS
    receipt_info_rec_  Receipt_Info_API.Public_Rec;
 BEGIN
    receipt_info_rec_  := Receipt_Info_API.Get(receipt_sequence_);
-   IF (receipt_info_rec_.sender_type = Logistics_Source_Ref_Type_API.DB_PURCHASE_ORDER) THEN
+   IF (receipt_info_rec_.sender_type = Sender_Receiver_Type_API.DB_SUPPLIER) THEN
       RETURN Purchase_Part_Supplier_API.Get_Standard_Pack_Size(receipt_info_rec_.contract,
                                                                receipt_info_rec_.source_part_no,
                                                                receipt_info_rec_.sender);
