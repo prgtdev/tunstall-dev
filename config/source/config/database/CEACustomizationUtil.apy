@@ -469,7 +469,9 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     attr_        VARCHAR2(3200);
     warr_objkey_ VARCHAR2(3200);
     contract_2_  VARCHAR2(3200) := '2013';
-
+    current_sup_mch_code_  VARCHAR2(3200);
+    attr_2_                VARCHAR2(3200);
+    
     --to get lot number and qty 
     CURSOR get_lot_batch_dets(order_no_   IN VARCHAR2,
                               line_no_    IN VARCHAR2,
@@ -503,7 +505,13 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     --get objkey of warranty 
     CURSOR get_objkey(values_ IN VARCHAR2) IS
       select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
-  
+    
+    --get objid and objversion 
+    CURSOR get_equipment_object_dets(contract_ IN VARCHAR2, mch_code_ IN VARCHAR2) IS
+      SELECT objid, objversion
+        FROM equipment_object
+       WHERE contract = contract_
+         AND mch_code = mch_code_;
   BEGIN
     IF (object_id_ is not null) THEN
     
@@ -544,28 +552,51 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       Client_SYS.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
       Client_SYS.Add_To_Attr('SUP_MCH_CODE', object_id_, attr_);
       Client_SYS.Add_To_Attr('SUP_CONTRACT', '2013', attr_);
-    
-      EQUIPMENT_FUNCTIONAL_API.New__(info_,
+      
+      IF NOT Equipment_Functional_API.Exists(contract_2_, func_obj_) THEN            
+
+         Equipment_Functional_API.New__(info_,
                                      objid_,
                                      objversion_,
                                      attr_,
                                      'DO');
-    
-      Client_Sys.Clear_Attr(attr_);
-    
-      IF (values_ is not null) THEN
-        OPEN get_objkey(values_);
-        FETCH get_objkey
-          INTO warr_objkey_;
-        CLOSE get_objkey;
-      END IF;
-    
-      Client_SYS.Add_To_Attr('CF$_LOT_BATCH_NO', lot_no_, attr_);
-      Client_SYS.Add_To_Attr('CF$_EQUIPMENT_QUANTITY', buy_qty_due_, attr_);
-      Client_SYS.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
-      EQUIPMENT_FUNCTIONAL_CFP.Cf_Modify__(info_, objid_, attr_, ' ', 'DO');
+         
+         Client_Sys.Clear_Attr(attr_);
 
-    END IF;
+         IF (values_ is not null) THEN
+            OPEN get_objkey(values_);
+            FETCH get_objkey
+             INTO warr_objkey_;
+            CLOSE get_objkey;
+         END IF;
+
+         Client_SYS.Add_To_Attr('CF$_LOT_BATCH_NO', lot_no_, attr_);
+         Client_SYS.Add_To_Attr('CF$_EQUIPMENT_QUANTITY', buy_qty_due_, attr_);
+         Client_SYS.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
+         Equipment_Functional_CFP.Cf_Modify__(info_, objid_, attr_, ' ', 'DO');
+         
+      ELSE
+         current_sup_mch_code_:= Equipment_Functional_API.Get_Sup_Mch_Code(contract_2_, func_obj_);
+
+         IF object_id_ != current_sup_mch_code_ THEN
+            OPEN get_equipment_object_dets (contract_2_, func_obj_);
+            FETCH get_equipment_object_dets INTO objid_, objversion_;
+            CLOSE get_equipment_object_dets;
+            
+            Client_SYS.Add_To_Attr('SUP_MCH_CODE', object_id_, attr_2_);
+
+            Equipment_Functional_API.Modify__(info_,
+                                     objid_,
+                                     objversion_,
+                                     attr_2_,
+                                     'DO');
+         END IF;
+         IF object_id_ = current_sup_mch_code_  THEN
+            ERROR_SYS.RECORD_GENERAL('CUSTOMERORDERLINE', 'OBJCREATED: No new Functional Objects Created, Functional Objects are already created for Object ID :P1', object_id_);
+         END IF;
+      END IF;
+
+   END IF;
   END Create_Functional_Object_;
 
   PROCEDURE Create_Serial_Object__(catalog_no_     IN VARCHAR2,
