@@ -80,7 +80,7 @@ BEGIN
    Database_SYS.Set_Table_Column(columns_, 'RECEIVER', 'VARCHAR2(30)', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'OWNERSHIP', 'VARCHAR2(200)', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'EXPIRATION_DATE', 'DATE', 'Y');
-   Database_SYS.Set_Table_Column(columns_, 'APPROVED_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'RECEIPT_DATE', 'DATE', 'Y');
    Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
 END;
 /
@@ -103,7 +103,7 @@ PROMPT Creating report view APPROVED_LABEL_REP
 
 CREATE OR REPLACE VIEW APPROVED_LABEL_REP AS
 SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
-   ,RECEIPT_SEQUENCE,CONTRACT,PART_NO,CONFIGURATION_ID,LOCATION_NO,LOT_BATCH_NO,SERIAL_NO,E_C,W_D_R_NO,ACTIVITY_SEQ,HANDLING_UNIT_ID,ORIGIN_PACK_SIZE,NO_OF_COPIES,PACK_QTY,BATCH_NO,RECEIVER,OWNERSHIP,EXPIRATION_DATE,APPROVED_DATE
+   ,RECEIPT_SEQUENCE,CONTRACT,PART_NO,CONFIGURATION_ID,LOCATION_NO,LOT_BATCH_NO,SERIAL_NO,E_C,W_D_R_NO,ACTIVITY_SEQ,HANDLING_UNIT_ID,ORIGIN_PACK_SIZE,NO_OF_COPIES,PACK_QTY,BATCH_NO,RECEIVER,OWNERSHIP,EXPIRATION_DATE,RECEIPT_DATE
 FROM   APPROVED_LABEL_RPT t
 WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
 WITH   read only;
@@ -151,8 +151,8 @@ COMMENT ON COLUMN APPROVED_LABEL_REP.ownership
    IS 'FLAGS=A----^DATATYPE=STRING(200)^TITLE=Ownership^';
 COMMENT ON COLUMN APPROVED_LABEL_REP.expiration_date
    IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Expiration Date^';
-COMMENT ON COLUMN APPROVED_LABEL_REP.approved_date
-   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Approved Date^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.receipt_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Receipt Date^';
 
 -----------------------------------------------------------------------------
 -------------------- REPORT REGISTRATION ------------------------------------
@@ -199,7 +199,7 @@ CREATE OR REPLACE PACKAGE BODY APPROVED_LABEL_RPI IS
          NULL ownership,
          NULL serial_no,
          NULL expiration_date,
-         NULL approved_date
+         NULL receipt_date
       from dual;
 
 -----------------------------------------------------------------------------
@@ -234,7 +234,7 @@ BEGIN
       receiver,
       ownership,
       expiration_date,
-      approved_date,
+      receipt_date,
       row_no, parent_row_no)
    VALUES (
       result_key$_,
@@ -259,7 +259,7 @@ BEGIN
       rec_detail_.receiver,
       rec_detail_.ownership,
       rec_detail_.expiration_date,
-      rec_detail_.approved_date,
+      rec_detail_.receipt_date,
       row_no$_, 0);
    row_no$_ := row_no$_+1;
 END Add_Result_Row___;
@@ -320,7 +320,7 @@ IS
    inv_qty_in_store_         NUMBER;       
    expiration_date_          DATE;
 BEGIN
-   General_SYS.Init_Method(lu_name_, 'APPROVED_LABEL_RPI', 'Execute_Report');
+   General_SYS.Init_Method(lu_name_, 'APPROVED_LABEL_RPI', 'Execute_Report');   
    result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
    binds$_.receipt_sequence     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RECEIPT_SEQUENCE', parameter_attr_));
    binds$_.contract             := Client_SYS.Get_Item_Value('CONTRACT', parameter_attr_); 
@@ -335,7 +335,7 @@ BEGIN
    binds$_.handling_unit_id     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('HANDLING_UNIT_ID', parameter_attr_));
    binds$_.origin_pack_size     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('ORIGIN_PACK_SIZE', parameter_attr_));
    binds$_.no_of_copies         := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('NO_OF_COPIES', parameter_attr_));
-
+   
    Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'APPROVED_LABEL_REP', 'Approved Label');
 
    Xml_Record_Writer_SYS.Start_Element(xml$_, 'ITEMS');
@@ -358,11 +358,11 @@ BEGIN
                                                                       binds$_.w_d_r_no,
                                                                       binds$_.activity_seq,
                                                                       binds$_.handling_unit_id);
-
+   
    no_of_labels_ := Get_Label_Count___(inv_qty_in_store_, binds$_.origin_pack_size);
    
-   FOR label_count_ IN 1 .. no_of_labels_ LOOP
-      bar_code_id_ := NULL;
+   FOR label_count_ IN 1 .. no_of_labels_ LOOP      
+      bar_code_id_ := NULL;      
       Inventory_Part_Barcode_API.New(bar_code_id_, 
                                      binds$_.contract, 
                                      binds$_.part_no, 
@@ -373,7 +373,7 @@ BEGIN
                                      binds$_.w_d_r_no, 
                                      binds$_.origin_pack_size, 
                                      binds$_.activity_seq);
-      
+     
       FOR copy_count_ IN 1 .. binds$_.no_of_copies LOOP  
          Xml_Record_Writer_SYS.Start_Element(xml$_, 'DETAIL');
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_NO', binds$_.part_no);    
@@ -383,7 +383,7 @@ BEGIN
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIVER', Receipt_Info_API.Get_Receiver(binds$_.receipt_sequence));
          part_ownership_ := Part_Ownership_API.Decode(Receipt_Info_Manager_API.Get_Part_Ownership_Db(source_ref1_, source_ref2_, source_ref3_, source_ref4_, source_ref_type_));
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'OWNERSHIP', part_ownership_);      
-         Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', binds$_.serial_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', binds$_.serial_no);         
          expiration_date_ := Inventory_Part_In_Stock_API.Get_Expiration_Date(binds$_.contract, 
                                                                              binds$_.part_no, 
                                                                              binds$_.configuration_id, 
@@ -395,7 +395,7 @@ BEGIN
                                                                              binds$_.activity_seq,
                                                                              binds$_.handling_unit_id);
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'EXPIRATION_DATE', expiration_date_);
-         Xml_Record_Writer_SYS.Add_Element(xml$_, 'APPROVED_DATE', Receipt_Info_API.Get_Approved_Date(binds$_.receipt_sequence));
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIPT_DATE', Receipt_Info_API.Get_Arrival_Date(binds$_.receipt_sequence));
          Xml_Record_Writer_SYS.End_Element(xml$_, 'DETAIL');
          Add_Result_Row___(result_key$_,
                            binds$_ => binds$_,
