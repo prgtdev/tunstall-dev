@@ -2307,6 +2307,135 @@ BEGIN
    RETURN NULL;   
 END Get_Pack_Qty;   
 -- C0641 EA Maheshi (END)
+
+-- C0654 EntChamuA (START)
+FUNCTION Check_Kitted_Reservation_Date(
+   rev_start_date_  IN DATE,
+   contract_        IN VARCHAR2) RETURN VARCHAR2
+   
+IS
+   return_         VARCHAR2(6);
+   i               NUMBER := 2;
+   calender_id_    VARCHAR2(100);
+   
+   CURSOR get_info(count_row IN NUMBER, rev_start_date_ IN DATE, calender_id_ IN VARCHAR2) IS
+      SELECT 'TRUE'
+      FROM (SELECT work_day
+         FROM (SELECT TRUNC(work_day) AS work_day, counter
+            FROM (SELECT work_day, ROWNUM AS counter
+               FROM work_time_counter
+               WHERE calendar_id = calender_id_
+               AND TRUNC(work_day) >= TRUNC(sysdate)
+               AND ROWNUM <= 5
+            ORDER BY work_day)
+               WHERE counter = count_row)
+               WHERE work_day = rev_start_date_);
+   
+BEGIN
+   
+   FOR l_counter IN 2 .. 5 LOOP
+      
+      calender_id_ := Site_API.Get_Manuf_Calendar_Id(contract_);
+      
+      OPEN get_info(i, rev_start_date_, calender_id_);
+      FETCH get_info
+         INTO return_;
+      CLOSE get_info;
+      
+      IF (return_ IS NULL) THEN
+         i := i + 1;
+      END IF;
+      
+      IF (return_ = 'TRUE') THEN
+         EXIT;
+      END IF;
+      
+   END LOOP;
+   
+   RETURN return_;
+END Check_Kitted_Reservation_Date;
+
+PROCEDURE Reserve_Kitted_Kanban_Parts
+
+IS
+   info_ VARCHAR2(3200);
+   attr_ VARCHAR2(3200);
+   
+   CURSOR get_kitted_parts IS 
+      SELECT so.order_no AS order_no,
+             so.release_no AS release_no,
+             so.sequence_no AS sequence_no,
+             soa.line_item_no AS line_item_no
+      FROM shop_ord so, shop_material_alloc_uiv soa
+      WHERE so.order_no = soa.order_no
+      AND so.release_no = soa.release_no
+      AND so.sequence_no = soa.sequence_no
+      AND so.state IN ('Released', 'Reserved')
+      AND soa.issue_type = 'Reserve'
+      AND soa.consumption_item = 'Consumed'
+      AND soa.qty_required - soa.qty_assigned <> '0'
+      AND Check_Kitted_Reservation_Date(TRUNC(so.revised_start_date), so.contract) = 'TRUE';
+   
+   CURSOR get_kanban_parts IS
+      SELECT so.order_no      AS order_no,
+             so.release_no    AS release_no,
+             so.sequence_no   AS sequence_no,
+             soa.line_item_no AS line_item_no
+      FROM shop_ord so, shop_material_alloc_uiv soa
+      WHERE so.order_no = soa.order_no
+      AND so.release_no = soa.release_no
+      AND so.sequence_no = soa.sequence_no
+      AND so.state IN ('Released', 'Reserved')
+      AND soa.issue_type = 'Reserve And Backflush'
+      AND soa.consumption_item = 'Consumed'
+      AND soa.qty_required - soa.qty_assigned <> '0'
+      AND Check_Kanban_Reservation_Date(TRUNC(so.revised_start_date), so.contract) = 'TRUE';
+   
+BEGIN
+   
+   FOR rec IN get_kitted_parts LOOP
+      Shop_Material_Alloc_API.Reserve(info_, attr_, rec.order_no, rec.release_no, rec.sequence_no, rec.line_item_no);
+      Client_SYS.Clear_ATTR(attr_);
+   END LOOP;
+   
+   FOR rec_ IN get_kanban_parts LOOP
+      Shop_Material_Alloc_API.Reserve(info_, attr_, rec_.order_no, rec_.release_no, rec_.sequence_no, rec_.line_item_no);
+      Client_SYS.Clear_ATTR(attr_);
+   END LOOP;
+   
+END Reserve_Kitted_Kanban_Parts;
+
+FUNCTION Check_Kanban_Reservation_Date(
+   rev_start_date_  IN DATE,
+   contract_        IN VARCHAR2) RETURN VARCHAR2
+IS
+   return_         VARCHAR2(6);
+   i               NUMBER := 2;
+   calender_id_    VARCHAR2(100);
+   
+   CURSOR get_kanban_info(rev_start_date_ IN DATE, calender_id_ IN VARCHAR2) IS
+      SELECT 'TRUE'
+      FROM (SELECT work_day
+         FROM (SELECT TRUNC(work_day) AS work_day, counter
+            FROM (SELECT work_day, ROWNUM AS counter
+               FROM work_time_counter
+               WHERE calendar_id = calender_id_
+               AND TRUNC(work_day) >=
+               TRUNC(sysdate)
+               AND ROWNUM <= 2
+            ORDER BY work_day)
+               WHERE counter = 2)
+               WHERE work_day = rev_start_date_);
+BEGIN   
+   calender_id_ := Site_API.Get_Manuf_Calendar_Id(contract_);
+   
+   OPEN get_kanban_info(rev_start_date_, calender_id_);
+   FETCH get_kanban_info
+      INTO return_;
+   CLOSE get_kanban_info;
+   RETURN return_;
+END Check_Kanban_Reservation_Date; 
+-- C0654 EntChamuA (END)
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
