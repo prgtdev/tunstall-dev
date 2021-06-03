@@ -372,8 +372,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
              cust_warranty_id,
              real_ship_date,
              catalog_desc,
-             CF$_OBJECT_ID,
-             BUY_QTY_DUE,
+             cf$_object_id,
+             buy_qty_due,
              objid
         FROM customer_order_line_cfv a
        WHERE order_no = order_no_
@@ -383,8 +383,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       SELECT 1
         FROM sales_part_cfv
        WHERE catalog_no = catalog_
-         AND contract = '2013'
-         AND CF$_SERVICEABLE_DB = 'TRUE';
+         AND contract = '2012'
+         AND cf$_serviceable_db = 'TRUE';
   
     --Check serialised
     CURSOR check_serialized(catalog_ IN VARCHAR2) IS
@@ -398,12 +398,13 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       FETCH check_sales_part
         INTO temps_;
       CLOSE check_sales_part;
-      object_id_ := SUBSTR(rec_.CF$_OBJECT_ID,
-                           INSTR(rec_.CF$_OBJECT_ID, '^') + 1,
-                           length(rec_.CF$_OBJECT_ID));
+      
+      object_id_ := SUBSTR(rec_.cf$_object_id,
+                           INSTR(rec_.cf$_object_id, '^') + 1,
+                           length(rec_.cf$_object_id));
 
       IF (object_id_ is not null) THEN
-        --Create objects only if site 2013 and serviceable
+        --Create objects only if site 2012 and serviceable
         IF (temps_ = 1) THEN
 
           OPEN check_serialized(rec_.catalog_no);
@@ -460,17 +461,21 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     type_        VARCHAR2(100);
     unit_        VARCHAR2(100);
     values_      VARCHAR2(10);
-    value_       NUMBER;
-    lot_no_      VARCHAR2(20);
-    func_obj_    VARCHAR2(3200);
-    info_        VARCHAR2(3200);
-    objid_       VARCHAR2(3200);
-    objversion_  VARCHAR2(3200);
-    attr_        VARCHAR2(3200);
-    warr_objkey_ VARCHAR2(3200);
-    contract_2_  VARCHAR2(3200) := '2013';
+    value_                 NUMBER;
+    lot_no_                VARCHAR2(20);
+    func_obj_              VARCHAR2(3200);
+    info_                  VARCHAR2(3200);
+    objid_                 VARCHAR2(3200);
+    objversion_            VARCHAR2(3200);
+    attr_                  VARCHAR2(3200);
+    warr_objkey_           VARCHAR2(3200);
+    contract_2_            VARCHAR2(3200) := '2013';
     current_sup_mch_code_  VARCHAR2(3200);
     attr_2_                VARCHAR2(3200);
+    attr_cf_               VARCHAR2(3200);
+    temps_3_               NUMBER;
+    parent_part_no_        VARCHAR2(3200);
+    parent_object_         VARCHAR2(3200);
     
     --to get lot number and qty 
     CURSOR get_lot_batch_dets(order_no_   IN VARCHAR2,
@@ -481,13 +486,14 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     
       SELECT lot_batch_no
         FROM lot_batch_history a
-       WHERE ORDER_REF1 = order_no_
-         AND ORDER_REF2 = line_no_
-         AND ORDER_REF3 = rel_no_
+       WHERE order_ref1 = order_no_
+         AND order_ref2 = line_no_
+         AND order_ref3 = rel_no_
          AND contract = contract_
          AND part_no = catalog_no_
-         AND order_type_db = 'CUST ORDER';
-  
+         AND order_type_db = 'CUST ORDER'
+         AND transaction_desc LIKE 'Delivered on customer order %';
+
     --get warranty type 
     CURSOR get_warranty_type(warranty_id_ IN VARCHAR2) IS
       SELECT warranty_type_id
@@ -498,13 +504,13 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     CURSOR get_warranty_info(warranty_id_ IN VARCHAR2,
                              type_id_     IN VARCHAR2) IS
       SELECT Warranty_Condition_API.Get_Time_Unit(condition_id), MAX_VALUE
-        FROM CUST_WARRANTY_CONDITION
-       WHERE WARRANTY_ID = warranty_id_
-         AND WARRANTY_TYPE_ID = type_id_;
+        FROM cust_warranty_condition
+       WHERE warranty_id = warranty_id_
+         AND warranty_type_id = type_id_;
   
     --get objkey of warranty 
     CURSOR get_objkey(values_ IN VARCHAR2) IS
-      select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
+      select objkey from warranty_clv where cf$_name = values_;
     
     --get objid and objversion 
     CURSOR get_equipment_object_dets(contract_ IN VARCHAR2, mch_code_ IN VARCHAR2) IS
@@ -520,7 +526,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                               line_no_,
                               rel_no_,
                               catalog_no_,
-                              contract_2_);
+                              contract_);
       FETCH get_lot_batch_dets
         INTO lot_no_;
       CLOSE get_lot_batch_dets;
@@ -575,6 +581,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
          Client_SYS.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
          Equipment_Functional_CFP.Cf_Modify__(info_, objid_, attr_, ' ', 'DO');
          
+         Client_SYS.Add_To_Attr('CF$_OBJECT_CREATED', func_obj_, attr_cf_);
+         Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_cf_, ' ', 'DO');
       ELSE
          current_sup_mch_code_:= Equipment_Functional_API.Get_Sup_Mch_Code(contract_2_, func_obj_);
 
@@ -624,7 +632,8 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
     contract_    VARCHAR2(50) := '2013';
     warr_objkey_ VARCHAR2(3200);
     values_      VARCHAR2(10);
-  
+    attr_cf_     VARCHAR2(3200);
+    
     --To get serial objects qty per CO line
     CURSOR get_serial_objects_col(catalog_  IN VARCHAR2,
                                   order_no_ IN VARCHAR2,
@@ -651,7 +660,6 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
        WHERE a.warranty_type_id = b.template_id
          AND a.condition_id = b.condition_id
          AND a.warranty_id = warr_id_
-            
          AND a.part_no = catalog_
          AND a.serial_no = serial_no_;
   
@@ -665,7 +673,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
   
     --get objkey of warranty 
     CURSOR get_objkey(values_ IN VARCHAR2) IS
-      select OBJKEY from WARRANTY_CLV where CF$_NAME = values_;
+      select objkey from warranty_clv where cf$_name = values_;
   
   BEGIN
     IF (object_id_ is not null) THEN
@@ -701,7 +709,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
         sstep1_ := Equipment_Serial_API.Check_Serial_Exist(catalog_no_,
                                                            obj.serial_no);
       
-        sstep2_ := MAINTENANCE_SITE_UTILITY_API.Is_User_Allowed_Site(contract_);
+        sstep2_ := Maintenance_Site_Utility_API.Is_User_Allowed_Site(contract_);
       
         sstep3_ := Part_Serial_Catalog_API.Get_Objstate(catalog_no_,
                                                         obj.serial_no);
@@ -725,7 +733,10 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
                                                           catalog_no_,
                                                           obj.serial_no,
                                                           mch_code_);
-      
+        
+        Client_SYS.Add_To_Attr('CF$_OBJECT_CREATED', mch_code_, attr_cf_);
+        Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_cf_, ' ', 'DO');      
+       
         OPEN modify_serial_obj_date(mch_code_, obj.serial_no);
         FETCH modify_serial_obj_date
           INTO objid_, objversion_;
