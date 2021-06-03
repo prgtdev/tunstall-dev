@@ -81,6 +81,7 @@ BEGIN
    Database_SYS.Set_Table_Column(columns_, 'OWNERSHIP', 'VARCHAR2(200)', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'EXPIRATION_DATE', 'DATE', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'RECEIPT_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'DEFAULT_LOCATION_NO', 'VARCHAR2(10)', 'Y');
    Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
 END;
 /
@@ -103,7 +104,7 @@ PROMPT Creating report view APPROVED_LABEL_REP
 
 CREATE OR REPLACE VIEW APPROVED_LABEL_REP AS
 SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
-   ,RECEIPT_SEQUENCE,CONTRACT,PART_NO,CONFIGURATION_ID,LOCATION_NO,LOT_BATCH_NO,SERIAL_NO,E_C,W_D_R_NO,ACTIVITY_SEQ,HANDLING_UNIT_ID,ORIGIN_PACK_SIZE,NO_OF_COPIES,PACK_QTY,BATCH_NO,RECEIVER,OWNERSHIP,EXPIRATION_DATE,RECEIPT_DATE
+   ,RECEIPT_SEQUENCE,CONTRACT,PART_NO,CONFIGURATION_ID,LOCATION_NO,LOT_BATCH_NO,SERIAL_NO,E_C,W_D_R_NO,ACTIVITY_SEQ,HANDLING_UNIT_ID,ORIGIN_PACK_SIZE,NO_OF_COPIES,PACK_QTY,BATCH_NO,RECEIVER,OWNERSHIP,EXPIRATION_DATE,RECEIPT_DATE,DEFAULT_LOCATION_NO
 FROM   APPROVED_LABEL_RPT t
 WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
 WITH   read only;
@@ -153,6 +154,8 @@ COMMENT ON COLUMN APPROVED_LABEL_REP.expiration_date
    IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Expiration Date^';
 COMMENT ON COLUMN APPROVED_LABEL_REP.receipt_date
    IS 'FLAGS=A----^DATATYPE=DATE/DATE^TITLE=Receipt Date^';
+COMMENT ON COLUMN APPROVED_LABEL_REP.default_location_no
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Default Location No^';
 
 -----------------------------------------------------------------------------
 -------------------- REPORT REGISTRATION ------------------------------------
@@ -199,7 +202,8 @@ CREATE OR REPLACE PACKAGE BODY APPROVED_LABEL_RPI IS
          NULL ownership,
          NULL serial_no,
          NULL expiration_date,
-         NULL receipt_date
+         NULL receipt_date,
+         NULL default_location_no
       from dual;
 
 -----------------------------------------------------------------------------
@@ -235,6 +239,7 @@ BEGIN
       ownership,
       expiration_date,
       receipt_date,
+      default_location_no,
       row_no, parent_row_no)
    VALUES (
       result_key$_,
@@ -260,6 +265,7 @@ BEGIN
       rec_detail_.ownership,
       rec_detail_.expiration_date,
       rec_detail_.receipt_date,
+      rec_detail_.default_location_no,
       row_no$_, 0);
    row_no$_ := row_no$_+1;
 END Add_Result_Row___;
@@ -314,11 +320,15 @@ IS
    source_ref2_              receipt_info.source_ref2%TYPE;
    source_ref3_              receipt_info.source_ref3%TYPE;
    source_ref4_              receipt_info.source_ref4%TYPE;
-   source_ref_type_          receipt_info.source_ref_type_db%TYPE;   
+   source_ref_type_          receipt_info.source_ref_type_db%TYPE;  
+   default_location_no_      inventory_part_def_loc.location_no%TYPE;
    receipt_info_rec_         Receipt_Info_API.Public_Rec;
    no_of_labels_             NUMBER; 
    inv_qty_in_store_         NUMBER;       
    expiration_date_          DATE;
+   stmt_                     VARCHAR2(2000);
+   TYPE Get_Default_Location IS REF CURSOR;
+   get_default_location_     Get_Default_Location; 
 BEGIN
    General_SYS.Init_Method(lu_name_, 'APPROVED_LABEL_RPI', 'Execute_Report');   
    result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
@@ -380,7 +390,7 @@ BEGIN
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'PACK_QTY', binds$_.origin_pack_size);
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'LOCATION_NO',  binds$_.location_no);
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'BATCH_NO', binds$_.lot_batch_no);
-         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIVER', Receipt_Info_API.Get_Receiver(binds$_.receipt_sequence));
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIVER', Fnd_Session_API.Get_Fnd_User);
          part_ownership_ := Part_Ownership_API.Decode(Receipt_Info_Manager_API.Get_Part_Ownership_Db(source_ref1_, source_ref2_, source_ref3_, source_ref4_, source_ref_type_));
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'OWNERSHIP', part_ownership_);      
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', binds$_.serial_no);         
@@ -396,6 +406,29 @@ BEGIN
                                                                              binds$_.handling_unit_id);
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'EXPIRATION_DATE', expiration_date_);
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIPT_DATE', Receipt_Info_API.Get_Arrival_Date(binds$_.receipt_sequence));
+         
+         stmt_ := 'SELECT cf$_default_location '||
+                  'FROM receipt_inv_location_cfv '||
+                  'WHERE receipt_sequence = :receipt_sequence '||
+                  'AND contract = :contract '||
+                  'AND part_no = :part_no '||
+                  'AND configuration_id = :configuration_id '||
+                  'AND location_no = :location_no '||
+                  'AND lot_batch_no = :lot_batch_no '||
+                  'AND serial_no = :serial_no '||
+                  'AND eng_chg_level = :eng_chg_level '||
+                  'AND waiv_dev_rej_no = :waiv_dev_rej_no '||
+                  'AND activity_seq = :activity_seq '||
+                  'AND handling_unit_id = :handling_unit_id ';  
+                  
+         --@ApproveDynamicStatement('2021-06-02',eamaheshi);
+         OPEN get_default_location_ FOR stmt_ USING binds$_.receipt_sequence, binds$_.contract, binds$_.part_no, binds$_.configuration_id, binds$_.location_no, binds$_.lot_batch_no, binds$_.serial_no, binds$_.e_c, binds$_.w_d_r_no , binds$_.activity_seq, binds$_.handling_unit_id;
+         LOOP 
+            FETCH get_default_location_ INTO default_location_no_;
+            EXIT WHEN get_default_location_%NOTFOUND;
+         END LOOP;
+         CLOSE get_default_location_;                    
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'DEFAULT_LOCATION_NO', default_location_no_);
          Xml_Record_Writer_SYS.End_Element(xml$_, 'DETAIL');
          Add_Result_Row___(result_key$_,
                            binds$_ => binds$_,

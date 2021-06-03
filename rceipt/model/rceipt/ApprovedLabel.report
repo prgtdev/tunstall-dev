@@ -33,7 +33,7 @@
                <SIZE>
                   <POINT>
                      <X>151</X>
-                     <Y>266</Y>
+                     <Y>285</Y>
                   </POINT>
                </SIZE>
             </DIAGRAM_NODE>
@@ -85,7 +85,7 @@
                <CONTROL_POINTS>
                   <POINT>
                      <X>302</X>
-                     <Y>279</Y>
+                     <Y>298</Y>
                   </POINT>
                   <POINT>
                      <X>302</X>
@@ -111,7 +111,7 @@
    NULL ownership,
    NULL serial_no,
    NULL expiration_date,
-   NULL approved_date
+   NULL receipt_date
 from dual</CURSOR_DEFINITION>
          <ATTRIBUTES>
             <ATTRIBUTE>
@@ -155,8 +155,13 @@ from dual</CURSOR_DEFINITION>
                <DATATYPE>DATE</DATATYPE>
             </ATTRIBUTE>
             <ATTRIBUTE>
-               <NAME>ApprovedDate</NAME>
+               <NAME>ReceiptDate</NAME>
                <DATATYPE>DATE</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>DefaultLocationNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
             </ATTRIBUTE>
          </ATTRIBUTES>
       </BLOCK>
