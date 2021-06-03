@@ -190,6 +190,19 @@ FUNCTION Get_Evaluation_Category_(
 FUNCTION Get_Pack_Qty ( 
    receipt_sequence_ NUMBER) RETURN NUMBER;  
 ---- C0641 EA Maheshi (END) 
+
+-- C0654 EntChamuA (START)
+FUNCTION Check_Kitted_Reservation_Date(
+ rev_start_date_  IN DATE,
+ contract_        IN VARCHAR2) RETURN VARCHAR2;
+
+PROCEDURE Reserve_Kitted_Kanban_Parts;
+
+FUNCTION Check_Kanban_Reservation_Date(
+   rev_start_date_  IN DATE,
+   contract_        IN VARCHAR2) RETURN VARCHAR2;
+-- C0654 EntChamuA (END)
+
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
