@@ -744,7 +744,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       
         Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
       
-        EQUIPMENT_SERIAL_API.Modify__(info_,
+        Equipment_Serial_API.Modify__(info_,
                                       objid_,
                                       objversion_,
                                       attr_,
