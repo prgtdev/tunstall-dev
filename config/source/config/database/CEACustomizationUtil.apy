@@ -2447,6 +2447,38 @@ BEGIN
    RETURN return_;
 END Check_Kanban_Reservation_Date; 
 -- C0654 EntChamuA (END)
+
+-- C0449 EntChamuA (START)
+FUNCTION Get_Contract_Id_Functional_Object(
+   mch_code_ VARCHAR2,
+   contract_ VARCHAR2) RETURN VARCHAR2
+IS
+   return_value_ VARCHAR2(100);
+   
+   CURSOR get_contract_id (mch_code_ IN VARCHAR2, contract_ IN VARCHAR2) IS
+      SELECT DISTINCT cp.contract_id
+      FROM psc_contr_product_uiv cp
+      WHERE connection_type_db IN ('EQUIPMENT', 'CATEGORY', 'PART')
+      AND (EXISTS (SELECT 1
+         FROM psc_srv_line_objects t
+         WHERE t.contract_id = cp.contract_id
+         AND t.line_no = cp.line_no
+         AND (t.mch_code, t.mch_contract) IN
+         (SELECT mch_code, contract
+            FROM Equipment_All_Object_Uiv
+            START WITH mch_code = mch_code_
+            AND contract = contract_
+            CONNECT BY PRIOR mch_code = sup_mch_code
+            AND PRIOR contract = sup_contract)));
+
+BEGIN
+   
+   OPEN get_contract_id(mch_code_, contract_);
+   FETCH get_contract_id INTO return_value_;
+   CLOSE get_contract_id;
+   RETURN return_value_;
+END Get_Contract_Id_Functional_Object;
+--  C0049 EntChamuA (END)  
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
