@@ -204,7 +204,7 @@ FUNCTION Check_Kanban_Reservation_Date(
 -- C0654 EntChamuA (END)
 
 -- C0449 EntChamuA (START)
-FUNCTION Get_Contract_Id_Functional_Object(
+FUNCTION Get_Contract_Id(
    mch_code_ VARCHAR2,
    contract_ VARCHAR2) RETURN VARCHAR2;
 -- C0449 EntChamuA (END)

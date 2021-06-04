@@ -2449,7 +2449,7 @@ END Check_Kanban_Reservation_Date;
 -- C0654 EntChamuA (END)
 
 -- C0449 EntChamuA (START)
-FUNCTION Get_Contract_Id_Functional_Object(
+FUNCTION Get_Contract_Id(
    mch_code_ VARCHAR2,
    contract_ VARCHAR2) RETURN VARCHAR2
 IS
@@ -2477,7 +2477,7 @@ BEGIN
    FETCH get_contract_id INTO return_value_;
    CLOSE get_contract_id;
    RETURN return_value_;
-END Get_Contract_Id_Functional_Object;
+END Get_Contract_Id;
 --  C0049 EntChamuA (END)  
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
