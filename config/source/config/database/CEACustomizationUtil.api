@@ -208,6 +208,18 @@ FUNCTION Get_Contract_Id(
    mch_code_ VARCHAR2,
    contract_ VARCHAR2) RETURN VARCHAR2;
 -- C0449 EntChamuA (END)
+
+-- C0401 EntPragG (START)
+
+FUNCTION Get_Phase_In_Date__(
+   part_no_       IN VARCHAR,
+   eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC;
+
+FUNCTION Get_Phase_Out_Date__(
+   part_no_       IN VARCHAR,
+   eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC;
+
+-- C0401 EntPrageG (END)
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------

@@ -2479,6 +2479,46 @@ BEGIN
    RETURN return_value_;
 END Get_Contract_Id;
 --  C0049 EntChamuA (END)  
+
+-- C0401 EntPragG (START)
+
+FUNCTION Get_Phase_In_Date__(
+   part_no_       IN VARCHAR,
+   eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC
+IS
+   phase_in_date_ DATE;
+BEGIN
+   SELECT eff_phase_in_date
+     INTO phase_in_date_
+     FROM part_revision
+    WHERE part_no = part_no_
+      AND eng_chg_level = eng_chg_level_;
+   RETURN phase_in_date_;
+EXCEPTION
+   WHEN OTHERS THEN
+      RETURN NULL;
+END Get_Phase_In_Date__;
+
+FUNCTION Get_Phase_Out_Date__(
+   part_no_       IN VARCHAR,
+   eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC
+IS
+   phase_in_date_ DATE;
+BEGIN
+   SELECT eff_phase_out_date
+     INTO phase_in_date_
+     FROM part_revision
+    WHERE part_no = part_no_
+      AND eng_chg_level = eng_chg_level_;
+   RETURN phase_in_date_;
+EXCEPTION
+   WHEN OTHERS THEN
+      RETURN NULL;
+END Get_Phase_Out_Date__;
+
+-- C0401 EntPrageG (END)
+
+
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
