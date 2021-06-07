@@ -1,0 +1,20 @@
+<Counter>
+  <Author>DELL</Author>
+  <LastModified>2021-05-25-19.52.36</LastModified>
+  <Title>Tasks Within SLA</Title>
+  <Background>#FF369B30</Background>
+  <Name>SERVICE_DELIVERY_TASKS_WITHIN_SLA</Name>
+  <ID>5434be37-2647-4383-acb1-5e25f357157c</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>c9a0b6b8-de52-47b3-993f-e572a089ebb5</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>WO_NO</Column>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+</Counter>

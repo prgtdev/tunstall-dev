@@ -1,0 +1,21 @@
+<Counter>
+  <Author>DELL</Author>
+  <CopiedFrom>5434be37-2647-4383-acb1-5e25f357157c</CopiedFrom>
+  <LastModified>2021-04-09-13.22.30</LastModified>
+  <Title>Tasks Failed SLA</Title>
+  <Background>#FF369B30</Background>
+  <Name>SERVICE_DELIVERY_TASKS_FAILED_SLA</Name>
+  <ID>ef42789b-d284-4317-bf71-dbb70b3e69bb</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>de03355b-5ad4-4ac3-b5eb-268533d9e4a8</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>WO_NO</Column>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+</Counter>

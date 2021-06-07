@@ -1,0 +1,65 @@
+<SQLDataSource>
+  <Author>EA</Author>
+  <Keywords>c0459</Keywords>
+  <DescriptiveText>All unassigned work orders where all material requisition lines associated to the work task are reserved</DescriptiveText>
+  <LastModified>2021-06-07-15.16.10</LastModified>
+  <Name>SERVICE_DELIVERY_MATERIALS_DEPENDENT_READY_TO_ASSIGN</Name>
+  <ID>fc201242-da6a-47e5-a9e1-2cc6421bab6e</ID>
+  <Select>
+    <DataColumn>
+      <Column>WO_NO</Column>
+      <Name>WO_NO</Name>
+      <DataType>Number</DataType>
+    </DataColumn>
+    <DataColumn>
+      <Column>TASK_SEQ</Column>
+      <Name>TASK_SEQ</Name>
+      <DataType>Number</DataType>
+    </DataColumn>
+  </Select>
+  <Where>wo_no IN (
+   SELECT wo_no
+     FROM (SELECT wo_no,
+                  &amp;AO.Active_Separate_API.Get_State(wo_no) state,
+                  &amp;AO.Active_Separate_API.Get_Work_Type_Id(wo_no) work_type_id,
+                  &amp;AO.Active_Separate_API.Get_Contract_Id(wo_no) contract_id,
+                  &amp;AO.Active_Separate_API.Get_Reg_Date(wo_no) reg_date,
+                  (SELECT reported_by
+                     FROM &amp;AO.active_separate_uiv
+                    WHERE wo_no = wt.wo_no) reported_by
+             FROM &amp;AO.jt_task_uiv wt
+            WHERE task_seq NOT IN
+                  (SELECT task_seq
+                     FROM &amp;AO.jt_execution_instance_uiv wa
+                    WHERE wa.task_seq = wt.task_seq)
+                 
+              AND task_seq IN (SELECT task_seq
+                                 FROM &amp;AO.maint_material_req_line_uiv
+                                WHERE task_seq = wt.task_seq
+                                  AND spare_contract = wt.site)
+              AND ((SELECT COUNT(*)
+                      FROM &amp;AO.maint_material_req_line_uiv
+                     WHERE task_seq = wt.task_seq
+                       AND spare_contract = wt.site) =
+                  (SELECT COUNT(*)
+                      FROM &amp;AO.maint_material_req_line_uiv
+                     WHERE task_seq = wt.task_seq
+                       AND spare_contract = wt.site
+                       AND plan_qty = qty_assigned))
+              AND &amp;AO.Sc_Service_Contract_API.Get_Contract_Type(NVL(&amp;AO.Active_Separate_API.Get_Contract_Id(wo_no),
+                                                                    contract_id)) = 'MS')
+    WHERE REPLACE(NVL(state, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$WO_STATUS$', ' '), ' ', '%')
+      AND REPLACE(NVL(contract_id, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$CONTRACT_ID$', ' '), ' ', '%')
+      AND REPLACE(NVL(work_type_id, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$WORK_TYPE$', ' '), ' ', '%')
+      AND REPLACE(NVL(reported_by, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$REPORTED_BY$', ' '), ' ', '%')
+      AND reg_date &gt;= TO_DATE(NVL('$BEGIN_DATE$', '01/01/1900'), 'dd/mm/yyyy')
+      AND reg_date &lt;=
+          TO_DATE(NVL('$END_DATE$', '31/12/2999') || ' 11:59:59 PM',
+                  'dd/mm/yyyy hh:mi:ss pm')
+)</Where>
+  <View>&amp;IAL.SERVICE_DEL_READY_TO_ASSIG</View>
+</SQLDataSource>

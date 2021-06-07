@@ -1,0 +1,21 @@
+<Counter>
+  <Author>DELL</Author>
+  <LastModified>2021-05-25-19.50.27</LastModified>
+  <ColumnSpan>2</ColumnSpan>
+  <Title>Tasks About to Breach SLA</Title>
+  <Background>#FF369B30</Background>
+  <Name>SERVICE_DELIVERY_WO_ABOUT_TO_BREACH_SLA</Name>
+  <ID>e2e47e31-ef2b-4aa7-989a-d38c57052f2f</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>e18f4111-1e69-4831-9011-f046084aa9c6</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>TASK_SEQ</Column>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+</Counter>

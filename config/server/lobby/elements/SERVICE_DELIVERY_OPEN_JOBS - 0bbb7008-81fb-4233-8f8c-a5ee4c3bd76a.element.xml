@@ -1,0 +1,22 @@
+<Counter>
+  <Author>DELL</Author>
+  <LastModified>2021-05-25-19.36.02</LastModified>
+  <Title>Open Tasks</Title>
+  <Background>#FF369B30</Background>
+  <Name>SERVICE_DELIVERY_OPEN_JOBS</Name>
+  <ID>0bbb7008-81fb-4233-8f8c-a5ee4c3bd76a</ID>
+  <RefreshInterval>300</RefreshInterval>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <OwnProcessId>2232944d-57c8-4fe7-842f-19595eba7d2e</OwnProcessId>
+  <FormMappings />
+  <DataSourceId>abe02ef6-c941-4f4d-ad1e-f59a54d306cf</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>WO_NO</Column>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+</Counter>
