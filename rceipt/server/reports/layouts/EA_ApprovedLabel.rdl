@@ -85,13 +85,13 @@
                      <font-weight>bold</font-weight>
                      <number-columns-spanned>2</number-columns-spanned>
                   </properties>
-                  <data>tns:APPROVED_DATE</data>
+                  <data>tns:RECEIPT_DATE</data>
                   <text-field>
                      <properties>
                         <left>0cm</left>
                         <top>0pt</top>
                      </properties>
-                     <data>tns:APPROVED_DATE</data>
+                     <data>tns:RECEIPT_DATE</data>
                      <datetime-format>
                         <date-format>medium</date-format>
                         <time-format>medium</time-format>
@@ -209,13 +209,13 @@
                               </text-field>
                            </table-cell>
                            <table-cell>
-                              <data>tns:LOCATION_NO</data>
+                              <data>tns:DEFAULT_LOCATION_NO</data>
                               <text-field>
                                  <properties>
                                     <left>0cm</left>
                                     <top>0pt</top>
                                  </properties>
-                                 <data>tns:LOCATION_NO</data>
+                                 <data>tns:DEFAULT_LOCATION_NO</data>
                               </text-field>
                            </table-cell>
                         </table-row>
@@ -389,7 +389,7 @@
                               <properties>
                                  <number-columns-spanned>2</number-columns-spanned>
                               </properties>
-                              <data>concat('95',concat(tns:PART_NO,concat('~10',concat(tns:BATCH_NO,concat('~96',concat(tns:PACK_QTY,concat('~97',tns:LOCATION_NO)))))))</data>
+                              <data>concat('95',concat(tns:PART_NO,concat('~10',concat(tns:BATCH_NO,concat('~96',concat(tns:PACK_QTY,concat('~97',tns:DEFAULT_LOCATION_NO)))))))</data>
                               <barcode>
                                  <properties>
                                     <barcode-back-color>#ffffff</barcode-back-color>

@@ -33,7 +33,7 @@
                <SIZE>
                   <POINT>
                      <X>151</X>
-                     <Y>285</Y>
+                     <Y>418</Y>
                   </POINT>
                </SIZE>
             </DIAGRAM_NODE>
@@ -50,14 +50,14 @@
                </PROPERTIES>
                <LOCATION>
                   <POINT>
-                     <X>239</X>
-                     <Y>322</Y>
+                     <X>526</X>
+                     <Y>333</Y>
                   </POINT>
                </LOCATION>
                <SIZE>
                   <POINT>
-                     <X>130</X>
-                     <Y>209</Y>
+                     <X>158</X>
+                     <Y>228</Y>
                   </POINT>
                </SIZE>
             </DIAGRAM_NODE>
@@ -84,12 +84,12 @@
                </PROPERTIES>
                <CONTROL_POINTS>
                   <POINT>
-                     <X>302</X>
-                     <Y>298</Y>
+                     <X>379</X>
+                     <Y>278</Y>
                   </POINT>
                   <POINT>
-                     <X>302</X>
-                     <Y>321</Y>
+                     <X>525</X>
+                     <Y>387</Y>
                   </POINT>
                </CONTROL_POINTS>
             </DIAGRAM_EDGE>
@@ -275,7 +275,7 @@ from dual</CURSOR_DEFINITION>
          <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
       </PARAMETER>
       <PARAMETER>
-         <NAME>OriginPackSize</NAME>
+         <NAME>OriginPackSize1</NAME>
          <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
          <IS_MANDATORY>0</IS_MANDATORY>
          <IS_CUSTOM>0</IS_CUSTOM>
@@ -284,7 +284,70 @@ from dual</CURSOR_DEFINITION>
          <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
       </PARAMETER>
       <PARAMETER>
-         <NAME>NoOfCopies</NAME>
+         <NAME>NoOfLabels1</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>NoOfCopies1</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>OriginPackSize2</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>NoOfLabels2</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>NoOfCopies2</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>OriginPackSize3</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>NoOfLabels3</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>NoOfCopies3</NAME>
          <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
          <IS_MANDATORY>0</IS_MANDATORY>
          <IS_CUSTOM>0</IS_CUSTOM>
