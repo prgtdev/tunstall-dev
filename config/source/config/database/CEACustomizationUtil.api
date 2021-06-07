@@ -211,6 +211,11 @@ FUNCTION Get_Contract_Id(
 
 -- C0401 EntPragG (START)
 
+FUNCTION Get_Part_Hierachy__(
+   part_no_       IN VARCHAR2,
+   contract_      IN VARCHAR2,
+   eng_chg_level_ IN VARCHAR2) RETURN VARCHAR2 DETERMINISTIC;
+
 FUNCTION Get_Phase_In_Date__(
    part_no_       IN VARCHAR,
    eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC;
