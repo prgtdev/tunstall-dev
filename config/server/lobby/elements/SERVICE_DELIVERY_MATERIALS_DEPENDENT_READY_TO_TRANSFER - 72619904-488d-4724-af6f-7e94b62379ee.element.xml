@@ -1,0 +1,20 @@
+<Counter>
+  <Author>DELL</Author>
+  <LastModified>2021-04-08-15.01.47</LastModified>
+  <ColumnSpan>2</ColumnSpan>
+  <Title>Materials Dependent: Ready to Transfer</Title>
+  <Name>SERVICE_DELIVERY_MATERIALS_DEPENDENT_READY_TO_TRANSFER</Name>
+  <ID>72619904-488d-4724-af6f-7e94b62379ee</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>a07c3568-a4dc-45ac-ae0b-a5e33bb1d325</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>WO_NO</Column>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+</Counter>

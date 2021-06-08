@@ -1,0 +1,42 @@
+<PieChart>
+  <Author>DELL</Author>
+  <LastModified>2021-05-25-19.51.09</LastModified>
+  <RowSpan>2</RowSpan>
+  <ColumnSpan>2</ColumnSpan>
+  <Title>Completed Tasks within SLA</Title>
+  <Background>#00FFFFFF</Background>
+  <Foreground>#FF4B4A4D</Foreground>
+  <Name>SERVICE_DELIVERY_COMPLATED_TASK_PERCENTAGE</Name>
+  <ID>1607223f-cbf0-4114-a2a1-7927f390747b</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>0baa1427-9d39-439e-8a1a-c4405ccc67ad</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>TASK_SEQ</Column>
+        <Name>COUNT Task No</Name>
+        <DisplayName>COUNT Task No</DisplayName>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+      <MappedColumn>
+        <Column>(CASE WHEN SLA_STATUS='1'THEN 'Within SLA' ELSE 'Failed SLA' END)</Column>
+        <Name>SLA_STATUS</Name>
+        <DisplayName>SLA_STATUS</DisplayName>
+        <IsNavigateParam>false</IsNavigateParam>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+  <GroupedDataSeries>
+    <TopNOptions />
+    <GroupsColumn>
+      <Name>(CASE WHEN SLA_STATUS='1'THEN 'Within SLA' ELSE 'Failed SLA' END)</Name>
+    </GroupsColumn>
+    <ValuesColumn>
+      <Name>TASK_SEQ</Name>
+      <Aggregate>COUNT</Aggregate>
+    </ValuesColumn>
+  </GroupedDataSeries>
+</PieChart>

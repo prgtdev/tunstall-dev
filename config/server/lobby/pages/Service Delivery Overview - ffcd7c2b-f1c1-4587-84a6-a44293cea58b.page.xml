@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Author>DELL</Author>
+  <Keywords>c0459</Keywords>
+  <LastModified>2021-04-27-23.14.03</LastModified>
+  <Layout>
+    <Groups>
+      <Group>
+        <Elements>
+          <Element id="6be84fbf-8011-49d5-bae2-d9c7fcb928d0" column="0" row="0" columnspan="1" rowspan="1" />
+          <Element id="0bbb7008-81fb-4233-8f8c-a5ee4c3bd76a" column="1" row="0" columnspan="1" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="e2e47e31-ef2b-4aa7-989a-d38c57052f2f" column="0" row="0" columnspan="2" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="f325958b-6836-434b-b272-8041a8daad26" column="0" row="0" columnspan="2" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="72619904-488d-4724-af6f-7e94b62379ee" column="0" row="0" columnspan="2" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements />
+        <IsSeparator>true</IsSeparator>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="1607223f-cbf0-4114-a2a1-7927f390747b" column="0" row="0" columnspan="2" rowspan="2" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="ef42789b-d284-4317-bf71-dbb70b3e69bb" column="0" row="0" columnspan="1" rowspan="1" />
+          <Element id="5434be37-2647-4383-acb1-5e25f357157c" column="1" row="0" columnspan="1" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements />
+        <IsSeparator>true</IsSeparator>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="e23aca83-28fa-4a7b-92e2-f8859df00f68" column="0" row="0" columnspan="4" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="455cf315-54f9-4cc1-b311-0982c20f62ee" column="0" row="0" columnspan="4" rowspan="1" />
+        </Elements>
+      </Group>
+      <Group>
+        <Elements>
+          <Element id="79cf391f-9513-4385-96d2-17bc3359ebae" column="0" row="0" columnspan="4" rowspan="1" />
+        </Elements>
+      </Group>
+    </Groups>
+  </Layout>
+  <DataSources>
+    <DataSource id="abae0eb1-7e53-4978-bd35-25591de0b5fa" />
+    <DataSource id="abe02ef6-c941-4f4d-ad1e-f59a54d306cf" />
+    <DataSource id="e18f4111-1e69-4831-9011-f046084aa9c6" />
+    <DataSource id="fc201242-da6a-47e5-a9e1-2cc6421bab6e" />
+    <DataSource id="a07c3568-a4dc-45ac-ae0b-a5e33bb1d325" />
+    <DataSource id="0baa1427-9d39-439e-8a1a-c4405ccc67ad" />
+    <DataSource id="de03355b-5ad4-4ac3-b5eb-268533d9e4a8" />
+    <DataSource id="c9a0b6b8-de52-47b3-993f-e572a089ebb5" />
+    <DataSource id="ed939b6b-2e7d-427b-aa50-c6100150ed10" />
+    <DataSource id="1d21d88c-072f-47a6-9e46-569168516ec3" />
+    <DataSource id="c6191dd3-48fb-417b-af06-a308c8128ca2" />
+  </DataSources>
+  <Parameters>
+    <Parameter>
+      <Name>WO_STATUS</Name>
+      <Description>Work Order Status</Description>
+    </Parameter>
+    <Parameter>
+      <Name>CONTRACT_ID</Name>
+      <Description>Contract Id</Description>
+    </Parameter>
+    <Parameter>
+      <Name>WORK_TYPE</Name>
+      <Description>Work Type</Description>
+    </Parameter>
+    <Parameter>
+      <Name>REPORTED_BY</Name>
+      <Description>Reported By</Description>
+    </Parameter>
+    <Parameter>
+      <Name>BEGIN_DATE</Name>
+      <Description>Begin Date</Description>
+    </Parameter>
+    <Parameter>
+      <Name>END_DATE</Name>
+      <Description>End Date</Description>
+    </Parameter>
+  </Parameters>
+  <Filters />
+  <PageTitle>Service Delivery Overview</PageTitle>
+  <PageId>ffcd7c2b-f1c1-4587-84a6-a44293cea58b</PageId>
+  <Translations />
+</Page>

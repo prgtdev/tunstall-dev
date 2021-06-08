@@ -1,0 +1,20 @@
+<Counter>
+  <Author>DELL</Author>
+  <LastModified>2021-05-25-19.35.17</LastModified>
+  <Title>Overdue Tasks</Title>
+  <Background>#FF369B30</Background>
+  <Name>SERVICE_DELIVERY_OVERDUE_WOS</Name>
+  <ID>6be84fbf-8011-49d5-bae2-d9c7fcb928d0</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>abae0eb1-7e53-4978-bd35-25591de0b5fa</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>WO_NO</Column>
+        <Aggregate>COUNT</Aggregate>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+  </ColumnMapping>
+</Counter>

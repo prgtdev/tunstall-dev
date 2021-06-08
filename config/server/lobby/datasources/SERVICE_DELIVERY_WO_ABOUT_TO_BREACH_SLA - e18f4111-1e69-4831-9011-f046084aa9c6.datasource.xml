@@ -1,0 +1,59 @@
+<SQLDataSource>
+  <Author>EA</Author>
+  <Keywords>c0459</Keywords>
+  <DescriptiveText>Work Tasks about to breach the SLA (sysdate is within 24h of the SLA date)</DescriptiveText>
+  <LastModified>2021-06-07-15.18.33</LastModified>
+  <Name>SERVICE_DELIVERY_WO_ABOUT_TO_BREACH_SLA</Name>
+  <ID>e18f4111-1e69-4831-9011-f046084aa9c6</ID>
+  <Select>
+    <DataColumn>
+      <Column>WO_NO</Column>
+      <Name>Wo No</Name>
+      <DataType>Number</DataType>
+    </DataColumn>
+    <DataColumn>
+      <Column>TASK_SEQ</Column>
+      <Name>Task No</Name>
+      <DataType>Number</DataType>
+    </DataColumn>
+    <DataColumn>
+      <Column>CF$_TUNSTALL_SLA</Column>
+      <Name>Tunstall SLA</Name>
+      <DataType>DateTime</DataType>
+    </DataColumn>
+  </Select>
+  <Where>wo_no IN (
+   SELECT wo_no
+     FROM (SELECT wo_no,
+                  &amp;AO.Active_Separate_API.Get_State(wo_no) state,
+                  &amp;AO.Active_Separate_API.Get_Work_Type_Id(wo_no) work_type_id,
+                  &amp;AO.Active_Separate_API.Get_Contract_Id(wo_no) contract_id,
+                  &amp;AO.Active_Separate_API.Get_Reg_Date(wo_no) reg_date,
+                  (SELECT reported_by
+                     FROM &amp;AO.active_separate_uiv
+                    WHERE wo_no = wt.wo_no) reported_by
+             FROM &amp;AO.jt_task_uiv_cfv wt
+            WHERE &amp;AO.Sc_Service_Contract_API.Get_Contract_Type(NVL(&amp;AO.Active_Separate_API.Get_Contract_Id(wo_no),
+                                                                    contract_id)) = 'MS'
+              AND state IN ('New',
+                            'Prepared',
+                            'Released',
+                            'Work Started',
+                            'Under Preparation')
+              AND (cf$_tunstall_sla &gt; sysdate and
+                   cf$_tunstall_sla &lt;= sysdate + 1))
+    WHERE REPLACE(NVL(state, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$WO_STATUS$', ' '), ' ', '%')
+      AND REPLACE(NVL(contract_id, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$CONTRACT_ID$', ' '), ' ', '%')
+      AND REPLACE(NVL(work_type_id, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$WORK_TYPE$', ' '), ' ', '%')
+      AND REPLACE(NVL(reported_by, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$REPORTED_BY$', ' '), ' ', '%')
+      AND reg_date &gt;= TO_DATE(NVL('$BEGIN_DATE$', '01/01/1900'), 'dd/mm/yyyy')
+      AND reg_date &lt;=
+          TO_DATE(NVL('$END_DATE$', '31/12/2999') || ' 11:59:59 PM',
+                  'dd/mm/yyyy hh:mi:ss pm')
+)</Where>
+  <View>&amp;IAL.SERVICE_DEL_BREACH_SLA_WO</View>
+</SQLDataSource>

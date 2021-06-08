@@ -1,0 +1,60 @@
+<SQLDataSource>
+  <Author>EA</Author>
+  <Keywords>c0459</Keywords>
+  <DescriptiveText>Count of the assigned but not transferred work tasks which has material requisition attached to it with the transport task in status Picked or Executed</DescriptiveText>
+  <LastModified>2021-06-07-15.16.35</LastModified>
+  <Name>SERVICE_DELIVERY_MATERIALS_DEPENDENT_READY_TO_TRANSFER</Name>
+  <ID>a07c3568-a4dc-45ac-ae0b-a5e33bb1d325</ID>
+  <Select>
+    <DataColumn>
+      <Column>WO_NO</Column>
+      <Name>WO_NO</Name>
+      <DataType>Number</DataType>
+    </DataColumn>
+  </Select>
+  <Where>wo_no IN (
+   SELECT wo_no
+     FROM (SELECT wo_no,
+                  &amp;AO.Active_Separate_API.Get_State(wo_no) state,
+                  &amp;AO.Active_Separate_API.Get_Work_Type_Id(wo_no) work_type_id,
+                  &amp;AO.Active_Separate_API.Get_Contract_Id(wo_no) contract_id,
+                  &amp;AO.Active_Separate_API.Get_Reg_Date(wo_no) reg_date,
+                  (SELECT reported_by
+                     FROM &amp;AO.active_separate_uiv
+                    WHERE wo_no = wt.wo_no) reported_by
+             FROM &amp;AO.jt_task_uiv wt
+            WHERE &amp;AO.Sc_Service_Contract_API.Get_Contract_Type(NVL(&amp;AO.Active_Separate_API.Get_Contract_Id(wo_no),
+                                                                    contract_id)) = 'MS'
+              AND task_seq IN (SELECT task_seq
+                                 FROM &amp;AO.jt_execution_instance_uiv
+                                WHERE state = 'Assigned'
+                                  AND sent_date IS NULL
+                                  AND task_seq = wt.task_seq)
+              AND task_seq IN
+                  (SELECT task_seq
+                     FROM &amp;AO.maint_material_req_line_uiv m
+                    WHERE TO_CHAR(wo_no) IN
+                          (SELECT order_ref1
+                             FROM &amp;AO.transport_task_line
+                            WHERE order_ref1 = TO_CHAR(m.wo_no)
+                              AND order_ref2 = TO_CHAR(m.task_seq)
+                              AND order_REf3 = TO_CHAR(m.maint_material_order_no)
+                              AND transport_task_status IN ('Executed', 'Picked')
+                           
+                           )
+                      AND task_seq = wt.task_seq))
+    WHERE REPLACE(NVL(state, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$WO_STATUS$', ' '), ' ', '%')
+      AND REPLACE(NVL(contract_id, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$CONTRACT_ID$', ' '), ' ', '%')
+      AND REPLACE(NVL(work_type_id, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$WORK_TYPE$', ' '), ' ', '%')
+      AND REPLACE(NVL(reported_by, ' '), ' ', '%') LIKE
+          REPLACE(NVL('$REPORTED_BY$', ' '), ' ', '%')
+      AND reg_date &gt;= TO_DATE(NVL('$BEGIN_DATE$', '01/01/1900'), 'dd/mm/yyyy')
+      AND reg_date &lt;=
+          TO_DATE(NVL('$END_DATE$', '31/12/2999') || ' 11:59:59 PM',
+                  'dd/mm/yyyy hh:mi:ss pm')
+)</Where>
+  <View>&amp;IAL.SERVICE_DEL_READY_TO_TRANS</View>
+</SQLDataSource>

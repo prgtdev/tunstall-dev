@@ -1,0 +1,45 @@
+<SQLDataSource>
+  <Author>EA</Author>
+  <Keywords>c0459</Keywords>
+  <DescriptiveText>Work Orders where work type = TCI_URGENT, TCI_NON_URGENT, THI_URGENT or THI_NON_URGENT and status of the work order = WorkDone or Reported</DescriptiveText>
+  <LastModified>2021-06-07-15.07.15</LastModified>
+  <Name>SERVICE_DELIVERY_COMPLETED_INSTALLS</Name>
+  <ID>c6191dd3-48fb-417b-af06-a308c8128ca2</ID>
+  <Select>
+    <DataColumn>
+      <Column>CONTRACT</Column>
+      <Name>WO Site</Name>
+    </DataColumn>
+    <DataColumn>
+      <Column>WO_NO</Column>
+      <Name>WO Number</Name>
+      <DataType>Number</DataType>
+    </DataColumn>
+    <DataColumn>
+      <Column>STATE</Column>
+      <Name>State</Name>
+    </DataColumn>
+    <DataColumn>
+      <Column>ERR_DESCR</Column>
+      <Name>Directive</Name>
+    </DataColumn>
+    <DataColumn>
+      <Column>&amp;AO.WORK_TYPE_API.Get_Description(WORK_TYPE_ID)</Column>
+      <Name>WorkType</Name>
+    </DataColumn>
+    <DataColumn>
+      <Column>&amp;AO.WORK_ORDER_SYMPT_CODE_API.Get_Description(ERR_SYMPTOM)</Column>
+      <Name>Symptom</Name>
+    </DataColumn>
+  </Select>
+  <Where>    work_type_id IN ('TCI_URGENT','TCI_NON_URGENT','THI_URGENT','THI_NON_URGENT') 
+AND state IN ('WorkDone', 'Reported') 
+AND &amp;AO.Sc_Service_Contract_API.Get_Contract_Type(NVL(&amp;AO.ACTIVE_SEPARATE_API.Get_Contract_Id(wo_no),contract_id)) = 'MS'
+AND REPLACE(NVL(state ,' '),' ','%') LIKE REPLACE(NVL('$WO_STATUS$',' '),' ','%') 
+AND REPLACE(NVL(contract_id ,' '),' ','%') LIKE REPLACE(NVL('$CONTRACT_ID$',' '),' ','%') 
+AND REPLACE(NVL(work_type_id ,' '),' ','%') LIKE REPLACE(NVL('$WORK_TYPE$',' '),' ','%')
+AND REPLACE(NVL(reported_by ,' '),' ','%') LIKE REPLACE(NVL('$REPORTED_BY$',' '),' ','%') 
+AND reg_date &gt;= TO_DATE(NVL('$BEGIN_DATE$','01/01/1900'),'dd/mm/yyyy')
+AND reg_date &lt;= TO_DATE(NVL('$END_DATE$','31/12/2999')||' 11:59:59 PM','dd/mm/yyyy hh:mi:ss pm')</Where>
+  <View>&amp;AO.ACTIVE_SEPARATE_UIV</View>
+</SQLDataSource>

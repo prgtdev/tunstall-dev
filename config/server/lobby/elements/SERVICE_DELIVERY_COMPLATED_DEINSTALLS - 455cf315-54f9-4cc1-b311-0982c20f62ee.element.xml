@@ -1,0 +1,64 @@
+<List>
+  <Author>DELL</Author>
+  <LastModified>2021-04-06-22.35.45</LastModified>
+  <ColumnSpan>4</ColumnSpan>
+  <Title>Completed Deinstalls</Title>
+  <Background>#FF4B4A4D</Background>
+  <Name>SERVICE_DELIVERY_COMPLATED_DEINSTALLS</Name>
+  <ID>455cf315-54f9-4cc1-b311-0982c20f62ee</ID>
+  <CustomUrl>ifsapf:frmWorkOrderPrepareTab</CustomUrl>
+  <FormMappings />
+  <DataSourceId>1d21d88c-072f-47a6-9e46-569168516ec3</DataSourceId>
+  <ColumnMapping>
+    <MappedColumns>
+      <MappedColumn>
+        <Column>CONTRACT</Column>
+        <Name>WO Site</Name>
+        <DisplayName>WO Site</DisplayName>
+        <IsNavigateParam>false</IsNavigateParam>
+        <NavigateTarget>CONTRACT</NavigateTarget>
+        <ConditionalFormats />
+      </MappedColumn>
+      <MappedColumn>
+        <Column>WO_NO</Column>
+        <Name>WO Number</Name>
+        <DisplayName>WO Number</DisplayName>
+        <NavigateTarget>WO_NO</NavigateTarget>
+        <ConditionalFormats />
+      </MappedColumn>
+      <MappedColumn>
+        <Column>ERR_DESCR</Column>
+        <Name>Directive</Name>
+        <DisplayName>Directive</DisplayName>
+        <IsNavigateParam>false</IsNavigateParam>
+        <NavigateTarget>ERR_DESCR</NavigateTarget>
+        <ConditionalFormats />
+      </MappedColumn>
+      <MappedColumn>
+        <Column>&amp;AO.WORK_TYPE_API.Get_Description(WORK_TYPE_ID)</Column>
+        <Name>WorkType</Name>
+        <DisplayName>WorkType</DisplayName>
+        <IsNavigateParam>false</IsNavigateParam>
+        <NavigateTarget>&amp;AO.WORK_TYPE_API.Get_Description(WORK_TYPE_ID)</NavigateTarget>
+        <ConditionalFormats />
+      </MappedColumn>
+      <MappedColumn>
+        <Column>&amp;AO.WORK_ORDER_SYMPT_CODE_API.Get_Description(ERR_SYMPTOM)</Column>
+        <Name>Symptom</Name>
+        <DisplayName>Symptom</DisplayName>
+        <IsNavigateParam>false</IsNavigateParam>
+        <NavigateTarget>&amp;AO.WORK_ORDER_SYMPT_CODE_API.Get_Description(ERR_SYMPTOM)</NavigateTarget>
+        <ConditionalFormats />
+      </MappedColumn>
+      <MappedColumn>
+        <Column>STATE</Column>
+        <Name>State</Name>
+        <DisplayName>State</DisplayName>
+        <IsNavigateParam>false</IsNavigateParam>
+        <NavigateTarget>STATE</NavigateTarget>
+        <ConditionalFormats />
+      </MappedColumn>
+    </MappedColumns>
+    <ShowColumnHeaders>true</ShowColumnHeaders>
+  </ColumnMapping>
+</List>
