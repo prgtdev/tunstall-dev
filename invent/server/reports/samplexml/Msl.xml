@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MSL_REP_REQUEST
+   xmlns="urn:ifsworld-com:msl_rep"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:ifsworld-com:msl_rep ../schemas/Msl.xsd">
+   <PROCESSING_INFO>
+      <FORMATTING_OPTIONS>
+         <COPIES>1</COPIES>
+         <PAGE_FROM>1</PAGE_FROM>
+         <PAGE_TO>99</PAGE_TO>
+         <LANG_CODE>en</LANG_CODE>
+         <LAYOUT_NAME/>
+         <PRINT_DIRECTORY>.</PRINT_DIRECTORY>
+         <LAYOUT_FILE/>
+         <SELECTED_PRINTER/>
+         <LANGUAGE_LAYOUT_FILE/>
+         <PAPER_FORMAT/>
+      </FORMATTING_OPTIONS>
+      <PROCESSING_ATTRIBUTES>
+         <EXECUTION_TIME>2009-01-01T11:22:00</EXECUTION_TIME>
+         <ORDERED_BY/>
+         <JOB_ID>12345</JOB_ID>
+         <COMMENT/>
+         <ORDER_TIME>2009-01-01T11:22:00</ORDER_TIME>
+         <REPORT_TITLE>Msl</REPORT_TITLE>
+         <PRINTED_BY/>
+         <CREATED/>
+      </PROCESSING_ATTRIBUTES>
+      <STANDARD_TRANSLATIONS>
+         <ATTRIBUTE_DISPLAY_TEXTS>
+            <EXECUTION_TIME>Execution Time:</EXECUTION_TIME>
+            <ORDERED_BY>Ordered By:</ORDERED_BY>
+            <JOB_ID>Job Id:</JOB_ID>
+            <COMMENT>Comment:</COMMENT>
+            <ORDER_TIME>Order Time:</ORDER_TIME>
+            <REPORT_TITLE>Report:</REPORT_TITLE>
+            <PRINTED_BY>Printed By:</PRINTED_BY>
+            <CURRENT_TIME>Current Time:</CURRENT_TIME>
+            <CURRENT_DATE>Current Date:</CURRENT_DATE>
+            <PAGE>Page</PAGE>
+            <END_OF_REPORT>-------- End of Report --------</END_OF_REPORT>
+            <REPORT_PARAMETERS>Rep. Params:</REPORT_PARAMETERS>
+            <APPLICATION_TEXT>IFS Applications</APPLICATION_TEXT>
+            <CREATED>Created:</CREATED>
+            <NONE>none</NONE>
+            <NOTES>Notes:</NOTES>
+            <NO_DATA_FOUND>No data found</NO_DATA_FOUND>
+         </ATTRIBUTE_DISPLAY_TEXTS>
+         <SITE_TEXTS>
+            <COMPANY_NAME/>
+            <SITE_TEXT_1/>
+            <SITE_TEXT_2/>
+            <SITE_TEXT_3/>
+            <SITE_TEXT_4/>
+            <SITE_TEXT_5/>
+            <SITE_TEXT_6/>
+            <SITE_TEXT_7/>
+            <SITE_TEXT_8/>
+            <SITE_TEXT_9/>
+            <SITE_TEXT_10/>
+         </SITE_TEXTS>
+      </STANDARD_TRANSLATIONS>
+   </PROCESSING_INFO>
+   <MSL_REP_DATA_ASSEMBLY_PARAMETERS>
+      <TRANSPORT_TASK_ID>
+         <DISPLAY_TEXT>Transport Task Id:</DISPLAY_TEXT>
+         <VALUE/>
+      </TRANSPORT_TASK_ID>
+   </MSL_REP_DATA_ASSEMBLY_PARAMETERS>
+   <MSL_REP_ARCHIVE_VARIABLES/>
+   <MSL_REP_TRANSLATIONS>
+      <REPORT_TEXTS>
+         <MSL>Sample</MSL>
+      </REPORT_TEXTS>
+      <ATTRIBUTE_DISPLAY_TEXTS>
+         <TRANSPORT_TASK_ID>Transport Task Id:</TRANSPORT_TASK_ID>
+         <CREATE_DATE>Create Date:</CREATE_DATE>
+         <TASK_LINES>
+            <TASK_LINE>
+               <LINE_NO>Line No:</LINE_NO>
+               <LINE_PART_NO>Line Part No:</LINE_PART_NO>
+               <LINE_TO_LOCATION_NO>Line To Location No:</LINE_TO_LOCATION_NO>
+               <LINE_LOT_BATCH_NO>Line Lot Batch No:</LINE_LOT_BATCH_NO>
+               <LINE_QUANTITY>Line Quantity:</LINE_QUANTITY>
+               <USE_BY_DATE>Use By Date:</USE_BY_DATE>
+               <AVAILABLE_BY_DATE>Available By Date:</AVAILABLE_BY_DATE>
+               <LINE_FROM_LOCATION_NO>Line From Location No:</LINE_FROM_LOCATION_NO>
+               <EXECUTED_DATE>Executed Date:</EXECUTED_DATE>
+            </TASK_LINE>
+         </TASK_LINES>
+      </ATTRIBUTE_DISPLAY_TEXTS>
+   </MSL_REP_TRANSLATIONS>
+   <MSL_REP>
+      <TRANSPORT_TASK_ID>123</TRANSPORT_TASK_ID>
+      <CREATE_DATE>2009-01-01T11:22:00</CREATE_DATE>
+      <TASK_LINES>
+         <TASK_LINE>
+            <LINE_NO>123</LINE_NO>
+            <LINE_PART_NO>ABC</LINE_PART_NO>
+            <LINE_TO_LOCATION_NO>ABC</LINE_TO_LOCATION_NO>
+            <LINE_LOT_BATCH_NO>ABC</LINE_LOT_BATCH_NO>
+            <LINE_QUANTITY>123</LINE_QUANTITY>
+            <USE_BY_DATE>2009-01-01</USE_BY_DATE>
+            <AVAILABLE_BY_DATE>2009-01-01</AVAILABLE_BY_DATE>
+            <LINE_FROM_LOCATION_NO>ABC</LINE_FROM_LOCATION_NO>
+            <EXECUTED_DATE>2009-01-01</EXECUTED_DATE>
+         </TASK_LINE>
+         <TASK_LINE>
+            <LINE_NO>123</LINE_NO>
+            <LINE_PART_NO>ABC</LINE_PART_NO>
+            <LINE_TO_LOCATION_NO>ABC</LINE_TO_LOCATION_NO>
+            <LINE_LOT_BATCH_NO>ABC</LINE_LOT_BATCH_NO>
+            <LINE_QUANTITY>123</LINE_QUANTITY>
+            <USE_BY_DATE>2009-01-01</USE_BY_DATE>
+            <AVAILABLE_BY_DATE>2009-01-01</AVAILABLE_BY_DATE>
+            <LINE_FROM_LOCATION_NO>ABC</LINE_FROM_LOCATION_NO>
+            <EXECUTED_DATE>2009-01-01</EXECUTED_DATE>
+         </TASK_LINE>
+      </TASK_LINES>
+   </MSL_REP>
+</MSL_REP_REQUEST>

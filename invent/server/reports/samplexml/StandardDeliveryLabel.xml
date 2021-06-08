@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<STANDARD_DELIVERY_LABEL_REP_REQUEST
+   xmlns="urn:ifsworld-com:standard_delivery_label_rep"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:ifsworld-com:standard_delivery_label_rep ../schemas/StandardDeliveryLabel.xsd">
+   <PROCESSING_INFO>
+      <FORMATTING_OPTIONS>
+         <COPIES>1</COPIES>
+         <PAGE_FROM>1</PAGE_FROM>
+         <PAGE_TO>99</PAGE_TO>
+         <LANG_CODE>en</LANG_CODE>
+         <LAYOUT_NAME/>
+         <PRINT_DIRECTORY>.</PRINT_DIRECTORY>
+         <LAYOUT_FILE/>
+         <SELECTED_PRINTER/>
+         <LANGUAGE_LAYOUT_FILE/>
+         <PAPER_FORMAT/>
+      </FORMATTING_OPTIONS>
+      <PROCESSING_ATTRIBUTES>
+         <EXECUTION_TIME>2009-01-01T11:22:00</EXECUTION_TIME>
+         <ORDERED_BY/>
+         <JOB_ID>12345</JOB_ID>
+         <COMMENT/>
+         <ORDER_TIME>2009-01-01T11:22:00</ORDER_TIME>
+         <REPORT_TITLE>Standard Delivery Label</REPORT_TITLE>
+         <PRINTED_BY/>
+         <CREATED/>
+      </PROCESSING_ATTRIBUTES>
+      <STANDARD_TRANSLATIONS>
+         <ATTRIBUTE_DISPLAY_TEXTS>
+            <EXECUTION_TIME>Execution Time:</EXECUTION_TIME>
+            <ORDERED_BY>Ordered By:</ORDERED_BY>
+            <JOB_ID>Job Id:</JOB_ID>
+            <COMMENT>Comment:</COMMENT>
+            <ORDER_TIME>Order Time:</ORDER_TIME>
+            <REPORT_TITLE>Report:</REPORT_TITLE>
+            <PRINTED_BY>Printed By:</PRINTED_BY>
+            <CURRENT_TIME>Current Time:</CURRENT_TIME>
+            <CURRENT_DATE>Current Date:</CURRENT_DATE>
+            <PAGE>Page</PAGE>
+            <END_OF_REPORT>-------- End of Report --------</END_OF_REPORT>
+            <REPORT_PARAMETERS>Rep. Params:</REPORT_PARAMETERS>
+            <APPLICATION_TEXT>IFS Applications</APPLICATION_TEXT>
+            <CREATED>Created:</CREATED>
+            <NONE>none</NONE>
+            <NOTES>Notes:</NOTES>
+            <NO_DATA_FOUND>No data found</NO_DATA_FOUND>
+         </ATTRIBUTE_DISPLAY_TEXTS>
+         <SITE_TEXTS>
+            <COMPANY_NAME/>
+            <SITE_TEXT_1/>
+            <SITE_TEXT_2/>
+            <SITE_TEXT_3/>
+            <SITE_TEXT_4/>
+            <SITE_TEXT_5/>
+            <SITE_TEXT_6/>
+            <SITE_TEXT_7/>
+            <SITE_TEXT_8/>
+            <SITE_TEXT_9/>
+            <SITE_TEXT_10/>
+         </SITE_TEXTS>
+      </STANDARD_TRANSLATIONS>
+   </PROCESSING_INFO>
+   <STANDARD_DELIVERY_LABEL_REP_DATA_ASSEMBLY_PARAMETERS>
+      <HANDLING_UNIT_ID>
+         <DISPLAY_TEXT>Handling Unit Id:</DISPLAY_TEXT>
+         <VALUE/>
+      </HANDLING_UNIT_ID>
+   </STANDARD_DELIVERY_LABEL_REP_DATA_ASSEMBLY_PARAMETERS>
+   <STANDARD_DELIVERY_LABEL_REP_ARCHIVE_VARIABLES/>
+   <STANDARD_DELIVERY_LABEL_REP_TRANSLATIONS>
+      <REPORT_TEXTS>
+         <STANDARD_DELIVERY_LABEL>Sample</STANDARD_DELIVERY_LABEL>
+      </REPORT_TEXTS>
+      <ATTRIBUTE_DISPLAY_TEXTS>
+         <HANDLING_UNIT_IDS>
+            <HANDLING_UNIT>
+               <HANDLING_UNIT_ID>Handling Unit Id:</HANDLING_UNIT_ID>
+               <CONTRACT>Contract:</CONTRACT>
+               <COURIER_ID>Courier Id:</COURIER_ID>
+               <DAMAGED>Damaged:</DAMAGED>
+               <NUMBER_OF_PARCELS>Number Of Parcels:</NUMBER_OF_PARCELS>
+               <NUMBER_OF_PALLETS>Number Of Pallets:</NUMBER_OF_PALLETS>
+               <OFF_LOADER_NAME>Off Loader Name:</OFF_LOADER_NAME>
+               <RECEIVING_OPERATOR>Receiving Operator:</RECEIVING_OPERATOR>
+               <TRACKING_NUMBER>Tracking Number:</TRACKING_NUMBER>
+               <SUPPLIER>Supplier:</SUPPLIER>
+               <PRIORITY_LINES>Priority Lines:</PRIORITY_LINES>
+               <NONE_PRIORITY_LINES>None Priority Lines:</NONE_PRIORITY_LINES>
+               <OBJKEY>Objkey:</OBJKEY>
+            </HANDLING_UNIT>
+         </HANDLING_UNIT_IDS>
+      </ATTRIBUTE_DISPLAY_TEXTS>
+   </STANDARD_DELIVERY_LABEL_REP_TRANSLATIONS>
+   <STANDARD_DELIVERY_LABEL_REP>
+      <HANDLING_UNIT_IDS>
+         <HANDLING_UNIT>
+            <HANDLING_UNIT_ID>123</HANDLING_UNIT_ID>
+            <CONTRACT>ABC</CONTRACT>
+            <COURIER_ID>ABC</COURIER_ID>
+            <DAMAGED>ABC</DAMAGED>
+            <NUMBER_OF_PARCELS>123</NUMBER_OF_PARCELS>
+            <NUMBER_OF_PALLETS>123</NUMBER_OF_PALLETS>
+            <OFF_LOADER_NAME>ABC</OFF_LOADER_NAME>
+            <RECEIVING_OPERATOR>ABC</RECEIVING_OPERATOR>
+            <TRACKING_NUMBER>ABC</TRACKING_NUMBER>
+            <SUPPLIER>ABC</SUPPLIER>
+            <PRIORITY_LINES>123</PRIORITY_LINES>
+            <NONE_PRIORITY_LINES>123</NONE_PRIORITY_LINES>
+            <OBJKEY>ABC</OBJKEY>
+         </HANDLING_UNIT>
+         <HANDLING_UNIT>
+            <HANDLING_UNIT_ID>123</HANDLING_UNIT_ID>
+            <CONTRACT>ABC</CONTRACT>
+            <COURIER_ID>ABC</COURIER_ID>
+            <DAMAGED>ABC</DAMAGED>
+            <NUMBER_OF_PARCELS>123</NUMBER_OF_PARCELS>
+            <NUMBER_OF_PALLETS>123</NUMBER_OF_PALLETS>
+            <OFF_LOADER_NAME>ABC</OFF_LOADER_NAME>
+            <RECEIVING_OPERATOR>ABC</RECEIVING_OPERATOR>
+            <TRACKING_NUMBER>ABC</TRACKING_NUMBER>
+            <SUPPLIER>ABC</SUPPLIER>
+            <PRIORITY_LINES>123</PRIORITY_LINES>
+            <NONE_PRIORITY_LINES>123</NONE_PRIORITY_LINES>
+            <OBJKEY>ABC</OBJKEY>
+         </HANDLING_UNIT>
+      </HANDLING_UNIT_IDS>
+   </STANDARD_DELIVERY_LABEL_REP>
+</STANDARD_DELIVERY_LABEL_REP_REQUEST>

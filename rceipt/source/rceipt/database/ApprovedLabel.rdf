@@ -398,6 +398,10 @@ BEGIN
       Error_SYS.Appl_General(lu_name_, 'INCORRECTNOOFCOPIES1: Please define a value for No Of Labels 1.');   
    END IF;
    
+   IF (binds$_.no_of_labels1 <= 0 OR binds$_.no_of_copies1 <= 0 OR (TRUNC(binds$_.no_of_labels1, 0) != binds$_.no_of_labels1) OR (TRUNC(binds$_.no_of_copies1, 0) != binds$_.no_of_copies1)) THEN
+      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED1: Negative and decimals values are not allowed as Origin Pack Size 1 and No Of Labels 1');   
+   END IF;  
+   
    IF ((binds$_.origin_pack_size2 IS NOT NULL AND binds$_.no_of_labels2 IS NULL) OR (binds$_.origin_pack_size2 IS NULL AND binds$_.no_of_labels2 IS NOT NULL)) THEN
       Error_SYS.Appl_General(lu_name_, 'INCORRECTQTYPACK2: Both Origin Pack Size 2 and No Of Labels 2 should have a value.');   
    END IF;
@@ -406,6 +410,10 @@ BEGIN
       Error_SYS.Appl_General(lu_name_, 'INCORRECTNOOFCOPIES2: Please define a value for No Of Labels 2.');   
    END IF;
    
+   IF (binds$_.no_of_labels2 <= 0 OR binds$_.no_of_copies2 <= 0 OR (TRUNC(binds$_.no_of_labels2, 0) != binds$_.no_of_labels2) OR (TRUNC(binds$_.no_of_copies2, 0) != binds$_.no_of_copies2)) THEN
+      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED1: Negative and decimals values are not allowed as Origin Pack Size 2 and No Of Labels 2');   
+   END IF; 
+   
    IF ((binds$_.origin_pack_size3 IS NOT NULL AND binds$_.no_of_labels3 IS NULL) OR (binds$_.origin_pack_size3 IS NULL AND binds$_.no_of_labels3 IS NOT NULL)) THEN
       Error_SYS.Appl_General(lu_name_, 'INCORRECTQTYPACK3: Both Origin Pack Size 3 and No Of Labels 3 should have a value');   
    END IF;
@@ -413,6 +421,10 @@ BEGIN
     IF (binds$_.origin_pack_size3 IS NOT NULL AND binds$_.no_of_labels3 IS NOT NULL AND  binds$_.no_of_copies3 IS NULL) THEN
       Error_SYS.Appl_General(lu_name_, 'INCORRECTNOOFCOPIES3: Please define a value for No Of Labels 3.');   
    END IF;
+   
+   IF (binds$_.no_of_labels3 <= 0 OR binds$_.no_of_copies3 <= 0 OR (TRUNC(binds$_.no_of_labels3, 0) != binds$_.no_of_labels3) OR (TRUNC(binds$_.no_of_copies3, 0) != binds$_.no_of_copies3)) THEN
+      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED1: Negative and decimals values are not allowed as Origin Pack Size 3 and No Of Labels 3');   
+   END IF; 
    
    IF (((NVL(binds$_.origin_pack_size1, 0) * NVL(binds$_.no_of_labels1, 0)) + (NVL(binds$_.origin_pack_size2, 0) * NVL(binds$_.no_of_labels2,0)) + (NVL(binds$_.origin_pack_size3,0) * NVL(binds$_.no_of_labels3,0))) != inv_qty_in_store_) THEN
       Error_SYS.Appl_General(lu_name_, 'INCORRECTTOTALQTY: The total quantity for labels does not match with the real quantity in the receipt line.');   
