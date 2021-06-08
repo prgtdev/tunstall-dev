@@ -411,7 +411,7 @@ BEGIN
    END IF;
    
    IF (binds$_.no_of_labels2 <= 0 OR binds$_.no_of_copies2 <= 0 OR (TRUNC(binds$_.no_of_labels2, 0) != binds$_.no_of_labels2) OR (TRUNC(binds$_.no_of_copies2, 0) != binds$_.no_of_copies2)) THEN
-      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED1: Negative and decimals values are not allowed as Origin Pack Size 2 and No Of Labels 2');   
+      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED2: Negative and decimals values are not allowed as Origin Pack Size 2 and No Of Labels 2');   
    END IF; 
    
    IF ((binds$_.origin_pack_size3 IS NOT NULL AND binds$_.no_of_labels3 IS NULL) OR (binds$_.origin_pack_size3 IS NULL AND binds$_.no_of_labels3 IS NOT NULL)) THEN
@@ -423,7 +423,7 @@ BEGIN
    END IF;
    
    IF (binds$_.no_of_labels3 <= 0 OR binds$_.no_of_copies3 <= 0 OR (TRUNC(binds$_.no_of_labels3, 0) != binds$_.no_of_labels3) OR (TRUNC(binds$_.no_of_copies3, 0) != binds$_.no_of_copies3)) THEN
-      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED1: Negative and decimals values are not allowed as Origin Pack Size 3 and No Of Labels 3');   
+      Error_SYS.Appl_General(lu_name_, 'NEGATIVEORDECIMALNOTALLOWED3: Negative and decimals values are not allowed as Origin Pack Size 3 and No Of Labels 3');   
    END IF; 
    
    IF (((NVL(binds$_.origin_pack_size1, 0) * NVL(binds$_.no_of_labels1, 0)) + (NVL(binds$_.origin_pack_size2, 0) * NVL(binds$_.no_of_labels2,0)) + (NVL(binds$_.origin_pack_size3,0) * NVL(binds$_.no_of_labels3,0))) != inv_qty_in_store_) THEN
