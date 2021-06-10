@@ -1113,7 +1113,7 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
       -- The contract must be in the Completed status to be eligible to close
       IF (rec_.state not in ('Completed')) THEN
         valid_to_close_ := false;
-        Client_SYS.Add_To_Attr('CF$_ERROR_REPORTED','Sales Order must be in Completed status.', attr_);
+        Client_SYS.Add_To_Attr('CF$_ERROR_REPORTED','Sales Contract must be in Completed status.', attr_);
          IFSAPP.SALES_CONTRACT_CFP.Cf_Modify__(info_, rec_.objid,attr_,'','DO');
         CONTINUE;
       END IF;
