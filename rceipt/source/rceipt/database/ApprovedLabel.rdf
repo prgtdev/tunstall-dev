@@ -499,7 +499,7 @@ BEGIN
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'OWNERSHIP', part_ownership_);      
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', binds$_.serial_no); 
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'EXPIRATION_DATE', expiration_date_);
-         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIPT_DATE', Receipt_Info_API.Get_Arrival_Date(binds$_.receipt_sequence));
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIPT_DATE', SYSDATE);
          Xml_Record_Writer_SYS.Add_Element(xml$_, 'DEFAULT_LOCATION_NO', default_location_no_);
          Xml_Record_Writer_SYS.End_Element(xml$_, 'DETAIL');
          Add_Result_Row___(result_key$_,
