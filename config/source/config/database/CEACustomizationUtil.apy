@@ -1759,7 +1759,7 @@ END Copy_Circuit_Reference__;
   END Check_Cause_Discount;
   
   --C0367 EntChathI (START)  
-  FUNCTION Check_Inv_Header_CA(
+FUNCTION Check_Inv_Header_CA(
    identity_       IN VARCHAR2, 
    credit_analyst_ IN VARCHAR2, 
    company_ IN VARCHAR2) RETURN VARCHAR2
@@ -1769,7 +1769,7 @@ IS
    status_ VARCHAR2(100);
    inv_state_ VARCHAR2(100);
    inv_due_ DATE;
-   balance_ NUMBER;
+   current_bucket_ NUMBER;
    credit_note_ NUMBER;
    amount_due_ NUMBER;
    temp_ VARCHAR2(5):='FALSE';
@@ -1803,10 +1803,17 @@ IS
 
 
    CURSOR get_acount_due(company_ VARCHAR2, identity_ VARCHAR2)IS
-      SELECT amount_due, balance
+      SELECT amount_due
         FROM identity_pay_info_cu_qry
        WHERE company = company_
-   AND identity = identity_;
+       AND identity = identity_;
+   
+   CURSOR get_aging_bucket (company_ VARCHAR2, invoice_id_ VARCHAR2)IS
+      SELECT 1
+      FROM bucket_invoice_cu_query 
+      WHERE bucket =1
+      AND company = company_
+      AND invoice_id = invoice_id_ ;
   
 BEGIN
    FOR rec_ IN get_inv_headers(identity_,credit_analyst_ , company_ ) LOOP
@@ -1827,15 +1834,19 @@ BEGIN
       END IF;      
 
       OPEN  get_acount_due(rec_.company, rec_.identity);
-      FETCH  get_acount_due INTO amount_due_, balance_;
+      FETCH  get_acount_due INTO amount_due_;
       CLOSE get_acount_due;
 
       IF(credit_note_ IS NULL AND amount_due_>0)THEN 
          temp_ := 'TRUE';
          EXIT;
       END IF; 
-
-      IF(status_ NOT IN ('Complete','Escalated to Credit Manager','Escalated to Finance Controller') AND balance_ >0)THEN
+      
+      OPEN  get_aging_bucket(rec_.company, rec_.invoice_id);
+      FETCH  get_aging_bucket INTO  current_bucket_;
+      CLOSE get_aging_bucket;
+      
+      IF(status_ NOT IN ('Complete','Escalated to Credit Manager','Escalated to Finance Controller') AND current_bucket_ IS NULL)THEN
          temp_ := 'TRUE';
          EXIT;
       END IF;
