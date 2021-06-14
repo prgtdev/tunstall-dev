@@ -225,6 +225,17 @@ FUNCTION Get_Phase_Out_Date__(
    eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC;
 
 -- C0401 EntPrageG (END)
+
+-- C0436 EntPrageG (START)
+FUNCTION Get_Document_Title__(
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2;
+
+FUNCTION Get_Doc_Resp_Per_Email__(
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2;
+
+FUNCTION Get_Doc_Resp_Person__ (
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2;
+-- C0436 EntPrageG (END)   
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------

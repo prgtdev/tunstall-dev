@@ -23,7 +23,36 @@ CREATE OR REPLACE PACKAGE BODY &PKG IS
 -----------------------------------------------------------------------------
 -------------------- LU SPECIFIC IMPLEMENTATION METHODS ---------------------
 -----------------------------------------------------------------------------
+--  
+-- C0436 EntPrageG (START)
+PROCEDURE Get_Document_Keys_From_Key_Ref___(
+   doc_class_ OUT VARCHAR2,
+   doc_no_    OUT VARCHAR2,
+   doc_sheet_ OUT VARCHAR,
+   doc_rev_   OUT VARCHAR2,
+   key_ref_    IN VARCHAR2)
+IS
+BEGIN
+   doc_class_ := Client_SYS.Get_Key_Reference_Value(key_ref_, 'DOC_CLASS');
+   doc_no_ := Client_SYS.Get_Key_Reference_Value(key_ref_, 'DOC_NO');
+   doc_sheet_ := Client_SYS.Get_Key_Reference_Value(key_ref_, 'DOC_SHEET');
+   doc_rev_ := Client_SYS.Get_Key_Reference_Value(key_ref_, 'DOC_REV');   
+END Get_Document_Keys_From_Key_Ref___;
 
+FUNCTION Get_Doc_Resp_Person___ (
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2
+IS
+   doc_class_  VARCHAR2(20);
+   doc_no_     VARCHAR2(20);
+   doc_sheet_  VARCHAR(20);
+   doc_rev_    VARCHAR2(20);  
+   resp_per_ VARCHAR2(50);
+BEGIN
+   Get_Document_Keys_From_Key_Ref___(doc_class_,doc_no_,doc_sheet_,doc_rev_,key_ref_);
+   resp_per_:= Doc_Issue_API.Get_Doc_Resp_Sign(doc_class_,doc_no_,doc_sheet_,doc_rev_);
+RETURN resp_per_;
+END Get_Doc_Resp_Person___;
+-- C0436 EntPrageG (END)
 
 -----------------------------------------------------------------------------
 -------------------- LU SPECIFIC PRIVATE METHODS ----------------------------
@@ -2680,9 +2709,51 @@ EXCEPTION
    WHEN OTHERS THEN
       RETURN NULL;
 END Get_Phase_Out_Date__;
-
 -- C0401 EntPrageG (END)
 
+-- C0436 EntPrageG (START)
+FUNCTION Get_Document_Title__(
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2
+IS
+   doc_class_ VARCHAR2(20);
+   doc_no_ VARCHAR2(20);
+   doc_sheet_ NUMBER;
+   doc_rev_ VARCHAR2(10);
+   title_ VARCHAR2(100);
+BEGIN
+   Get_Document_Keys_From_Key_Ref___(doc_class_,doc_no_,doc_sheet_,doc_rev_,key_ref_);
+   
+   SELECT title
+     INTO title_
+     FROM doc_issue_reference
+    WHERE doc_class = doc_class_
+      AND doc_no = doc_no_
+      AND doc_sheet = doc_sheet_
+      AND doc_rev = doc_rev_;
+   RETURN title_;
+EXCEPTION
+   WHEN OTHERS THEN
+      RETURN NULL;
+END Get_Document_Title__;  
+
+FUNCTION Get_Doc_Resp_Person__ (
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2
+IS
+BEGIN
+   RETURN Person_Info_API.Get_Name(Get_Doc_Resp_Person___(key_ref_));
+END Get_Doc_Resp_Person__;
+
+FUNCTION Get_Doc_Resp_Per_Email__(
+   key_ref_ IN VARCHAR2) RETURN VARCHAR2
+IS
+   resp_per_ VARCHAR2(50);
+   email_ VARCHAR2(50);
+BEGIN
+   resp_per_:= Get_Doc_Resp_Person___(key_ref_);
+   email_:= Comm_Method_API.Get_Comm_Method('PERSON',resp_per_,'E_MAIL',SYSDATE);   
+   RETURN email_;
+END Get_Doc_Resp_Per_Email__;
+-- C0436 EntPrageG (END)
 
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
