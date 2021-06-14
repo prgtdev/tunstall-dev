@@ -2629,7 +2629,7 @@ IS
                 );
    BEGIN                       
       FOR rec_ IN get_component_part_  LOOP          
-        hierachy_ := hierachy_  ||','|| LPAD(level_,(level_),'.') || '#<>#' ||rec_.part_no || '#<>#' ||rec_.qty_per_assembly;
+        hierachy_ := hierachy_  ||','|| LPAD(level_,(level_),'.') || '#<>#' ||rec_. part_no || ' - ' || rec_. bom_Type || ' - ' || rec_. eng_Chg_level || ' - ' || rec_. alternative_no || ' - ' || contract_ || '#<>#' ||rec_.qty_per_assembly;
         next_level_ := level_+1;
         Build_Part_Hierachy___(hierachy_,rec_.part_no, contract_,next_level_,rec_.eff_phase_in_date,rec_.eff_phase_out_date);                             
       END LOOP; 
@@ -2671,7 +2671,7 @@ IS
 BEGIN
    phase_in_date_:= Get_Phase_In_Date___(part_no_,eng_chg_level_);
    phase_out_date_ := Get_Phase_Out_Date___(part_no_,part_no_);
-   hierachy_ := '1' || '#<>#' || part_no_;
+   hierachy_ := '1' || '#<>#' || part_no_ || ' - ' || eng_chg_level_;
    Build_Part_Hierachy___(hierachy_,part_no_,contract_,2,phase_in_date_,phase_out_date_);
    RETURN hierachy_;
 END Get_Part_Hierachy__; 
