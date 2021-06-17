@@ -176,8 +176,8 @@ FUNCTION Get_Period_Target(
 FUNCTION Get_Cash_Collected(
    credit_analyst_ IN VARCHAR2,
    company_        IN VARCHAR2,
-   target_period_  IN VARCHAR2) RETURN NUMBER;
---C0367 EntChathI (END)
+   target_period_  IN VARCHAR2) RETURN NUMBER; 
+ --C0367 EntChathI (END)
 
 --C0448 EntPrageG (START)
 
@@ -236,6 +236,58 @@ FUNCTION Get_Doc_Resp_Per_Email__(
 FUNCTION Get_Doc_Resp_Person__ (
    key_ref_ IN VARCHAR2) RETURN VARCHAR2;
 -- C0436 EntPrageG (END)   
+--C0368 EntChathI (START)
+FUNCTION Check_Credit_Note_Queries_CM(
+   company_    IN VARCHAR2,
+   credit_manager_ IN VARCHAR2,
+   identity_       IN VARCHAR2,
+   type_           IN varchar2) RETURN VARCHAR2;
+
+FUNCTION Check_Inv_Header_CM(
+   identity_       IN VARCHAR2,
+   credit_manager_ IN VARCHAR2,
+   company_        IN VARCHAR2) RETURN VARCHAR2;
+   
+FUNCTION Check_Cr_Note_Queries_All_CM(
+   company_    IN VARCHAR2,
+   identity_   IN VARCHAR2) RETURN VARCHAR2;
+   
+FUNCTION Get_CA_Open_Items_Count(
+   company_        IN VARCHAR2,
+   credit_analyst_ IN VARCHAR2) RETURN NUMBER;
+   
+FUNCTION Check_Credit_Legal_CM(
+   company_        IN VARCHAR2,
+   credit_manager_ IN VARCHAR2,
+   identity_       IN VARCHAR2) RETURN VARCHAR2;
+   
+FUNCTION Check_Cr_Escalated_FC_CM(
+   company_    IN VARCHAR2,
+   credit_manager_ IN VARCHAR2,
+   identity_       IN VARCHAR2) RETURN VARCHAR2;
+   
+FUNCTION Check_Escalated_CM(
+   company_        IN VARCHAR2,
+   credit_manager_ IN VARCHAR2,
+   identity_       IN VARCHAR2)  RETURN VARCHAR2;
+
+FUNCTION Get_Team_Period_Target(
+   company_        IN VARCHAR2,
+   target_period_  IN VARCHAR2) RETURN NUMBER;
+
+FUNCTION Get_Team_Cash_Collected(
+   company_        IN VARCHAR2,
+   target_period_  IN VARCHAR2) RETURN NUMBER ;
+
+FUNCTION Check_Cr_Note_Concecutive(company_        IN VARCHAR2,
+                                   credit_manager_ IN VARCHAR2,
+                                   identity_       IN VARCHAR2) RETURN VARCHAR2;
+
+FUNCTION Check_Followup_Date_Mised(
+   company_        IN VARCHAR2,
+   credit_manager_  IN VARCHAR2,
+   identity_       IN VARCHAR2) RETURN VARCHAR2 ;
+--C0368 EntChathI (END) 
 -----------------------------------------------------------------------------
 -------------------- FOUNDATION1 METHODS ------------------------------------
 -----------------------------------------------------------------------------
