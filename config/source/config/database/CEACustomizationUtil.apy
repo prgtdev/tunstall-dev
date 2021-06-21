@@ -1811,7 +1811,7 @@ END Copy_Circuit_Reference__;
          FROM SERVICE_INVOICE_UIV
  where (service_invoice_id IN
        (SELECT service_invoice_id
-           FROM IFSAPP.JT_TASK_SALES_LINE_UIV
+           FROM JT_TASK_SALES_LINE_UIV
           WHERE ((task_seq IN (SELECT task_seq
                                  FROM IFSAPP.JT_TASK_UIV
                                 WHERE wo_no = wo_no_)) OR
