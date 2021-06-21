@@ -74,6 +74,15 @@ CURSOR get_inventory_transaction_history_line (wo_no_ NUMBER,maint_material_orde
       Transaction_SYS.Log_Status_Info(message_,'INFO');
    END Log_Info___;
    
+   PROCEDURE Log_Progress___(
+      message_ IN VARCHAR2)
+   IS
+   BEGIN
+      dbms_output.Put_Line(message_);
+      Transaction_SYS.Log_Progress_Info(message_);
+   END Log_Progress___;
+   
+   
    PROCEDURE Log_Warning___(
       message_ IN VARCHAR2)
    IS
@@ -151,10 +160,12 @@ BEGIN
        AND state = 'Active';
    RETURN TRUE;
 EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+      RETURN FALSE;
    WHEN TOO_MANY_ROWS THEN -- TO-DO: Log Error
-      RETURN TRUE;
+      RAISE;
    WHEN OTHERS THEN
-      RETURN TRUE; -- TO-DO: Log Error
+      RAISE; -- TO-DO: Log Error
 END Fixed_Asset_Object_Exist___;
    
 PROCEDURE Get_Preposting_Data___(
@@ -1079,7 +1090,9 @@ IS
    acc_year_ NUMBER;
    voucher_type_ VARCHAR2(2) := 'M';
    voucher_amount_ NUMBER;             
-                   
+  
+   success_ BOOLEAN := FALSE;
+   
    PROCEDURE Remove_Default_property_Codes___(
       object_id_ IN VARCHAR2)
    IS
@@ -1112,7 +1125,8 @@ IS
       WHEN OTHERS THEN
          RETURN NULL;
    END Get_Cost___;
-BEGIN
+BEGIN    
+      Log_Progress___('Create FA Objects - Started'); 
    FOR req_line_rec_ IN  get_material_req_lines      
       LOOP
       FOR trans_his_line_rec_ IN get_inventory_transaction_history_line(req_line_rec_.wo_no, 
@@ -1185,7 +1199,8 @@ BEGIN
                Update_General_Ledger___(trans_his_line_rec_.company,voucher_msg_);
                
                Log_Info___('Updating object status to Active');
-               Update_Object_Status___(objid_,objversion_,'ACTIVE');                                                       
+               Update_Object_Status___(objid_,objversion_,'ACTIVE');
+               success_ := TRUE;
             END IF;
          EXCEPTION
             WHEN OTHERS THEN
@@ -1193,6 +1208,10 @@ BEGIN
          END;
       END LOOP;      
    END LOOP;
+   Log_Progress___('Create FA Objects - Completed');
+   IF NOT success_ THEN
+      Log_Info___('No FA Objects Ceated!');
+   END IF;
 EXCEPTION
    WHEN OTHERS THEN
       Log_Error___(SUBSTR(SQLERRM, 1, 200));
@@ -1203,6 +1222,8 @@ PROCEDURE Reissue_Asset_Object_
 IS
    object_id_   VARCHAR2(20);
    deinstall_date_ DATE;
+   
+   success_ BOOLEAN := FALSE;
    
    FUNCTION Get_Deinstallation_Date___(
       wo_no_            IN VARCHAR2,
@@ -1229,6 +1250,7 @@ IS
          RETURN NULL;
    END Get_Deinstallation_Date___;         
 BEGIN
+   Log_Progress___('Reissue FA Objects - Started'); 
    FOR req_line_rec_ IN  get_material_req_lines
    LOOP      
       FOR trans_his_line_rec_ IN get_inventory_transaction_history_line(req_line_rec_.wo_no, 
@@ -1256,7 +1278,8 @@ BEGIN
                                        req_line_rec_.part_no,
                                        trans_his_line_rec_.date_created,
                                        trans_his_line_rec_.condition_code,                                    
-                                       trans_his_line_rec_.date_created);  
+                                       trans_his_line_rec_.date_created); 
+                  success_ := TRUE;
                END IF;   
             END IF;
          EXCEPTION
@@ -1265,6 +1288,10 @@ BEGIN
          END;
       END LOOP;      
    END LOOP;
+   IF NOT success_ THEN
+      Log_Info___('No FA Objects Reissued!');   
+   END IF;
+   Log_Progress___('Reissue FA Objects - Completed'); 
 EXCEPTION
    WHEN OTHERS THEN
       Log_Error___(SUBSTR(SQLERRM, 1, 200));
@@ -1273,6 +1300,8 @@ END Reissue_Asset_Object_;
 PROCEDURE Return_Obj_To_Fa_Stock_Pool_
 IS
    object_id_ VARCHAR2(20);
+   
+   success_ BOOLEAN := FALSE;
    
    CURSOR work_order_returns
     IS
@@ -1340,6 +1369,7 @@ IS
    END Update_Properties___;   
 
 BEGIN
+   Log_Progress___('Return FA Objects to FA Stock Pool - Started'); 
    FOR rec_ IN work_order_returns LOOP
       BEGIN
          IF Fixed_Asset_Object_Exist___(object_id_,rec_.part_no, rec_.serial_no) THEN
@@ -1351,9 +1381,13 @@ BEGIN
          END IF;
       EXCEPTION
             WHEN OTHERS THEN
-               Log_Warning___(SUBSTR(SQLERRM, 1, 200));
+               Log_Warning___(SUBSTR(SQLERRM, 1, 200) || 'Object ID ' || object_id_);
       END;
    END LOOP;
+   IF NOT success_ THEN
+      Log_Info___('No FA Objects Returned!');   
+   END IF;
+   Log_Progress___('Return FA Objects to FA Stock Pool - Completed'); 
 EXCEPTION
    WHEN OTHERS THEN
       Log_Error___(SUBSTR(SQLERRM, 1, 200));   
@@ -1364,6 +1398,9 @@ IS
    object_id_ VARCHAR2(20);
    state_ VARCHAR2(20);
    disposal_reason_ VARCHAR2(20) := 'SCRAPMSFA';
+   
+   success_ BOOLEAN := FALSE;
+   
    CURSOR get_scrap_inventory
       IS
         SELECT Site_API.Get_Company(contract) company,
@@ -1373,6 +1410,7 @@ IS
          WHERE serial_no IS NOT NULL
            AND date_created < (SYSDATE - 1);
 BEGIN
+   Log_Progress___('Scrap FA Objects From FA Register - Started');
    FOR scrap_inventory_rec_ IN get_scrap_inventory
    LOOP
       BEGIN
@@ -1383,11 +1421,16 @@ BEGIN
                Scrap_Fa_Object___(scrap_inventory_rec_.company,object_id_,disposal_reason_);   
             END IF;   
          END IF;
+         success_ := TRUE;
       EXCEPTION
          WHEN OTHERS THEN
             Log_Warning___(SUBSTR(SQLERRM, 1, 200));
       END;
-   END LOOP;   
+   END LOOP;
+   IF NOT success_ THEN
+      Log_Info___('No FA Objects Scrapped!');   
+   END IF;
+   Log_Progress___('Scrap FA Objects From FA Register - Completed');   
 EXCEPTION
    WHEN OTHERS THEN
       Log_Error___(SUBSTR(SQLERRM, 1, 200));
@@ -1399,6 +1442,8 @@ IS
    cost_ NUMBER;   
    voucher_amount_ NUMBER;
    disposal_reason_ VARCHAR2(20) := 'SCRAPSERVCON';
+   
+   success_ BOOLEAN;
    
    FUNCTION Get_Book_Id___(
       company_   IN VARCHAR2,
@@ -1440,6 +1485,7 @@ IS
          RETURN NULL;
    END Get_Cost___;
 BEGIN
+   Log_Progress___('Scrap None FA Contract FA Objects - Started'); 
    FOR req_line_rec_ IN  get_material_req_lines
    LOOP
       FOR trans_his_line_rec_ IN get_inventory_transaction_history_line(req_line_rec_.wo_no, 
@@ -1475,6 +1521,7 @@ BEGIN
                                                 req_line_rec_.spare_contract,
                                                 'CONVERTFA',
                                                 cost_);
+                  success_ := TRUE;
                END IF;
             END IF;
          EXCEPTION
@@ -1483,6 +1530,10 @@ BEGIN
          END;          
       END LOOP;   
    END LOOP;
+   IF NOT success_ THEN
+      Log_Info___('No FA Objects Scrapped!');   
+   END IF;
+   Log_Progress___('Scrap None FA Contract FA Objects - Completed');
 EXCEPTION
    WHEN OTHERS THEN
          Log_Error___(SUBSTR(SQLERRM, 1, 200));      
