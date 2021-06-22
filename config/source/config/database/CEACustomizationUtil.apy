@@ -1688,87 +1688,107 @@ END Copy_Circuit_Reference__;
 --C0628 EntPrageG (END)
 
   --C0613 EntChathI (START)
- FUNCTION Check_Cause_Discount(wo_no_   IN NUMBER,
-                                company_ IN varchar2,
-                                site_    IN VARCHAR2,
-                                type_    IN varchar2) return VARCHAR2 IS
-  
-    temp_               VARCHAR2(5) := 'FALSE';
-    cause_discount_     number;
-    material_discount_  number;
-    personnel_discount_ number;
-    cause_objkey_       varchar2(2000);
-  
-    cursor get_wo_tasks is
-      select task_seq
-        from JT_TASK_UIV_CFV
-       where wo_no = wo_no_
-         and company like NVL(company_, '%')
-         and site like NVL(site_, '%')
-         and ERROR_CAUSE is not null
-         and CF$_SERVICE_PACKAGE is not null;
-  
-    cursor get_cause_details(in_wo_no_ number, task_seq_ number) is
-      SELECT cf$_material_discount, cf$_personnel_discount
-        FROM SERVICE_PACKAGE_DETAIL_CLT
-       WHERE cf$_cause in
-             (select objkey
-                from IFSAPP.MAINTENANCE_CAUSE_CODE
-               where ERR_CAUSE in (select ERROR_CAUSE
-                                     from IFSAPP.JT_TASK_UIV_CFV
-                                    where wo_no = in_wo_no_
-                                      and TASK_SEQ = task_seq_))
-         and CF$_SERVICE_PACKAGE in
-             (select OBJKEY
-                from IFSAPP.SERVICE_PACKAGE_CLV
-               where CF$_NAME in (select CF$_SERVICE_PACKAGE
-                                    from IFSAPP.JT_TASK_UIV_CFV
-                                   where wo_no = in_wo_no_
-                                     and TASK_SEQ = task_seq_));
-  
-    cursor get_wo_task_cause(in_wo_no_ number) is
-      select error_cause, REPORTED_OBJ_CONN_ROWKEY
-        from JT_TASK_UIV
-       where wo_no = in_wo_no_
-         and error_cause is not null;
-  
-    cursor get_cause(error_cause_              varchar2,
-                     reported_obj_conn_rowkey_ varchar2) is
-      select objkey
-        from SERVICE_PACKAGE_DETAIL_CLV t
-       where cf$_cause = error_cause_
-         and cf$_Service_package =
-             Jt_Task_Cfp.Get_Cf$_Service_Package(reported_obj_conn_rowkey_);
-  
-  BEGIN
+FUNCTION Check_Cause_Discount(
+   wo_no_   IN NUMBER,
+   type_    IN VARCHAR2) return VARCHAR2 IS
 
-    for tasks_ in get_wo_tasks loop
-      if (get_wo_tasks%notfound) then
-        temp_ := 'FALSE';
-        exit;
-      else
-        open get_cause_details(wo_no_, tasks_.task_seq);
-        fetch get_cause_details
-          into material_discount_, personnel_discount_;
-        close get_cause_details;
+   temp_                  VARCHAR2(5) := 'FALSE';
+      cause_discount_        NUMBER;
+      material_discount_     NUMBER;
+      personnel_discount_    NUMBER;
+      pm_material_discount_  NUMBER;
+      pm_personnel_discount_ NUMBER;
+      cause_objkey_          VARCHAR2(2000);
+   
+      CURSOR get_wo_tasks is
+         SELECT task_seq,
+                work_type_id,
+                t.error_cause,
+                t.cf$_service_package
+           FROM JT_TASK_UIV_CFV t
+          WHERE wo_no = wo_no_
+            AND Active_Separate_API.Get_State(wo_no) = 'Reported'
+            AND NVL((SELECT t.cf$_ready_to_invoice
+                      FROM ACTIVE_SEPARATE_CFT t
+                     WHERE rowkey IN (SELECT objkey
+                                        FROM ACTIVE_SEPARATE_UIV
+                                       WHERE wo_no = wo_no_)), 'FALSE') = 'FALSE';
+   
+      CURSOR get_cause_details(in_wo_no_ NUMBER, task_seq_ NUMBER) IS
+         SELECT cf$_material_discount,
+                cf$_personnel_discount,
+                t.cf$_pm_material_discount,
+                t.cf$_pm_personnel_discount
+           FROM service_package_detail_clt t
+          WHERE cf$_cause IN
+                (SELECT objkey
+                   FROM maintenance_cause_code
+                  WHERE err_cause IN
+                        (SELECT error_cause
+                           FROM jt_task_uiv_cfv
+                          WHERE wo_no = in_wo_no_
+                            AND task_seq = task_seq_))
+            AND cf$_service_package in
+                (SELECT objkey
+                   FROM service_package_clv
+                  WHERE CF$_NAME IN
+                        (SELECT cf$_service_package
+                           FROM jt_task_uiv_cfv
+                          WHERE wo_no = in_wo_no_
+                            AND task_seq = task_seq_));
+   
+   BEGIN
+   
+      FOR tasks_ IN get_wo_tasks LOOP
+         IF (get_wo_tasks%notfound) THEN
+            temp_ := 'FALSE';
+            EXIT;
+         ELSE
+            OPEN get_cause_details(wo_no_, tasks_.task_seq);
+            FETCH get_cause_details
+               INTO material_discount_,
+                    personnel_discount_,
+                    pm_material_discount_,
+                    pm_personnel_discount_;
+            CLOSE get_cause_details;
+         
+            IF (type_ = 'Chargeable') THEN
+               IF (tasks_.cf$_service_package IS NULL OR  tasks_.error_cause IS NULL) THEN
+                  temp_ := 'TRUE';
+                  EXIT;
+               END IF;
+               IF (Work_Type_API.Get_Work_Type_Category(tasks_.work_type_id) = 'Preventive') THEN
+                  IF (pm_material_discount_ = 0 AND pm_personnel_discount_ = 0) THEN
+                     temp_ := 'TRUE';
+                     EXIT;
+                  END IF;
+               ELSE
+                  IF (material_discount_ = 0 AND personnel_discount_ = 0) THEN
+                     temp_ := 'TRUE';
+                     EXIT;
+                  END IF;
+               
+               END IF;
+            
+            ELSIF (type_ = 'Non-Chargeable') THEN
+               IF (Work_Type_API.Get_Work_Type_Category(tasks_.work_type_id) = 'Preventive') THEN
+                  IF (pm_material_discount_ = 1 AND pm_personnel_discount_ = 1) THEN
+                     temp_ := 'TRUE';
+                     EXIT;
+                  END IF;
+               ELSE
+                  IF (material_discount_ = 1 AND personnel_discount_ = 1) THEN
+                     temp_ := 'TRUE';
+                     EXIT;
+                  END IF;               
+               END IF;
+            END IF;
+         END IF;
       
-        if (type_ = 'Chargeable') then
-          if (material_discount_ = 0 and personnel_discount_ = 0) then
-            temp_ := 'TRUE';
-            exit;
-          end if;
-        elsif (type_ = 'Non-Chargeable') then
-          if (material_discount_ = 1 and personnel_discount_ = 1) then
-            temp_ := 'TRUE';
-            exit;
-          end if;
-        end if;
-      end if;
-    
-    end loop;
-
-    return temp_;
-  END Check_Cause_Discount;
+      END LOOP;
+   
+      RETURN temp_;
+   END Check_Cause_Discount;
   
   FUNCTION Check_Inv_Preview(wo_no_ IN NUMBER) RETURN VARCHAR2 IS
       temp_               VARCHAR2(5) := 'FALSE';

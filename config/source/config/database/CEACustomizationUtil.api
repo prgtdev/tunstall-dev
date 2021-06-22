@@ -125,9 +125,7 @@ FUNCTION Get_Allowed_Tax_Codes__(
       part_rev_ IN VARCHAR2);  
 --C0613 EntChathI (START)   
 FUNCTION Check_Cause_Discount(wo_no_   IN NUMBER,
-                                company_ IN varchar2,
-                                site_    IN VARCHAR2,
-                                type_    IN varchar2) return VARCHAR2 ;
+                              type_    IN VARCHAR2) return VARCHAR2 ;
 
 FUNCTION Check_Inv_Preview(wo_no_ IN NUMBER) RETURN VARCHAR2;
   --C0613 EntChathI (END)
