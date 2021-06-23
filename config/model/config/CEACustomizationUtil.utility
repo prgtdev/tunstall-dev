@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UTILITY xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:ifsworld-com:schemas:utility_utility">
+   <CODE_GENERATION_PROPERTIES>
+      <CODE_GENERATION_PROPERTIES>
+         <DB_PACKAGE_NAME>C_EA_Customization_Util_API</DB_PACKAGE_NAME>
+      </CODE_GENERATION_PROPERTIES>
+   </CODE_GENERATION_PROPERTIES>
+   <NAME>CEACustomizationUtil</NAME>
+   <COMPONENT>CONFIG</COMPONENT>
+</UTILITY>

@@ -2642,7 +2642,7 @@ IS
       CURSOR get_component_part_ IS
          SELECT part_no,
                 bom_Type,
-                eng_Chg_level,
+                eng_chg_level,
                 alternative_no,
                 contract,
                 qty_per_assembly,
@@ -2652,7 +2652,7 @@ IS
           WHERE component_part = part_no_
             AND contract = contract_
             AND bom_type_db IN ('M', 'T')
-            AND eng_Chg_level IN
+            AND eng_chg_level IN
                               (SELECT eng_chg_level
                                  FROM manuf_structure
                                 WHERE component_contract = t.component_contract
@@ -2672,7 +2672,7 @@ IS
                 );
    BEGIN                       
       FOR rec_ IN get_component_part_  LOOP          
-        hierachy_ := hierachy_  ||','|| LPAD(level_,(level_),'.') || '#<>#' ||rec_. part_no || ' - ' || rec_. bom_Type || ' - ' || rec_. eng_Chg_level || ' - ' || rec_. alternative_no || ' - ' || contract_ || '#<>#' ||rec_.qty_per_assembly;
+        hierachy_ := hierachy_  ||','|| LPAD(level_,(level_),'.') || '<<#>>' ||rec_. part_no || '<<>>' || rec_. bom_Type || '<<>>' || rec_. eng_chg_level || '<<>>' || rec_. alternative_no || '<<>>' || contract_ || '<<#>>' ||rec_.qty_per_assembly;
         next_level_ := level_+1;
         Build_Part_Hierachy___(hierachy_,rec_.part_no, contract_,next_level_,rec_.eff_phase_in_date,rec_.eff_phase_out_date);                             
       END LOOP; 
@@ -2714,7 +2714,7 @@ IS
 BEGIN
    phase_in_date_:= Get_Phase_In_Date___(part_no_,eng_chg_level_);
    phase_out_date_ := Get_Phase_Out_Date___(part_no_,part_no_);
-   hierachy_ := '1' || '#<>#' || part_no_ || ' - ' || eng_chg_level_;
+   hierachy_ := '1' || '<<#>>' || part_no_ || '<<>>' || '' || '<<>>' || eng_chg_level_ || '<<>>' || '' || '<<>>' || contract_;
    Build_Part_Hierachy___(hierachy_,part_no_,contract_,2,phase_in_date_,phase_out_date_);
    RETURN hierachy_;
 END Get_Part_Hierachy__; 
