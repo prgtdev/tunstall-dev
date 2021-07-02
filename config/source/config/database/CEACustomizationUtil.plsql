@@ -3443,4 +3443,48 @@ BEGIN
 END Get_Identity;
 --C449 EntChamuA (END)
 
+-- C631 EntMahesR (START)
+FUNCTION Get_Total_Charge_Cost (
+    quotation_no_  IN VARCHAR2,
+    charge_type_   IN VARCHAR2 ) RETURN NUMBER
+IS 
+   charge_cost_         sales_part_charge.charge_cost%TYPE;
+   charge_cost_percent_ sales_part_charge.charge_cost_percent%TYPE;
+   total_charge_cost_   NUMBER := 0;
+   contract_            order_quotation.contract%TYPE;
+   
+   CURSOR get_total_qty IS
+      SELECT q.catalog_no, sum(q.buy_qty_due) buy_qty_total
+         FROM order_quotation_line q, sales_part_charge c
+         WHERE q.contract = c.contract
+         AND q.catalog_no = c.catalog_no
+         AND q.order_supply_type_db = 'PKG'
+         AND q.quotation_no = quotation_no_ 
+         AND c.charge_type = charge_type_
+         GROUP BY q.catalog_no;         
+      
+   CURSOR get_charge_cost_percent(contract_ VARCHAR2, catalog_no_ VARCHAR2) IS
+      SELECT charge_cost_percent
+      FROM sales_part_charge c
+      WHERE contract = contract_
+      AND   catalog_no = catalog_no_
+      AND   charge_type = charge_type_
+      AND   customer_no = '*'; 
+BEGIN
+   contract_ := Order_Quotation_API.Get_Contract(quotation_no_);
+   FOR rec_ IN get_total_qty LOOP      
+      charge_cost_ := Sales_Part_Charge_API.Get_Charge_Cost(contract_, rec_.catalog_no, charge_type_, '*');
+      IF (charge_cost_ IS NOT NULL) THEN
+         total_charge_cost_ := total_charge_cost_ +  (charge_cost_ * rec_.buy_qty_total);  
+      ELSE
+         OPEN get_charge_cost_percent(contract_, rec_.catalog_no);
+         FETCH get_charge_cost_percent INTO charge_cost_percent_;
+         CLOSE get_charge_cost_percent;
+         total_charge_cost_ := total_charge_cost_ + (Sales_Part_API.Get_Total_Cost(contract_, rec_.catalog_no) * (charge_cost_percent_ / 100) * rec_.buy_qty_total);
+      END IF;       
+   END LOOP;  
+   RETURN total_charge_cost_;
+END Get_Total_Charge_Cost; 
+-- C631 EntMahesR (END)
+
 -------------------- LU  NEW METHODS -------------------------------------
