@@ -2177,47 +2177,27 @@ END Check_Credit_Note_Queries;
   
 FUNCTION Check_Credit_Legal(
    company_        IN VARCHAR2,
-   credit_analyst_ IN VARCHAR2,
    identity_       IN VARCHAR2) RETURN VARCHAR2 
 IS  
-   status_ varchar2(100);
+   customer_model_ VARCHAR2(100);
    temp_   varchar2(5) := 'FALSE';
    
-   CURSOR get_inv_headers(identity_     VARCHAR2,
-                        credit_analyst_ VARCHAR2,
-                        company_        VARCHAR2) IS
-      SELECT company, identity, invoice_id
-        FROM outgoing_invoice_qry
+   CURSOR get_customer_model(identity_     VARCHAR2,
+                             company_      VARCHAR2) IS
+      SELECT cf$_Customer_Model
+        FROM customer_credit_info_cust_cfv
        WHERE identity = identity_
-         AND Customer_Credit_Info_API.Get_Credit_Analyst_Code(company_,identity_) LIKE  NVL(credit_analyst_, '%')
-         AND company = company_;
-
-   CURSOR get_inv_header_notes(company_  VARCHAR2,
-                             identity_   VARCHAR2,
-                             invoice_id_ NUMBER) IS
-      SELECT *
-        FROM (SELECT Credit_Note_Status_API.Get_Note_Status_Description(company,note_status_id)
-                FROM invoice_header_notes
-               WHERE company = company_
-                 AND identity = identity_
-                 AND party_type = 'Customer'
-                 AND invoice_id = invoice_id_
-               ORDER BY follow_up_date DESC, note_id DESC)
-       WHERE rownum = 1;
+         AND company LIKE NVL(company_,'%');
   
 BEGIN
   
-   FOR rec_ in get_inv_headers(identity_, credit_analyst_, company_) LOOP
-      OPEN get_inv_header_notes(rec_.company,rec_.identity,rec_.invoice_id);
-      FETCH get_inv_header_notes
-        into status_;
-      CLOSE get_inv_header_notes;
-
-      IF (status_ IN ('Legal')) THEN
-        temp_ := 'TRUE';
-        EXIT;
-      END IF;
-   END LOOP;
+   OPEN get_customer_model(identity_, company_);
+   FETCH get_customer_model INTO customer_model_;
+   CLOSE get_customer_model;
+   
+   IF(customer_model_ ='LEGAL')THEN
+      temp_ := 'TRUE';
+   END IF;
    RETURN temp_;  
     
 END Check_Credit_Legal;
