@@ -2,17 +2,17 @@
 
 <report-layout>
    <properties>
-      <height>35.7mm</height>
+      <height>41.3mm</height>
       <initial-page-number>1</initial-page-number>
-      <margin-bottom>0.3mm</margin-bottom>
-      <margin-left>1.7mm</margin-left>
-      <margin-right>1.8mm</margin-right>
-      <margin-top>5.4mm</margin-top>
+      <margin-bottom>1.5mm</margin-bottom>
+      <margin-left>3.5mm</margin-left>
+      <margin-right>0.2mm</margin-right>
+      <margin-top>2.8mm</margin-top>
       <report-id>MRB_LABEL_REP</report-id>
       <report-title></report-title>
       <schema>MrbLabelRep.xsd</schema>
       <version>9.0</version>
-      <width>88.5mm</width>
+      <width>88.9mm</width>
    </properties>
    <history>
    </history>
@@ -36,42 +36,67 @@
          </properties>
          <table-column>
             <properties>
-               <width>42.825mm</width>
+               <width>23.190365mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>10.3875mm</width>
+               <width>11.595182mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>10.3875mm</width>
+               <width>5.797591mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>21.2mm</width>
+               <width>2.898796mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>2.898796mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>4.947396mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>9.445313mm</width>
+            </properties>
+         </table-column>
+         <table-column>
+            <properties>
+               <width>24.226562mm</width>
             </properties>
          </table-column>
          <table-body>
             <data>/tns:MRB_LABEL_REP_REQUEST/tns:MRB_LABEL_REP/tns:HEADS/tns:HEAD</data>
             <table-row>
                <properties>
-                  <font-size>8pt</font-size>
-                  <height>2.5mm</height>
+                  <font-family>Arial</font-family>
+                  <font-size>10pt</font-size>
+                  <height>5mm</height>
                </properties>
                <table-cell>
                   <properties>
                      <background-color>#000000</background-color>
                      <color>#ffffff</color>
-                     <font-size>7pt</font-size>
+                     <font-family>Arial</font-family>
+                     <font-size>10pt</font-size>
+                     <font-weight>bold</font-weight>
+                     <number-columns-spanned>4</number-columns-spanned>
                      <padding-left>1mm</padding-left>
                      <padding-top>1mm</padding-top>
                   </properties>
                   <data>'Tunstall - Concession '</data>
                   <text-field>
                      <properties>
+                        <font-weight>bold</font-weight>
                         <left>0cm</left>
                         <top>0pt</top>
                      </properties>
@@ -80,33 +105,52 @@
                </table-cell>
                <table-cell>
                   <properties>
+                     <number-columns-spanned>3</number-columns-spanned>
+                  </properties>
+                  <table>
+                     <properties>
+                        <left>0mm</left>
+                        <table-layout>fixed</table-layout>
+                        <top>0mm</top>
+                     </properties>
+                     <table-column>
+                        <properties>
+                           <width>17.291504mm</width>
+                        </properties>
+                     </table-column>
+                     <table-body>
+                        <data>tns:DETAILS/tns:DETAIL</data>
+                        <table-row>
+                           <properties>
+                              <height>5mm</height>
+                           </properties>
+                           <table-cell>
+                              <properties>
+                                 <background-color>#000000</background-color>
+                                 <color>#ffffff</color>
+                                 <font-weight>bold</font-weight>
+                                 <padding-top>1mm</padding-top>
+                              </properties>
+                              <data>tns:WAIV_DEV_REJ_NO</data>
+                              <text-field>
+                                 <properties>
+                                    <left>0cm</left>
+                                    <top>0pt</top>
+                                 </properties>
+                                 <data>tns:WAIV_DEV_REJ_NO</data>
+                              </text-field>
+                           </table-cell>
+                        </table-row>
+                     </table-body>
+                  </table>
+               </table-cell>
+               <table-cell>
+                  <properties>
                      <background-color>#000000</background-color>
                      <color>#ffffff</color>
+                     <font-family>Arial</font-family>
                      <font-size>10pt</font-size>
-                     <line-height>1.2</line-height>
-                     <number-columns-spanned>1</number-columns-spanned>
-                  </properties>
-                  <datetime-format>
-                     <custom-date-time>dd/MM/yyyy</custom-date-time>
-                  </datetime-format>
-               </table-cell>
-               <table-cell>
-                  <properties>
-                     <background-color>#000000</background-color>
-                     <color>#ffffff</color>
-                     <font-size>7pt</font-size>
-                     <number-columns-spanned>1</number-columns-spanned>
-                     <padding-top>1mm</padding-top>
-                  </properties>
-                  <datetime-format>
-                     <custom-date-time>dd/MM/yyyy</custom-date-time>
-                  </datetime-format>
-               </table-cell>
-               <table-cell>
-                  <properties>
-                     <background-color>#000000</background-color>
-                     <color>#ffffff</color>
-                     <font-size>7pt</font-size>
+                     <font-weight>bold</font-weight>
                      <padding-top>1mm</padding-top>
                   </properties>
                   <data>format:currentDateAndTime()</data>
@@ -127,6 +171,9 @@
                   <font-size>7pt</font-size>
                </properties>
                <table-cell>
+                  <properties>
+                     <number-columns-spanned>5</number-columns-spanned>
+                  </properties>
                   <table>
                      <properties>
                         <left>0mm</left>
@@ -135,22 +182,26 @@
                      </properties>
                      <table-column>
                         <properties>
-                           <width>19.560417mm</width>
+                           <width>19.61849mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>23.264583mm</width>
+                           <width>26.762239mm</width>
                         </properties>
                      </table-column>
                      <table-body>
                         <data>tns:DETAILS/tns:DETAIL</data>
                         <table-row>
                            <properties>
-                              <height>3.3mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
+                              <height>4.8mm</height>
                            </properties>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
+                                 <font-style>italic</font-style>
                                  <number-columns-spanned>1</number-columns-spanned>
                                  <padding-left>1mm</padding-left>
                                  <padding-top>1mm</padding-top>
@@ -166,6 +217,9 @@
                            </table-cell>
                            <table-cell>
                               <properties>
+                                 <font-size>11pt</font-size>
+                                 <font-weight>bold</font-weight>
+                                 <line-height>1.2</line-height>
                                  <padding-top>1mm</padding-top>
                               </properties>
                               <data>tns:CF_PART_NO</data>
@@ -180,10 +234,14 @@
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>3.3mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
+                              <height>4.8mm</height>
                            </properties>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
+                                 <font-style>italic</font-style>
                                  <number-columns-spanned>1</number-columns-spanned>
                                  <padding-left>1mm</padding-left>
                               </properties>
@@ -197,6 +255,10 @@
                               </text-field>
                            </table-cell>
                            <table-cell>
+                              <properties>
+                                 <font-size>11pt</font-size>
+                                 <font-weight>bold</font-weight>
+                              </properties>
                               <data>tns:CF_QTY_DISPOSITIONED</data>
                               <text-field>
                                  <properties>
@@ -209,10 +271,14 @@
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>3.3mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
+                              <height>4.8mm</height>
                            </properties>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
+                                 <font-style>italic</font-style>
                                  <number-columns-spanned>1</number-columns-spanned>
                                  <padding-left>1mm</padding-left>
                               </properties>
@@ -226,6 +292,9 @@
                               </text-field>
                            </table-cell>
                            <table-cell>
+                              <properties>
+                                 <font-size>10pt</font-size>
+                              </properties>
                               <data>tns:CF_LOCATION_NO</data>
                               <text-field>
                                  <properties>
@@ -238,10 +307,14 @@
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>3.3mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
+                              <height>4.8mm</height>
                            </properties>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
+                                 <font-style>italic</font-style>
                                  <number-columns-spanned>1</number-columns-spanned>
                                  <padding-left>1mm</padding-left>
                               </properties>
@@ -267,10 +340,14 @@
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>3.3mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
+                              <height>4.8mm</height>
                            </properties>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
+                                 <font-style>italic</font-style>
                                  <number-columns-spanned>1</number-columns-spanned>
                                  <padding-left>1mm</padding-left>
                               </properties>
@@ -296,10 +373,14 @@
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>4mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
+                              <height>4.8mm</height>
                            </properties>
                            <table-cell>
                               <properties>
+                                 <font-size>10pt</font-size>
+                                 <font-style>italic</font-style>
                                  <number-columns-spanned>1</number-columns-spanned>
                                  <padding-left>1mm</padding-left>
                               </properties>
@@ -315,7 +396,6 @@
                            <table-cell>
                               <properties>
                                  <font-size>8pt</font-size>
-                                 <padding-top>0.5mm</padding-top>
                               </properties>
                               <data>tns:CF_OWNERSHIP</data>
                               <text-field>
@@ -336,78 +416,103 @@
                   </properties>
                   <table>
                      <properties>
-                        <left>0mm</left>
+                        <left>0.79375mm</left>
                         <table-layout>fixed</table-layout>
                         <top>0mm</top>
                      </properties>
                      <table-column>
                         <properties>
-                           <width>2.534375mm</width>
+                           <width>2.379055mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.534375mm</width>
+                           <width>1.585305mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>5.3mm</width>
+                           <width>2.525808mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.68125mm</width>
+                           <width>2.525808mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.68125mm</width>
+                           <width>2.52593mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.68125mm</width>
+                           <width>1.348724mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.68125mm</width>
+                           <width>1.348724mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.596875mm</width>
+                           <width>2.261347mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.596875mm</width>
+                           <width>1.185305mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>5.3mm</width>
+                           <width>1.185305mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.596875mm</width>
+                           <width>1.143117mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.596875mm</width>
+                           <width>1.143117mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.596875mm</width>
+                           <width>2.441555mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>2.596875mm</width>
+                           <width>5.14468mm</width>
+                        </properties>
+                     </table-column>
+                     <table-column>
+                        <properties>
+                           <width>1.143117mm</width>
+                        </properties>
+                     </table-column>
+                     <table-column>
+                        <properties>
+                           <width>1.143117mm</width>
+                        </properties>
+                     </table-column>
+                     <table-column>
+                        <properties>
+                           <width>2.441555mm</width>
+                        </properties>
+                     </table-column>
+                     <table-column>
+                        <properties>
+                           <width>2.441555mm</width>
+                        </properties>
+                     </table-column>
+                     <table-column>
+                        <properties>
+                           <width>1.912388mm</width>
                         </properties>
                      </table-column>
                      <table-body>
@@ -419,27 +524,22 @@
                            <table-cell>
                               <properties>
                                  <border-color>#00ffff</border-color>
-                                 <number-columns-spanned>7</number-columns-spanned>
+                                 <number-columns-spanned>10</number-columns-spanned>
                               </properties>
                            </table-cell>
                            <table-cell>
                               <properties>
-                                 <number-columns-spanned>7</number-columns-spanned>
+                                 <number-columns-spanned>9</number-columns-spanned>
                               </properties>
                            </table-cell>
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>8mm</height>
+                              <height>11.649907mm</height>
                            </properties>
                            <table-cell>
                               <properties>
-                                 <number-columns-spanned>3</number-columns-spanned>
-                              </properties>
-                           </table-cell>
-                           <table-cell>
-                              <properties>
-                                 <number-columns-spanned>3</number-columns-spanned>
+                                 <number-columns-spanned>6</number-columns-spanned>
                               </properties>
                               <data>concat('95',concat(tns:CF_PART_NO,concat('~10',concat(tns:LOT_BATCH_NO, concat('~96',concat(tns:CF_QTY_DISPOSITIONED, concat('~97',tns:CF_LOCATION_NO)))))))</data>
                               <barcode>
@@ -473,25 +573,44 @@
                            <table-cell>
                            </table-cell>
                            <table-cell>
-                              <properties>
-                                 <number-columns-spanned>7</number-columns-spanned>
-                              </properties>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
+                           </table-cell>
+                           <table-cell>
                            </table-cell>
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>5mm</height>
+                              <font-size>10pt</font-size>
+                              <height>7mm</height>
                            </properties>
                            <table-cell>
                               <properties>
-                                 <number-columns-spanned>7</number-columns-spanned>
+                                 <number-columns-spanned>9</number-columns-spanned>
                               </properties>
                            </table-cell>
                            <table-cell>
                               <properties>
                                  <font-size>7pt</font-size>
-                                 <line-height>1.2</line-height>
-                                 <number-columns-spanned>4</number-columns-spanned>
+                                 <number-columns-spanned>6</number-columns-spanned>
                               </properties>
                               <data>'Product Serial No.'</data>
                               <text-field>
@@ -504,7 +623,7 @@
                            </table-cell>
                            <table-cell>
                               <properties>
-                                 <number-columns-spanned>2</number-columns-spanned>
+                                 <number-columns-spanned>3</number-columns-spanned>
                               </properties>
                               <data>tns:SERIAL_NO</data>
                               <barcode>
@@ -540,15 +659,21 @@
                         </table-row>
                         <table-row>
                            <properties>
-                              <height>3.3mm</height>
+                              <font-family>Arial</font-family>
+                              <font-size>10pt</font-size>
                            </properties>
                            <table-cell>
+                              <properties>
+                                 <font-size>11.5pt</font-size>
+                              </properties>
                            </table-cell>
                            <table-cell>
                            </table-cell>
                            <table-cell>
                               <properties>
-                                 <number-columns-spanned>5</number-columns-spanned>
+                                 <font-size>10pt</font-size>
+                                 <number-columns-spanned>11</number-columns-spanned>
+                                 <padding-top>1mm</padding-top>
                               </properties>
                               <data>'EXP Date'</data>
                               <text-field>
@@ -571,26 +696,9 @@
                                  </properties>
                                  <data>tns:CF_EXPIRATION_DATE</data>
                               </text-field>
-                           </table-cell>
-                           <table-cell>
-                           </table-cell>
-                        </table-row>
-                        <table-row>
-                           <table-cell>
-                           </table-cell>
-                           <table-cell>
-                           </table-cell>
-                           <table-cell>
-                              <properties>
-                                 <number-columns-spanned>5</number-columns-spanned>
-                              </properties>
-                           </table-cell>
-                           <table-cell>
-                              <properties>
-                                 <number-columns-spanned>6</number-columns-spanned>
-                              </properties>
-                           </table-cell>
-                           <table-cell>
+                              <datetime-format>
+                                 <custom-date-time>dd/MM/yyyy</custom-date-time>
+                              </datetime-format>
                            </table-cell>
                         </table-row>
                      </table-body>
@@ -607,11 +715,6 @@
       <reference>
          <properties>
             <id>page-body</id>
-         </properties>
-      </reference>
-      <reference>
-         <properties>
-            <id>repeat-page-foot</id>
          </properties>
       </reference>
    </page>
