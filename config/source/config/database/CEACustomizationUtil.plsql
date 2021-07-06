@@ -3467,4 +3467,118 @@ BEGIN
 END Get_Total_Charge_Cost; 
 -- C631 EntMahesR (END)
 
+-- C526 EntPragG (START)
+FUNCTION Get_Warranty_Expiray_Date(
+   object_id_ IN VARCHAR2,
+   contract_  IN VARCHAR2)RETURN DATE
+IS  
+   part_no_ VARCHAR2(20);
+   serial_no_ VARCHAR2(20);
+   
+   year_ NUMBER;
+   week_ NUMBER;
+   
+   warranty_start_date_ DATE;
+   warranty_expiry_date_ DATE;
+   
+   warranty_id_ NUMBER;   
+   warranty_type_id_ VARCHAR2(20);
+   period_ NUMBER;
+   time_unit_ VARCHAR2(10); 
+        
+   PROCEDURE Get_Part_Info___(
+      part_no_   OUT VARCHAR2,
+      serial_no_ OUT VARCHAR2,
+      object_id_  IN VARCHAR2,
+      contract_   IN VARCHAR2)
+   IS
+   BEGIN
+      SELECT part_no,
+             serial_no
+        INTO part_no_, serial_no_
+        FROM equipment_functional_uiv
+       WHERE mch_code = object_id_
+         AND contract = contract_;
+   EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+         part_no_ := NULL;
+         serial_no_ := NULL;
+   END Get_Part_Info___;
+   
+   PROCEDURE Extract_Date_From_Seial_No___ (
+      year_     OUT NUMBER,
+      week_     OUT NUMBER,
+      serial_no_ IN VARCHAR2)
+   IS
+      
+   BEGIN
+      year_ := TO_NUMBER(SUBSTR(serial_no_,3,2));
+      week_ := TO_NUMBER(SUBSTR(serial_no_,0,2));
+      year_ := year_ + 2000; /* Year format YY, Therefore 2000 is added to get the full year (YYYY)*/      
+   EXCEPTION
+      WHEN INVALID_NUMBER THEN
+         year_ := NULL;
+         week_ := NULL;   
+   END Extract_Date_From_Seial_No___;   
+     
+   FUNCTION Get_Warranty_Type_Id___ (
+      wrranty_id_ IN NUMBER)RETURN VARCHAR2
+   IS
+      warranty_type_id_ VARCHAR2(20);
+   BEGIN
+      SELECT warranty_type_id
+        INTO warranty_type_id_
+        FROM cust_warranty_type 
+       WHERE warranty_id = wrranty_id_;
+      RETURN warranty_type_id_;
+   EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+         RETURN NULL;
+   END Get_Warranty_Type_Id___;
+      
+   PROCEDURE Get_Warranty_Info___(
+      period_          OUT NUMBER,
+      time_unit_       OUT VARCHAR2,
+      warranty_id_      IN NUMBER,
+      warranty_Type_id_ IN VARCHAR2)
+   IS
+   BEGIN
+      SELECT max_value,
+             Warranty_Condition_API.Get_Time_Unit(condition_id)
+        INTO period_,time_unit_
+        FROM cust_warranty_condition
+       WHERE warranty_id = warranty_id_
+         AND warranty_type_id = warranty_Type_id_;
+   EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+         period_ := NULL;
+         time_unit_ := NULL;   
+   END Get_Warranty_Info___;      
+
+BEGIN
+   Get_Part_Info___(part_no_,serial_no_,object_id_,contract_);
+   Extract_Date_From_Seial_No___(year_,week_,serial_no_);
+   
+   warranty_start_date_ := Get_Begin_Date__(year_,NULL,NULL, week_);   
+   warranty_id_ := Part_Catalog_API.Get_Cust_Warranty_Id(part_no_);
+   warranty_type_id_ := Get_Warranty_Type_Id___(warranty_id_);
+   Get_Warranty_Info___(period_,time_unit_,warranty_id_,warranty_type_id_);
+   
+   IF period_ IS NOT NULL AND warranty_start_date_ IS NOT NULL THEN   
+      CASE time_unit_
+         WHEN 'Year' THEN
+            warranty_expiry_date_ := add_months(warranty_start_date_,period_*12);
+         WHEN 'Month' THEN
+            warranty_expiry_date_ := add_months(warranty_start_date_,period_);
+         WHEN 'Days' THEN
+            warranty_expiry_date_ := warranty_start_date_ + period_;
+      END CASE;
+   END IF;
+   RETURN warranty_expiry_date_;
+EXCEPTION
+   WHEN OTHERS THEN
+      RETURN NULL; 
+END Get_Warranty_Expiray_Date;
+-- C526 EntPragG (END)
+
 -------------------- LU  NEW METHODS -------------------------------------

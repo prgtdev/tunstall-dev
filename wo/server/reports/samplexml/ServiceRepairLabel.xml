@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SERVICE_REPAIR_LABEL_REP_REQUEST
+   xmlns="urn:ifsworld-com:service_repair_label_rep"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:ifsworld-com:service_repair_label_rep ../schemas/ServiceRepairLabel.xsd">
+   <PROCESSING_INFO>
+      <FORMATTING_OPTIONS>
+         <COPIES>1</COPIES>
+         <PAGE_FROM>1</PAGE_FROM>
+         <PAGE_TO>99</PAGE_TO>
+         <LANG_CODE>en</LANG_CODE>
+         <LAYOUT_NAME/>
+         <PRINT_DIRECTORY>.</PRINT_DIRECTORY>
+         <LAYOUT_FILE/>
+         <SELECTED_PRINTER/>
+         <LANGUAGE_LAYOUT_FILE/>
+         <PAPER_FORMAT/>
+      </FORMATTING_OPTIONS>
+      <PROCESSING_ATTRIBUTES>
+         <EXECUTION_TIME>2009-01-01T11:22:00</EXECUTION_TIME>
+         <ORDERED_BY/>
+         <JOB_ID>12345</JOB_ID>
+         <COMMENT/>
+         <ORDER_TIME>2009-01-01T11:22:00</ORDER_TIME>
+         <REPORT_TITLE>Service Repair Label</REPORT_TITLE>
+         <PRINTED_BY/>
+         <CREATED/>
+      </PROCESSING_ATTRIBUTES>
+      <STANDARD_TRANSLATIONS>
+         <ATTRIBUTE_DISPLAY_TEXTS>
+            <EXECUTION_TIME>Execution Time:</EXECUTION_TIME>
+            <ORDERED_BY>Ordered By:</ORDERED_BY>
+            <JOB_ID>Job Id:</JOB_ID>
+            <COMMENT>Comment:</COMMENT>
+            <ORDER_TIME>Order Time:</ORDER_TIME>
+            <REPORT_TITLE>Report:</REPORT_TITLE>
+            <PRINTED_BY>Printed By:</PRINTED_BY>
+            <CURRENT_TIME>Current Time:</CURRENT_TIME>
+            <CURRENT_DATE>Current Date:</CURRENT_DATE>
+            <PAGE>Page</PAGE>
+            <END_OF_REPORT>-------- End of Report --------</END_OF_REPORT>
+            <REPORT_PARAMETERS>Rep. Params:</REPORT_PARAMETERS>
+            <APPLICATION_TEXT>IFS Applications</APPLICATION_TEXT>
+            <CREATED>Created:</CREATED>
+            <NONE>none</NONE>
+            <NOTES>Notes:</NOTES>
+            <NO_DATA_FOUND>No data found</NO_DATA_FOUND>
+         </ATTRIBUTE_DISPLAY_TEXTS>
+         <SITE_TEXTS>
+            <COMPANY_NAME/>
+            <SITE_TEXT_1/>
+            <SITE_TEXT_2/>
+            <SITE_TEXT_3/>
+            <SITE_TEXT_4/>
+            <SITE_TEXT_5/>
+            <SITE_TEXT_6/>
+            <SITE_TEXT_7/>
+            <SITE_TEXT_8/>
+            <SITE_TEXT_9/>
+            <SITE_TEXT_10/>
+         </SITE_TEXTS>
+      </STANDARD_TRANSLATIONS>
+   </PROCESSING_INFO>
+   <SERVICE_REPAIR_LABEL_REP_DATA_ASSEMBLY_PARAMETERS>
+      <WO_NO>
+         <DISPLAY_TEXT>Wo No:</DISPLAY_TEXT>
+         <VALUE/>
+      </WO_NO>
+      <TASK_SEQ>
+         <DISPLAY_TEXT>Task Seq:</DISPLAY_TEXT>
+         <VALUE/>
+      </TASK_SEQ>
+      <LINE_NO>
+         <DISPLAY_TEXT>Line No:</DISPLAY_TEXT>
+         <VALUE/>
+      </LINE_NO>
+   </SERVICE_REPAIR_LABEL_REP_DATA_ASSEMBLY_PARAMETERS>
+   <SERVICE_REPAIR_LABEL_REP_ARCHIVE_VARIABLES/>
+   <SERVICE_REPAIR_LABEL_REP_TRANSLATIONS>
+      <REPORT_TEXTS>
+         <SERVICE_REPAIR_LABEL>Sample</SERVICE_REPAIR_LABEL>
+      </REPORT_TEXTS>
+      <ATTRIBUTE_DISPLAY_TEXTS>
+         <SERVICE_REPAIRS>
+            <SERVICE_REPAIR>
+               <PART_NO>Part No:</PART_NO>
+               <SERIAL_NO>Serial No:</SERIAL_NO>
+               <WO_NO>Wo No:</WO_NO>
+               <CUSTOMER_NO>Customer No:</CUSTOMER_NO>
+               <CUSTOMER_NAME>Customer Name:</CUSTOMER_NAME>
+               <CONTRACT>Contract:</CONTRACT>
+               <COMPANY>Company:</COMPANY>
+               <GROUP_ID>Group Id:</GROUP_ID>
+               <RET_TYPE>Ret Type:</RET_TYPE>
+               <REPAIR_WO_NO>Repair Wo No:</REPAIR_WO_NO>
+               <TEL_ADAPTOR_DB>Tel Adaptor Db:</TEL_ADAPTOR_DB>
+               <TRANSFORMER_DB>Transformer Db:</TRANSFORMER_DB>
+               <BT_LEAD_DB>Bt Lead Db:</BT_LEAD_DB>
+               <NECK_CODE_DB>Neck Code Db:</NECK_CODE_DB>
+               <AERIAL_DB>Aerial Db:</AERIAL_DB>
+               <WRISTSTRAP_DB>Wriststrap Db:</WRISTSTRAP_DB>
+               <CLIP_DB>Clip Db:</CLIP_DB>
+               <ORIGINAL_TRIGGER>Original Trigger:</ORIGINAL_TRIGGER>
+               <DATE_CREATED>Date Created:</DATE_CREATED>
+               <OTHER_INFO>Other Info:</OTHER_INFO>
+               <CON_TYPE>Con Type:</CON_TYPE>
+               <WITHIN_WARRANTY>Within Warranty:</WITHIN_WARRANTY>
+               <OBJKEY>Objkey:</OBJKEY>
+            </SERVICE_REPAIR>
+         </SERVICE_REPAIRS>
+      </ATTRIBUTE_DISPLAY_TEXTS>
+   </SERVICE_REPAIR_LABEL_REP_TRANSLATIONS>
+   <SERVICE_REPAIR_LABEL_REP>
+      <SERVICE_REPAIRS>
+         <SERVICE_REPAIR>
+            <PART_NO>ABC</PART_NO>
+            <SERIAL_NO>ABC</SERIAL_NO>
+            <WO_NO>123</WO_NO>
+            <CUSTOMER_NO>ABC</CUSTOMER_NO>
+            <CUSTOMER_NAME>ABC</CUSTOMER_NAME>
+            <CONTRACT>ABC</CONTRACT>
+            <COMPANY>ABC</COMPANY>
+            <GROUP_ID>ABC</GROUP_ID>
+            <RET_TYPE>ABC</RET_TYPE>
+            <REPAIR_WO_NO>123</REPAIR_WO_NO>
+            <TEL_ADAPTOR_DB>ABC</TEL_ADAPTOR_DB>
+            <TRANSFORMER_DB>ABC</TRANSFORMER_DB>
+            <BT_LEAD_DB>ABC</BT_LEAD_DB>
+            <NECK_CODE_DB>ABC</NECK_CODE_DB>
+            <AERIAL_DB>ABC</AERIAL_DB>
+            <WRISTSTRAP_DB>ABC</WRISTSTRAP_DB>
+            <CLIP_DB>ABC</CLIP_DB>
+            <ORIGINAL_TRIGGER>ABC</ORIGINAL_TRIGGER>
+            <DATE_CREATED>2009-01-01T11:22:00</DATE_CREATED>
+            <OTHER_INFO>ABC</OTHER_INFO>
+            <CON_TYPE>ABC</CON_TYPE>
+            <WITHIN_WARRANTY>ABC</WITHIN_WARRANTY>
+            <OBJKEY>ABC</OBJKEY>
+         </SERVICE_REPAIR>
+         <SERVICE_REPAIR>
+            <PART_NO>ABC</PART_NO>
+            <SERIAL_NO>ABC</SERIAL_NO>
+            <WO_NO>123</WO_NO>
+            <CUSTOMER_NO>ABC</CUSTOMER_NO>
+            <CUSTOMER_NAME>ABC</CUSTOMER_NAME>
+            <CONTRACT>ABC</CONTRACT>
+            <COMPANY>ABC</COMPANY>
+            <GROUP_ID>ABC</GROUP_ID>
+            <RET_TYPE>ABC</RET_TYPE>
+            <REPAIR_WO_NO>123</REPAIR_WO_NO>
+            <TEL_ADAPTOR_DB>ABC</TEL_ADAPTOR_DB>
+            <TRANSFORMER_DB>ABC</TRANSFORMER_DB>
+            <BT_LEAD_DB>ABC</BT_LEAD_DB>
+            <NECK_CODE_DB>ABC</NECK_CODE_DB>
+            <AERIAL_DB>ABC</AERIAL_DB>
+            <WRISTSTRAP_DB>ABC</WRISTSTRAP_DB>
+            <CLIP_DB>ABC</CLIP_DB>
+            <ORIGINAL_TRIGGER>ABC</ORIGINAL_TRIGGER>
+            <DATE_CREATED>2009-01-01T11:22:00</DATE_CREATED>
+            <OTHER_INFO>ABC</OTHER_INFO>
+            <CON_TYPE>ABC</CON_TYPE>
+            <WITHIN_WARRANTY>ABC</WITHIN_WARRANTY>
+            <OBJKEY>ABC</OBJKEY>
+         </SERVICE_REPAIR>
+      </SERVICE_REPAIRS>
+   </SERVICE_REPAIR_LABEL_REP>
+</SERVICE_REPAIR_LABEL_REP_REQUEST>

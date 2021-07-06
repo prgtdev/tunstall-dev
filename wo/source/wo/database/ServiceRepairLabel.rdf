@@ -1,0 +1,444 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: ServiceRepairLabel
+--
+--  Report:       ServiceRepairLabel
+--
+--  IFS Developer Studio Template Version 1.3
+--
+--  NOTE: This file is generated and will be overwritten at next model change
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE SPECIFICATION ----------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating SERVICE_REPAIR_LABEL_RPI specification
+
+CREATE OR REPLACE PACKAGE SERVICE_REPAIR_LABEL_RPI AS
+
+module_ CONSTANT VARCHAR2(6) := 'WO';
+lu_name_ CONSTANT VARCHAR2(25) := 'ServiceRepairLabel';
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 );
+
+FUNCTION Test (
+   wo_no_                    IN NUMBER,
+   task_seq_                 IN NUMBER,
+   line_no_                  IN NUMBER)
+   RETURN NUMBER;
+
+PROCEDURE Init;
+
+END SERVICE_REPAIR_LABEL_RPI;
+/
+SHOW ERROR
+
+-----------------------------------------------------------------------------
+-------------------- VIEWS FOR REPORT META DATA -----------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating report table SERVICE_REPAIR_LABEL_RPT
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'SERVICE_REPAIR_LABEL_RPT';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'WO_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TASK_SEQ', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_NO', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SERIAL_NO', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CUSTOMER_NO', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CUSTOMER_NAME', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONTRACT', 'VARCHAR2(5)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMPANY', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'GROUP_ID', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'RET_TYPE', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'REPAIR_WO_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TEL_ADAPTOR_DB', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TRANSFORMER_DB', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BT_LEAD_DB', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'NECK_CODE_DB', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'AERIAL_DB', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'WRISTSTRAP_DB', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CLIP_DB', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ORIGINAL_TRIGGER', 'VARCHAR2(100)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'DATE_CREATED', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OTHER_INFO', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CON_TYPE', 'VARCHAR2(30)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'WITHIN_WARRANTY', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OBJKEY', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
+END;
+/
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'SERVICE_REPAIR_LABEL_RPT';
+   index_name_ VARCHAR2(30) := 'SERVICE_REPAIR_LABEL_RPK';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO');
+   Database_SYS.Create_Constraint(table_name_, index_name_, columns_, 'P', '&IFSAPP_REPORT_INDEX', NULL, TRUE, TRUE);
+   Database_SYS.Reset_Column_Table(columns_);
+END;
+/
+
+PROMPT Creating report view SERVICE_REPAIR_LABEL_REP
+
+CREATE OR REPLACE VIEW SERVICE_REPAIR_LABEL_REP AS
+SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
+   ,WO_NO,TASK_SEQ,LINE_NO,PART_NO,SERIAL_NO,CUSTOMER_NO,CUSTOMER_NAME,CONTRACT,COMPANY,GROUP_ID,RET_TYPE,REPAIR_WO_NO,TEL_ADAPTOR_DB,TRANSFORMER_DB,BT_LEAD_DB,NECK_CODE_DB,AERIAL_DB,WRISTSTRAP_DB,CLIP_DB,ORIGINAL_TRIGGER,DATE_CREATED,OTHER_INFO,CON_TYPE,WITHIN_WARRANTY,OBJKEY
+FROM   SERVICE_REPAIR_LABEL_RPT t
+WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
+WITH   read only;
+
+COMMENT ON TABLE SERVICE_REPAIR_LABEL_REP
+   IS 'LU=ServiceRepairLabel^PROMPT=Service Repair Label^MODULE=WO^TITLETEXT=Service Repair Label^';
+
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.result_key
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.row_no
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.wo_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Wo No^QUERY=Wo No:^QFLAGS=OW---^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.task_seq
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Task Seq^QUERY=Task Seq:^QFLAGS=OW---^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.line_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Line No^QUERY=Line No:^QFLAGS=OW---^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.part_no
+   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.serial_no
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Serial No^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.customer_no
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Customer No^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.customer_name
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Customer Name^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.contract
+   IS 'FLAGS=A----^DATATYPE=STRING(5)^TITLE=Contract^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.company
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Company^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.group_id
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Group Id^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.ret_type
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Ret Type^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.repair_wo_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Repair Wo No^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.tel_adaptor_db
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Tel Adaptor Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.transformer_db
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Transformer Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.bt_lead_db
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Bt Lead Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.neck_code_db
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Neck Code Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.aerial_db
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Aerial Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.wriststrap_db
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Wriststrap Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.clip_db
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Clip Db^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.original_trigger
+   IS 'FLAGS=A----^DATATYPE=STRING(100)^TITLE=Original Trigger^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.date_created
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Date Created^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.other_info
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Other Info^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.con_type
+   IS 'FLAGS=A----^DATATYPE=STRING(30)^TITLE=Con Type^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.within_warranty
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Within Warranty^';
+COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.objkey
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Objkey^';
+
+-----------------------------------------------------------------------------
+-------------------- REPORT REGISTRATION ------------------------------------
+-----------------------------------------------------------------------------
+
+BEGIN
+   Report_SYS.Define_Report_('SERVICE_REPAIR_LABEL_REP', 'WO', 'ServiceRepairLabel', 'Service Repair Label', 'SERVICE_REPAIR_LABEL_RPT', 'SERVICE_REPAIR_LABEL_RPI.Execute_Report', 0);
+   Report_SYS.Define_Report_Text_('SERVICE_REPAIR_LABEL_REP', 'SERVICE_REPAIR_LABEL', 'Sample');
+   Report_SYS.Refresh_('SERVICE_REPAIR_LABEL_REP');
+   Report_Lu_Definition_API.Clear_Custom_Fields_For_Report('SERVICE_REPAIR_LABEL_REP');
+END;
+/
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE IMPLEMENTATION ---------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating SERVICE_REPAIR_LABEL_RPI implementation
+
+CREATE OR REPLACE PACKAGE BODY SERVICE_REPAIR_LABEL_RPI IS
+
+   TYPE binds$ IS RECORD (
+      wo_no                     NUMBER,
+      task_seq                  NUMBER,
+      line_no                   NUMBER);
+
+   CURSOR get_service_repair (wo_no_ VARCHAR2, task_seq_ VARCHAR2, line_no_ VARCHAR2) IS
+      SELECT wr.part_no,
+             wr.serial_no,
+             wr.wo_no,
+             wo.customer_no,
+             Customer_Info_API.Get_Name(wo.customer_no) customer_name,
+             wo.contract,
+             Site_API.Get_Company(wo.contract) company,
+             Identity_Invoice_Info_API.Get_Group_Id(company,
+                                                    wo.customer_no,
+                                                    'CUSTOMER') group_id,
+             Invoice_Party_Type_Group_API.Get_Description(COMPANY,
+                                                          'CUSTOMER',
+                                                          Identity_Invoice_Info_API.Get_Group_Id(company,
+                                                                                                 wo.customer_no,
+                                                                                                 'CUSTOMER')) ret_type,
+             rb.cf$_repair_wo_no AS repair_wo_no,
+             rb.cf$_tel_adaptor_db AS tel_adaptor_db,
+             rb.cf$_transformer_db AS transformer_db,
+             rb.cf$_bt_lead_db AS bt_lead_db,
+             rb.cf$_neck_code_db AS neck_code_db,
+             rb.cf$_aerial_db AS aerial_db,
+             rb.cf$_wriststrap_db AS wriststrap_db,
+             rb.cf$_clip_db AS clip_db,
+             rb.cf$_original_trigger AS original_trigger,
+             rb.cf$_date_created AS date_created,
+             wo.err_descr_lo other_info,
+             (SELECT std_job_id 
+                FROM work_order_job 
+               WHERE wo_no = wr.wo_no 
+               FETCH FIRST 1 ROW ONLY) con_type,
+             Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(mch_code,mch_code_contract) AS within_warranty,
+             wr.objkey               
+        FROM work_order_returns_uiv wr, active_separate_uiv wo,product_repair_booking_clv rb
+       WHERE wr.wo_no = wo.wo_no
+         AND wr.wo_no = rb.cf$_wo_no(+)
+         AND wr.part_no = rb.cf$_part_no(+)
+         AND wr.serial_no = rb.cf$_serial_no(+)
+         AND wr.wo_no = wo_no_
+         AND wr.task_seq = task_seq_
+         AND wr.line_no = line_no_;
+
+-----------------------------------------------------------------------------
+-------------------- RESULT SET METHODS -------------------------------------
+-----------------------------------------------------------------------------
+
+--@IgnoreWrongParamOrder
+PROCEDURE Add_Result_Row___ (
+   result_key$_               IN NUMBER,
+   binds$_                    IN binds$,
+   rec_service_repair_        IN get_service_repair%ROWTYPE DEFAULT NULL,
+   row_no$_                   IN OUT NUMBER)
+IS
+BEGIN
+   INSERT INTO SERVICE_REPAIR_LABEL_RPT (
+      result_key,
+      wo_no,
+      task_seq,
+      line_no,
+      part_no,
+      serial_no,
+      customer_no,
+      customer_name,
+      contract,
+      company,
+      group_id,
+      ret_type,
+      repair_wo_no,
+      tel_adaptor_db,
+      transformer_db,
+      bt_lead_db,
+      neck_code_db,
+      aerial_db,
+      wriststrap_db,
+      clip_db,
+      original_trigger,
+      date_created,
+      other_info,
+      con_type,
+      within_warranty,
+      objkey,
+      row_no, parent_row_no)
+   VALUES (
+      result_key$_,
+      nvl(rec_service_repair_.wo_no,
+      binds$_.wo_no),
+      binds$_.task_seq,
+      binds$_.line_no,
+      rec_service_repair_.part_no,
+      rec_service_repair_.serial_no,
+      rec_service_repair_.customer_no,
+      rec_service_repair_.customer_name,
+      rec_service_repair_.contract,
+      rec_service_repair_.company,
+      rec_service_repair_.group_id,
+      rec_service_repair_.ret_type,
+      rec_service_repair_.repair_wo_no,
+      rec_service_repair_.tel_adaptor_db,
+      rec_service_repair_.transformer_db,
+      rec_service_repair_.bt_lead_db,
+      rec_service_repair_.neck_code_db,
+      rec_service_repair_.aerial_db,
+      rec_service_repair_.wriststrap_db,
+      rec_service_repair_.clip_db,
+      rec_service_repair_.original_trigger,
+      rec_service_repair_.date_created,
+      rec_service_repair_.other_info,
+      rec_service_repair_.con_type,
+      rec_service_repair_.within_warranty,
+      rec_service_repair_.objkey,
+      row_no$_, 0);
+   row_no$_ := row_no$_+1;
+END Add_Result_Row___;
+
+-----------------------------------------------------------------------------
+-------------------- REPORT EXECUTION ---------------------------------------
+-----------------------------------------------------------------------------
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 )
+IS
+   result_key$_              NUMBER;
+   row_no$_                  NUMBER := 1;
+   binds$_                   binds$;
+   xml$_                     CLOB;
+   outer_filter_attr$_       VARCHAR2(32000);
+   outer_filter_where$_      VARCHAR2(32000);
+   inner_filter_attr$_       VARCHAR2(32000);
+   inner_filter_where$_      VARCHAR2(32000);
+   has_service_repair_ BOOLEAN;
+   rec_service_repair_ get_service_repair%ROWTYPE;
+   par_service_repair_ binds$;
+   
+   within_warranty_ VARCHAR2(5);
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'SERVICE_REPAIR_LABEL_RPI', 'Execute_Report');
+   result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
+   binds$_.wo_no                := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('WO_NO', parameter_attr_));
+   binds$_.task_seq             := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('TASK_SEQ', parameter_attr_));
+   binds$_.line_no              := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('LINE_NO', parameter_attr_));
+
+   Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'SERVICE_REPAIR_LABEL_REP', 'Service Repair Label');
+
+   has_service_repair_ := FALSE;
+   par_service_repair_ := binds$_;
+   Xml_Record_Writer_SYS.Start_Element(xml$_, 'SERVICE_REPAIRS');
+   OPEN get_service_repair(binds$_.wo_no, binds$_.task_seq, binds$_.line_no);
+   LOOP
+      FETCH get_service_repair INTO rec_service_repair_;
+      has_service_repair_ := get_service_repair%FOUND OR get_service_repair%ROWCOUNT > 0;
+      EXIT WHEN get_service_repair%NOTFOUND;
+      
+      CASE WHEN rec_service_repair_.within_warranty = 'TRUE' THEN
+         within_warranty_ := 'Yes';
+      ELSE
+         within_warranty_ := 'No';
+      END CASE;
+      
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'SERVICE_REPAIR');
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_NO', rec_service_repair_.part_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', rec_service_repair_.serial_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'WO_NO', rec_service_repair_.wo_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CUSTOMER_NO', rec_service_repair_.customer_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CUSTOMER_NAME', rec_service_repair_.customer_name);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_service_repair_.contract);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMPANY', rec_service_repair_.company);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'GROUP_ID', rec_service_repair_.group_id);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'RET_TYPE', rec_service_repair_.ret_type);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'REPAIR_WO_NO', rec_service_repair_.repair_wo_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'TEL_ADAPTOR_DB', rec_service_repair_.tel_adaptor_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'TRANSFORMER_DB', rec_service_repair_.transformer_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'BT_LEAD_DB', rec_service_repair_.bt_lead_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'NECK_CODE_DB', rec_service_repair_.neck_code_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'AERIAL_DB', rec_service_repair_.aerial_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'WRISTSTRAP_DB', rec_service_repair_.wriststrap_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CLIP_DB', rec_service_repair_.clip_db);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORIGINAL_TRIGGER', rec_service_repair_.original_trigger);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'DATE_CREATED', rec_service_repair_.date_created);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'OTHER_INFO', rec_service_repair_.other_info);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CON_TYPE', rec_service_repair_.con_type);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'WITHIN_WARRANTY', within_warranty_);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'OBJKEY', rec_service_repair_.objkey);
+      Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'WorkOrderReturns', rec_service_repair_.objkey, 'SERVICE_REPAIR_LABEL_REP');
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'SERVICE_REPAIR');
+      Add_Result_Row___(result_key$_,
+                        binds$_ => binds$_,
+                        rec_service_repair_ => rec_service_repair_,
+                        row_no$_ => row_no$_);
+   END LOOP;
+   CLOSE get_service_repair;
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'SERVICE_REPAIRS');
+   binds$_ := par_service_repair_;
+   IF NOT has_service_repair_ THEN
+      Add_Result_Row___(result_key$_,
+                        binds$_ => binds$_,
+                        row_no$_ => row_no$_);
+   END IF;
+
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'SERVICE_REPAIR_LABEL_REP');
+   Report_SYS.Finish_Xml_Report('SERVICE_REPAIR_LABEL_REP', result_key$_, xml$_);
+   EXCEPTION
+      WHEN OTHERS THEN
+         IF get_service_repair%ISOPEN THEN
+            CLOSE get_service_repair;
+         END IF;
+         RAISE;
+END Execute_Report;
+
+-----------------------------------------------------------------------------
+-------------------- FOUNDATION1 METHODS ------------------------------------
+-----------------------------------------------------------------------------
+-- Test
+--   Invokes the report method for testing purposes.
+-- Init
+--   Dummy procedure that can be called at database startup to ensure that
+--   this package is loaded into memory for performance reasons only.
+-----------------------------------------------------------------------------
+
+FUNCTION Test (
+   wo_no_                    IN NUMBER,
+   task_seq_                 IN NUMBER,
+   line_no_                  IN NUMBER)
+RETURN NUMBER
+IS
+   result_key_     NUMBER;
+   report_attr_    VARCHAR2(200);
+   parameter_attr_ VARCHAR2(32000);
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'SERVICE_REPAIR_LABEL_RPI', 'Test');
+   Report_SYS.Get_Result_Key__(result_key_);
+   Client_SYS.Add_To_Attr('RESULT_KEY', result_key_, report_attr_);
+   IF (wo_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('WO_NO', wo_no_, parameter_attr_);
+   END IF;
+   IF (task_seq_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('TASK_SEQ', task_seq_, parameter_attr_);
+   END IF;
+   IF (line_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('LINE_NO', line_no_, parameter_attr_);
+   END IF;
+   Execute_Report(report_attr_, parameter_attr_);
+   RETURN result_key_;
+END Test;
+
+
+PROCEDURE Init
+IS
+BEGIN
+   NULL;
+END Init;
+
+END SERVICE_REPAIR_LABEL_RPI;
+/
+SHOW ERROR

@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REPORT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:ifsworld-com:schemas:report_report">
+   <CODE_GENERATION_PROPERTIES>
+      <CODE_GENERATION_PROPERTIES>
+      </CODE_GENERATION_PROPERTIES>
+   </CODE_GENERATION_PROPERTIES>
+   <DIAGRAMS>
+      <DIAGRAM>
+         <NAME>Main</NAME>
+         <DIAGRAM_TYPE>REPORT_STRUCTURE</DIAGRAM_TYPE>
+         <NODES>
+            <DIAGRAM_NODE>
+               <ID>7f513040-d8cb-11eb-0d19-febb73f819ac</ID>
+               <NODE_TYPE>REPORT</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>EntityName</NAME>
+                     <VALUE>ServiceRepairLabel</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>LUName</NAME>
+                     <VALUE>ServiceRepairLabel</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>100</X>
+                     <Y>101</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>177</X>
+                     <Y>95</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>2847e690-d8d0-11eb-0d19-febb73f819ac</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ServiceRepair</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>255</X>
+                     <Y>287</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>156</X>
+                     <Y>527</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+         </NODES>
+         <EDGES>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>7f513040-d8cb-11eb-0d19-febb73f819ac</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>2847e690-d8d0-11eb-0d19-febb73f819ac</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ServiceRepairs</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ServiceRepair</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>204</X>
+                     <Y>195</Y>
+                  </POINT>
+                  <POINT>
+                     <X>254</X>
+                     <Y>332</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+         </EDGES>
+      </DIAGRAM>
+   </DIAGRAMS>
+   <NAME>ServiceRepairLabel</NAME>
+   <COMPONENT>WO</COMPONENT>
+   <LU_NAME>ServiceRepairLabel</LU_NAME>
+   <BLOCKS>
+      <BLOCK>
+         <NAME>ServiceRepair</NAME>
+         <CURSOR_DEFINITION>SELECT wr.part_no,
+       wr.serial_no,
+       wr.wo_no,
+       wo.customer_no,
+       Customer_Info_API.Get_Name(wo.customer_no) customer_name,
+       wo.contract,
+       Site_API.Get_Company(wo.contract) company,
+       Identity_Invoice_Info_API.Get_Group_Id(company,
+                                              wo.customer_no,
+                                              &apos;CUSTOMER&apos;) group_id,
+       Invoice_Party_Type_Group_API.Get_Description(COMPANY,
+                                                    &apos;CUSTOMER&apos;,
+                                                    Identity_Invoice_Info_API.Get_Group_Id(company,
+                                                                                           wo.customer_no,
+                                                                                           &apos;CUSTOMER&apos;)) ret_type,
+       rb.cf$_repair_wo_no AS repair_wo_no,
+       rb.cf$_tel_adaptor_db AS tel_adaptor_db,
+       rb.cf$_transformer_db AS transformer_db,
+       rb.cf$_bt_lead_db AS bt_lead_db,
+       rb.cf$_neck_code_db AS neck_code_db,
+       rb.cf$_aerial_db AS aerial_db,
+       rb.cf$_wriststrap_db AS wriststrap_db,
+       rb.cf$_clip_db AS clip_db,
+       rb.cf$_original_trigger AS original_trigger,
+       rb.cf$_date_created AS date_created,
+       wo.err_descr_lo other_info,
+       (SELECT std_job_id 
+          FROM work_order_job 
+         WHERE wo_no = wr.wo_no 
+         FETCH FIRST 1 ROW ONLY) con_type,
+       Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(mch_code,mch_code_contract) AS within_warranty,
+       wr.objkey               
+  FROM work_order_returns_uiv wr, active_separate_uiv wo,product_repair_booking_clv rb
+ WHERE wr.wo_no = wo.wo_no
+   AND wr.wo_no = rb.cf$_wo_no(+)
+   AND wr.part_no = rb.cf$_part_no(+)
+   AND wr.serial_no = rb.cf$_serial_no(+)
+   AND wr.wo_no = wo_no_
+   AND wr.task_seq = task_seq_
+   AND wr.line_no = line_no_</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>WoNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>TaskSeq</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>LineNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>PartNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>25</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>SerialNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>WoNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>CustomerNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>CustomerName</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Company</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>GroupId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>RetType</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>RepairWoNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>TelAdaptorDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>TransformerDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>BtLeadDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NeckCodeDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>AerialDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>WriststrapDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ClipDb</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OriginalTrigger</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>100</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>DateCreated</NAME>
+               <DATATYPE>TIMESTAMP</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OtherInfo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ConType</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>30</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>WithinWarranty</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Objkey</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+      </BLOCK>
+   </BLOCKS>
+   <PARAMETERS>
+      <PARAMETER>
+         <NAME>WoNo</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>TaskSeq</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <NAME>LineNo</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>0</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+   </PARAMETERS>
+   <TEXTS>
+      <TEXT>
+         <NAME>ServiceRepairLabel</NAME>
+         <VALUE>Sample</VALUE>
+      </TEXT>
+   </TEXTS>
+   <AGGREGATES>
+      <AGGREGATE>
+         <NAME>ServiceRepairs</NAME>
+         <IS_ARRAY>1</IS_ARRAY>
+         <BLOCK>ServiceRepair</BLOCK>
+         <ATTRIBUTES>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>WoNo</NAME>
+            </AGGREGATE_ATTRIBUTE>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>TaskSeq</NAME>
+            </AGGREGATE_ATTRIBUTE>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>LineNo</NAME>
+            </AGGREGATE_ATTRIBUTE>
+         </ATTRIBUTES>
+      </AGGREGATE>
+   </AGGREGATES>
+</REPORT>
