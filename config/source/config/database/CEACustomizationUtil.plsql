@@ -56,12 +56,14 @@ END Get_Doc_Resp_Person___;
 
 
 -------------------- LU SPECIFIC PUBLIC METHODS -----------------------------
-
-PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
-                                               identity_ IN VARCHAR2) IS
-    stmt_ VARCHAR2(32000);
-  BEGIN
-    stmt_ := '
+--C0392 EntPrageG (START)
+PROCEDURE Bulk_Update_Invoice_Header_Notes__(
+   company_  IN VARCHAR2,
+   identity_ IN VARCHAR2) 
+IS
+   stmt_ VARCHAR2(32000);
+BEGIN
+   stmt_ := '
       DECLARE
          invoice_header_notes_rec_ invoice_header_notes_tab%ROWTYPE;
          
@@ -232,147 +234,152 @@ PROCEDURE Bulk_Update_Invoice_Header_Notes__(company_  IN VARCHAR2,
          END LOOP;
          Clear_Bulk_Update_Flag___;
       END;';
-    IF (Database_SYS.View_Exist('INVOICE_HEADER_NOTES_CFV') AND
-       Database_SYS.View_Exist('LEDGER_ITEM_CU_DET_QRY_CFV') AND
-       Database_SYS.Method_Exist('INVOICE_HEADER_NOTES_API', 'New__')) THEN
-      --@ApproveDynamicStatement('2021-02-16',entpragg);
+   IF (Database_SYS.View_Exist('INVOICE_HEADER_NOTES_CFV') AND
+          Database_SYS.View_Exist('LEDGER_ITEM_CU_DET_QRY_CFV') AND
+             Database_SYS.Method_Exist('INVOICE_HEADER_NOTES_API', 'New__')) THEN
+      @ApproveDynamicStatement('2021-02-16',entpragg);
       EXECUTE IMMEDIATE stmt_
-        USING IN company_, IN identity_;
-    ELSE
+         USING IN company_, IN identity_;
+   ELSE
       Error_Sys.Appl_General(lu_name_, 'Custom Objects are not published!');
-    END IF;
-  END Bulk_Update_Invoice_Header_Notes__;
+   END IF;
+END Bulk_Update_Invoice_Header_Notes__;
 
-  FUNCTION Get_Update_Follow_Up_Date_Sql__(calender_id_    IN VARCHAR2,
-                                           company_        IN VARCHAR2,
-                                           invoice_id_     IN VARCHAR2,
-                                           note_id_        IN NUMBER,
-                                           note_status_id_ IN NUMBER)
-    RETURN VARCHAR2 IS
-    stmt_ VARCHAR2(32000);
-  BEGIN
-    stmt_ := '
-      DECLARE
-         follow_up_date_ DATE;
-         objkey_ VARCHAR2(50);
-         company_ VARCHAR2(20);
-         invoice_id_ VARCHAR2(20);
-         note_id_ NUMBER;
-         calender_id_       VARCHAR2(20);
-         note_status_id_    NUMBER;         
-         note_status_days_  VARCHAR2(20);
-         query_reason_days_ VARCHAR2(20);
-         
-         FUNCTION Extract_Number___(text_ VARCHAR2) RETURN VARCHAR2
-         IS
-         BEGIN     
-            RETURN regexp_replace(text_, ''[^[:digit:]]'', '''');
-         END Extract_Number___;
+FUNCTION Get_Update_Follow_Up_Date_Sql__(
+   calender_id_    IN VARCHAR2,
+   company_        IN VARCHAR2,
+   invoice_id_     IN VARCHAR2,
+   note_id_        IN NUMBER,
+   note_status_id_ IN NUMBER) RETURN VARCHAR2 
+IS
+   stmt_ VARCHAR2(32000);
+BEGIN
+   stmt_ := '
+   DECLARE
+      follow_up_date_ DATE;
+      objkey_ VARCHAR2(50);
+      company_ VARCHAR2(20);
+      invoice_id_ VARCHAR2(20);
+      note_id_ NUMBER;
+      calender_id_       VARCHAR2(20);
+      note_status_id_    NUMBER;         
+      note_status_days_  VARCHAR2(20);
+      query_reason_days_ VARCHAR2(20);
 
-         FUNCTION Get_Follow_Up_Time_Days___ (
-            note_status_id_    IN NUMBER,
-            note_status_days_  IN VARCHAR2) RETURN NUMBER
-         IS
-            working_days_ NUMBER;
-         BEGIN
-            working_days_ := NVL(Extract_Number___ (note_status_days_),0); 
-            RETURN working_days_;
-         END Get_Follow_Up_Time_Days___;
+      FUNCTION Extract_Number___(text_ VARCHAR2) RETURN VARCHAR2
+      IS
+      BEGIN     
+         RETURN regexp_replace(text_, ''[^[:digit:]]'', '''');
+      END Extract_Number___;
 
-         FUNCTION Get_Follow_Up_Date___(
-            calendar_id_       IN VARCHAR2,
-            note_status_id_    IN NUMBER,      
-            note_status_days_  IN VARCHAR2) RETURN DATE
-         IS
-            follow_up_days_ NUMBER;
-            next_work_day_ date;
-         BEGIN
-            follow_up_days_ := Get_Follow_Up_Time_Days___(note_status_id_,note_status_days_);            
-            SELECT work_day
-              INTO next_work_day_
-              FROM (SELECT work_day, rownum as counter
-                      FROM work_time_counter
-                     WHERE work_day > SYSDATE
-                  ORDER BY counter) t
-              WHERE t.counter = follow_up_days_;
-         RETURN next_work_day_;
-         EXCEPTION
-           WHEN OTHERS THEN
-             RETURN SYSDATE;
-         END Get_Follow_Up_Date___;
-       
-         PROCEDURE Update_Follow_Up_Date___ (
-           objkey_         VARCHAR2,
-           follow_up_date_ DATE)
-         IS
-            invoice_header_notes_rec_ Invoice_Header_Notes_API.Public_Rec;
-            attr_ VARCHAR2(32000);
-            info_ VARCHAR2(4000);
-            objid_      VARCHAR2(200);
-            objversion_ VARCHAR2(200);
-         BEGIN
-            invoice_header_notes_rec_ := Invoice_Header_Notes_API.Get_By_Rowkey(objkey_);
-            Client_SYS.Clear_Attr(attr_);
-            Client_SYS.Add_To_Attr(''FOLLOW_UP_DATE'', follow_up_date_ , attr_);
-            IF invoice_header_notes_rec_.note_id IS NOT NULL AND follow_up_date_ <> SYSDATE THEN
-               objversion_ := to_char(invoice_header_notes_rec_.rowversion,''YYYYMMDDHH24MISS'');
-               Invoice_Header_Notes_API.Modify__(info_, invoice_header_notes_rec_."rowid",objversion_ , attr_, ''DO'');
-            END IF;
-         END ;
-    
-         FUNCTION Get_Note_Status_Follow_Up_Days___ (
-            company_        IN VARCHAR2,
-            note_status_id_ IN NUMBER) RETURN VARCHAR2
-         IS
-            follow_up_days_ VARCHAR2(20);
-         BEGIN
-            SELECT cf$_follow_up_time
-              INTO follow_up_days_
-              FROM credit_note_status_cfv
-             WHERE company = company_
-               AND note_status_id = note_status_id_;
-            RETURN follow_up_days_;
-         EXCEPTION
-            WHEN no_data_found THEN
-               RETURN NULL;    
-         END Get_Note_Status_Follow_Up_Days___;
+      FUNCTION Get_Follow_Up_Time_Days___ (
+         note_status_id_    IN NUMBER,
+         note_status_days_  IN VARCHAR2) RETURN NUMBER
+      IS
+         working_days_ NUMBER;
       BEGIN
-         calender_id_ := ''' || calender_id_ || ''';
-         note_status_id_ := ' || note_status_id_ || ';
-         company_ := ''' || company_ || ''';
-         invoice_id_ := ''' || invoice_id_ || ''';
-         note_id_:= ' || note_id_ || ';
+         working_days_ := NVL(Extract_Number___ (note_status_days_),0); 
+         RETURN working_days_;
+      END Get_Follow_Up_Time_Days___;
 
-         objkey_:= Invoice_Header_Notes_API.Get_Objkey(company_, invoice_id_, note_id_);
-         note_status_days_ := Get_Note_Status_Follow_Up_Days___ (company_ ,note_status_id_ );
+      FUNCTION Get_Follow_Up_Date___(
+         calendar_id_       IN VARCHAR2,
+         note_status_id_    IN NUMBER,      
+         note_status_days_  IN VARCHAR2) RETURN DATE
+      IS
+         follow_up_days_ NUMBER;
+         next_work_day_ date;
+      BEGIN
+         follow_up_days_ := Get_Follow_Up_Time_Days___(note_status_id_,note_status_days_);            
+         SELECT work_day
+           INTO next_work_day_
+           FROM (SELECT work_day, rownum as counter
+                   FROM work_time_counter
+                  WHERE calendar_id = calendar_id_
+                    AND work_day > SYSDATE                     
+               ORDER BY counter) t
+           WHERE t.counter = follow_up_days_;
+      RETURN next_work_day_;
+      EXCEPTION
+        WHEN OTHERS THEN
+          RETURN SYSDATE;
+      END Get_Follow_Up_Date___;
 
-         follow_up_date_ := Get_Follow_Up_Date___(calender_id_,note_status_id_,note_status_days_);  
-         Update_Follow_Up_Date___(objkey_,follow_up_date_);         
-      END;';
-    RETURN stmt_;
-  END Get_Update_Follow_Up_Date_Sql__;
+      PROCEDURE Update_Follow_Up_Date___ (
+        objkey_         VARCHAR2,
+        follow_up_date_ DATE)
+      IS
+         invoice_header_notes_rec_ Invoice_Header_Notes_API.Public_Rec;
+         attr_ VARCHAR2(32000);
+         info_ VARCHAR2(4000);
+         objid_      VARCHAR2(200);
+         objversion_ VARCHAR2(200);
+      BEGIN
+         invoice_header_notes_rec_ := Invoice_Header_Notes_API.Get_By_Rowkey(objkey_);
+         Client_SYS.Clear_Attr(attr_);
+         Client_SYS.Add_To_Attr(''FOLLOW_UP_DATE'', follow_up_date_ , attr_);
+         IF invoice_header_notes_rec_.note_id IS NOT NULL AND follow_up_date_ <> SYSDATE THEN
+            objversion_ := to_char(invoice_header_notes_rec_.rowversion,''YYYYMMDDHH24MISS'');
+            Invoice_Header_Notes_API.Modify__(info_, invoice_header_notes_rec_."rowid",objversion_ , attr_, ''DO'');
+         END IF;
+      END ;
 
-  PROCEDURE Update_Follow_Up_Date__(calender_id_    IN VARCHAR2,
-                                    company_        IN VARCHAR2,
-                                    invoice_id_     IN VARCHAR2,
-                                    note_id_        IN NUMBER,
-                                    note_status_id_ IN NUMBER) IS
-    stmt_ VARCHAR2(32000);
-  BEGIN
-    stmt_ := Get_Update_Follow_Up_Date_Sql__(calender_id_,
-                                             company_,
-                                             invoice_id_,
-                                             note_id_,
-                                             note_status_id_);
-    IF (Database_SYS.View_Exist('CREDIT_NOTE_STATUS_CFV') AND
-       Database_SYS.View_Exist('QUERY_REASON_CLV') AND
-       Database_SYS.View_Exist('INVOICE_HEADER_NOTES_CFV')) THEN
-      --@ApproveDynamicStatement('2021-02-24',entpragg);
+      FUNCTION Get_Note_Status_Follow_Up_Days___ (
+         company_        IN VARCHAR2,
+         note_status_id_ IN NUMBER) RETURN VARCHAR2
+      IS
+         follow_up_days_ VARCHAR2(20);
+      BEGIN
+         SELECT cf$_follow_up_time
+           INTO follow_up_days_
+           FROM credit_note_status_cfv
+          WHERE company = company_
+            AND note_status_id = note_status_id_;
+         RETURN follow_up_days_;
+      EXCEPTION
+         WHEN no_data_found THEN
+            RETURN NULL;    
+      END Get_Note_Status_Follow_Up_Days___;
+   BEGIN
+      calender_id_ := ''' || calender_id_ || ''';
+      note_status_id_ := ' || note_status_id_ || ';
+      company_ := ''' || company_ || ''';
+      invoice_id_ := ''' || invoice_id_ || ''';
+      note_id_:= ' || note_id_ || ';
+
+      objkey_:= Invoice_Header_Notes_API.Get_Objkey(company_, invoice_id_, note_id_);
+      note_status_days_ := Get_Note_Status_Follow_Up_Days___ (company_ ,note_status_id_ );
+
+      follow_up_date_ := Get_Follow_Up_Date___(calender_id_,note_status_id_,note_status_days_);  
+      Update_Follow_Up_Date___(objkey_,follow_up_date_);         
+   END;';
+   RETURN stmt_;
+END Get_Update_Follow_Up_Date_Sql__;
+
+PROCEDURE Update_Follow_Up_Date__(
+   calender_id_    IN VARCHAR2,
+   company_        IN VARCHAR2,
+   invoice_id_     IN VARCHAR2,
+   note_id_        IN NUMBER,
+   note_status_id_ IN NUMBER) 
+IS
+   stmt_ VARCHAR2(32000);
+BEGIN
+   stmt_ := Get_Update_Follow_Up_Date_Sql__(calender_id_,
+                                            company_,
+                                            invoice_id_,
+                                            note_id_,
+                                            note_status_id_);
+   IF (Database_SYS.View_Exist('CREDIT_NOTE_STATUS_CFV') AND
+          Database_SYS.View_Exist('QUERY_REASON_CLV') AND
+             Database_SYS.View_Exist('INVOICE_HEADER_NOTES_CFV')) THEN
+      @ApproveDynamicStatement('2021-02-24',EntPrageG);
       EXECUTE IMMEDIATE stmt_;
-    ELSE
+   ELSE
       Error_Sys.Appl_General(lu_name_, 'Custom Objects are not published!');
-    END IF;
-  END Update_Follow_Up_Date__;
+   END IF;
+END Update_Follow_Up_Date__;
+--C0392 EntPrageG (END)
 
   --C0446 EntChamuA (START)
 PROCEDURE Create_Equipment_Object__(
