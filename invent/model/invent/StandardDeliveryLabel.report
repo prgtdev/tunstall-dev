@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REPORT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:ifsworld-com:schemas:report_report">
+   <CODE_GENERATION_PROPERTIES>
+      <CODE_GENERATION_PROPERTIES>
+         <GENERATE_RDF>yes</GENERATE_RDF>
+      </CODE_GENERATION_PROPERTIES>
+   </CODE_GENERATION_PROPERTIES>
+   <DIAGRAMS>
+      <DIAGRAM>
+         <NAME>Main</NAME>
+         <DIAGRAM_TYPE>REPORT_STRUCTURE</DIAGRAM_TYPE>
+         <NODES>
+            <DIAGRAM_NODE>
+               <ID>c0ba8650-ac9b-11eb-1107-8fefe2b033fe</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>HandlingUnit</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>135</X>
+                     <Y>349</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>172</X>
+                     <Y>299</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>b72ead50-ac9b-11eb-1107-8fefe2b033fe</ID>
+               <NODE_TYPE>REPORT</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>EntityName</NAME>
+                     <VALUE>StandardDeliveryLabel</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>LUName</NAME>
+                     <VALUE>StandardDeliveryLabelRep</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>101</X>
+                     <Y>101</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>194</X>
+                     <Y>57</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+         </NODES>
+         <EDGES>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>b72ead50-ac9b-11eb-1107-8fefe2b033fe</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c0ba8650-ac9b-11eb-1107-8fefe2b033fe</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>HandlingUnitIds</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>HandlingUnit</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>199</X>
+                     <Y>157</Y>
+                  </POINT>
+                  <POINT>
+                     <X>211</X>
+                     <Y>348</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+         </EDGES>
+      </DIAGRAM>
+   </DIAGRAMS>
+   <NAME>StandardDeliveryLabel</NAME>
+   <COMPONENT>INVENT</COMPONENT>
+   <LU_NAME>StandardDeliveryLabelRep</LU_NAME>
+   <BLOCKS>
+      <BLOCK>
+         <NAME>HandlingUnit</NAME>
+         <CURSOR_DEFINITION>SELECT h.handling_unit_id,
+       h.contract,
+       v.cf$_courier_id courier_id, 
+       v.cf$_damaged damaged, 
+       v.cf$_numberofparcels number_of_parcels,
+       v.cf$_numberofpallets number_of_pallets,
+       v.cf$_off_loader_name off_loader_name,
+       v.cf$_receiving_operator receiving_operator,
+       v.cf$_tracking_number tracking_number,
+       (SELECT (SELECT Supplier_API.Get_Vendor_name(vendor_no)
+                  FROM purchase_order
+                 WHERE order_no = t.SOURCE_REF1) supplier
+          FROM receipt_info_cfv t
+         WHERE t.cf$_rec_huid = h.handling_unit_id fetch first 1 row only) supplier,
+       (SELECT COUNT(*) 
+          FROM receipt_info_cfv v 
+         WHERE v.cf$_rec_huid = h.handling_unit_id 
+           AND v.cf$_delivery_control_code IS NOT NULL) priority_lines,
+       (SELECT COUNT(*) 
+          FROM receipt_info_cfv v 
+         WHERE v.cf$_rec_huid = h.handling_unit_id 
+           AND v.cf$_delivery_control_code IS NULL) none_priority_lines,
+       h.objkey
+  FROM handling_unit h, goods_in_off_load_clv v
+ WHERE h.handling_unit_id = v.cf$_h_id
+   AND h.handling_unit_id = handling_unit_id_</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>HandlingUnitId</NAME>
+               <DB_DATATYPE>NUMBER</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>HandlingUnitId</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>CourierId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Damaged</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>100</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NumberOfParcels</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NumberOfPallets</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OffLoaderName</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ReceivingOperator</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>TrackingNumber</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>200</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Supplier</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>PriorityLines</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NonePriorityLines</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Objkey</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+      </BLOCK>
+   </BLOCKS>
+   <PARAMETERS>
+      <PARAMETER>
+         <NAME>HandlingUnitId</NAME>
+         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
+         <IS_MANDATORY>1</IS_MANDATORY>
+         <IS_CUSTOM>1</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+      </PARAMETER>
+   </PARAMETERS>
+   <TEXTS>
+      <TEXT>
+         <NAME>StandardDeliveryLabel</NAME>
+         <VALUE>Sample</VALUE>
+      </TEXT>
+   </TEXTS>
+   <AGGREGATES>
+      <AGGREGATE>
+         <NAME>HandlingUnitIds</NAME>
+         <IS_ARRAY>1</IS_ARRAY>
+         <BLOCK>HandlingUnit</BLOCK>
+         <ATTRIBUTES>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>HandlingUnitId</NAME>
+            </AGGREGATE_ATTRIBUTE>
+         </ATTRIBUTES>
+      </AGGREGATE>
+   </AGGREGATES>
+</REPORT>
