@@ -3588,4 +3588,133 @@ EXCEPTION
 END Get_Warranty_Expiray_Date;
 -- C526 EntPragG (END)
 
+-- C0321 EntChamuA (START)
+FUNCTION Attach_Docs_In_PO (xml_ CLOB) RETURN CLOB
+
+IS
+   app_msg_id_     NUMBER;
+   file_name_      VARCHAR2(3200);
+   attachment_     BLOB;
+   type_           VARCHAR2(10);
+   doc_class_      VARCHAR2(2000):= '1200.7001';
+   doc_sheet_      VARCHAR2(100);
+   doc_rev_        VARCHAR2(100);
+   doc_number_     VARCHAR2(100):= '*';
+   attr_           VARCHAR2(3200);
+   po_num_         VARCHAR2(3200);
+   key_ref_        VARCHAR2(100);
+   local_path_out_ VARCHAR2(100);
+   objid_          VARCHAR2(3200);
+   objversion_     VARCHAR2(3200);
+   extension_      VARCHAR2(10);
+
+   CURSOR get_file_details(id_ IN NUMBER) IS
+     SELECT t.name, t.message_value, t.body_type
+       FROM fndcn_message_body_tab t
+      WHERE t.application_message_id = id_
+        AND t.name IS NOT NULL
+        AND t.reply = 0;
+ BEGIN
+   app_msg_id_ := App_Context_SYS.Find_Number_Value('APPLICATION_MESSAGE_ID',0);
+
+   OPEN get_file_details(app_msg_id_);
+    FETCH get_file_details
+      INTO file_name_, attachment_, type_;
+    CLOSE get_file_details;
+    
+    IF (file_name_ IS NOT NULL AND type_ IS NOT NULL) THEN
+       
+      extension_ := UPPER(SUBSTR(file_name_, INSTR(file_name_, '.') +1 , LENGTH(file_name_)));
+      -- Creating document in DOCMAN
+      doc_sheet_ := Doc_Class_Default_API.Get_Default_Value_(doc_class_,
+                                                             'DocTitle',
+                                                             'DOC_SHEET');
+      doc_rev_   := Doc_Class_Default_API.Get_Default_Value_(doc_class_,
+                                                             'DocTitle',
+                                                             'DOC_REV');
+    
+      Doc_Title_API.Create_New_Document(doc_class_,
+                                        doc_number_,
+                                        doc_sheet_,
+                                        doc_rev_,
+                                        file_name_,
+                                        attr_);
+                                        
+      po_num_  := SUBSTR(file_name_, 0, INSTR(file_name_, '-') - 1);
+      key_ref_ := 'ORDER_NO=' || po_num_ || '^';
+      
+      Doc_Reference_Object_API.Create_New_Reference__('PurchaseOrder',
+                                                      key_ref_,
+                                                      doc_class_,
+                                                      doc_number_,
+                                                      doc_sheet_,
+                                                      doc_rev_);
+    
+      Edm_File_API.Create_File_Reference(local_path_out_,
+                                         doc_class_,
+                                         doc_number_,
+                                         doc_sheet_,
+                                         doc_rev_,
+                                         'ORIGINAL',
+                                         Edm_Application_API.Get_File_Type(extension_),
+                                         NULL,
+                                         1);
+                                         
+      Edm_File_API.Set_File_State(doc_class_,
+                                  doc_number_,
+                                  doc_sheet_,
+                                  doc_rev_,
+                                  'ORIGINAL',
+                                  'CheckOut',
+                                  local_path_out_);
+
+      Edm_File_API.Set_Local_File_Name_(doc_class_,
+                                        doc_number_,
+                                        doc_sheet_,
+                                        doc_rev_,
+                                        'ORIGINAL',
+                                        file_name_);
+    
+      Edm_File_API.Set_File_State(doc_class_,
+                                  doc_number_,
+                                  doc_sheet_,
+                                  doc_rev_,
+                                  'ORIGINAL',
+                                  'StartCheckIn',
+                                  local_path_out_);
+    
+      Edm_File_Storage_API.Create_New_File_(doc_class_,
+                                            doc_number_,
+                                            doc_sheet_,
+                                            doc_rev_,
+                                            'ORIGINAL');
+        
+      Edm_File_Storage_API.Get_Obj_Id(objid_,
+                                      objversion_,
+                                      doc_class_,
+                                      doc_number_,
+                                      doc_sheet_,
+                                      doc_rev_,
+                                      'ORIGINAL');
+                                      
+      Edm_File_Op_Announce_API.Announce_File_Operation(doc_class_,doc_number_, doc_sheet_,doc_rev_, 'WRITE'); 
+       
+      Edm_File_Storage_API.Write_Blob_Data(objversion_,
+                                           objid_,
+                                           attachment_);
+    
+      Edm_File_API.Set_File_State(doc_class_,
+                                  doc_number_,
+                                  doc_sheet_,
+                                  doc_rev_,
+                                  'ORIGINAL',
+                                  'FinishCheckIn',
+                                  local_path_out_);
+    END IF;
+    
+   RETURN xml_;
+
+END Attach_Docs_In_PO;
+-- C0321 EntChamuA (END)
+
 -------------------- LU  NEW METHODS -------------------------------------
