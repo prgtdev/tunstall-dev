@@ -2597,7 +2597,6 @@ END Get_Contract_Id;
 --  C0049 EntChamuA (END)  
 
 -- C0401 EntPragG (START)
-
 PROCEDURE Generate_CWU_Report_Multilevel(
    part_no_       IN VARCHAR2,
    contract_      IN VARCHAR2,
@@ -2890,6 +2889,13 @@ EXCEPTION
    WHEN OTHERS THEN
       RETURN NULL;
 END Get_Phase_Out_Date__;
+
+PROCEDURE Clean_Up_CWU_Report_Multilevel
+IS
+BEGIN
+  DELETE 
+   FROM cwu_report_multilevel_clt;
+END Clean_Up_CWU_Report_Multilevel;
 -- C0401 EntPrageG (END)
 
 -- C0436 EntPrageG (START)
