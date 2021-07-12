@@ -2640,13 +2640,20 @@ IS
       contract_      IN VARCHAR2,
       eng_chg_level_ IN VARCHAR2)
    IS
+      stmt_ VARCHAR2(1000);
    BEGIN
-      DELETE
-        FROM cwu_report_multilevel_clt
-       WHERE cf$_report_part_no = part_no_
-         AND cf$_report_eng_chg_level = eng_chg_level_
-         AND cf$_report_contract = contract_
-         AND cf$_report_user = Fnd_Session_API.Get_Fnd_User;
+      stmt_ := 
+         'BEGIN
+            DELETE
+              FROM cwu_report_multilevel_clt
+             WHERE cf$_report_part_no = :part_no_
+               AND cf$_report_eng_chg_level = :eng_chg_level_
+               AND cf$_report_contract = :contract_
+               AND cf$_report_user = Fnd_Session_API.Get_Fnd_User;
+         END;';
+      @ApproveDynamicStatement(2021-07-12,EntPrageG)     
+      EXECUTE IMMEDIATE stmt_
+         USING IN part_no_, IN eng_chg_level_, IN contract_;
    END Clean_Up_Report_Entries___;
    
    PROCEDURE Create_Report_Entry___(
@@ -2662,9 +2669,16 @@ IS
       info_ VARCHAR2(32000);
       objid_ VARCHAR2(50);
       objversion_ VARCHAR2(50);
+      stmt_ VARCHAR2(2000);
    BEGIN
+      stmt_ := 
+      'BEGIN                
+          Cwu_Report_Multilevel_CLP.New__(:info_,:objid_,:objversion_,:attr_,''DO'');
+       END;';
       attr_ := Get_Attr___(level_,part_no_,bom_type_,eng_chg_level_,alternative_no_,contract_,qty_per_assembly_);
-      Cwu_Report_Multilevel_CLP.New__(info_,objid_,objversion_,attr_,'DO');
+      @ApproveDynamicStatement(2021-07-12,EntPragG)
+      EXECUTE IMMEDIATE stmt_
+         USING OUT info_, OUT objid_, OUT objversion_, IN OUT attr_;
    END Create_Report_Entry___;
    
    PROCEDURE Build_Part_Hierachy___(
@@ -2892,9 +2906,14 @@ END Get_Phase_Out_Date__;
 
 PROCEDURE Clean_Up_CWU_Report_Multilevel
 IS
+   stmt_ VARCHAR2(100);
 BEGIN
-  DELETE 
-   FROM cwu_report_multilevel_clt;
+   stmt_ := 
+      'BEGIN
+         DELETE 
+            FROM cwu_report_multilevel_clt;
+       END;';
+   EXECUTE IMMEDIATE stmt_;
 END Clean_Up_CWU_Report_Multilevel;
 -- C0401 EntPrageG (END)
 
