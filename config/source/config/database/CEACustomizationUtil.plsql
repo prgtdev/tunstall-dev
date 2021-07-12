@@ -2598,6 +2598,167 @@ END Get_Contract_Id;
 
 -- C0401 EntPragG (START)
 
+PROCEDURE Generate_CWU_Report_Multilevel(
+   part_no_       IN VARCHAR2,
+   contract_      IN VARCHAR2,
+   eng_chg_level_ IN VARCHAR2)
+IS
+   hierachy_ VARCHAR2(32000);      
+   phase_in_date_ DATE;
+   phase_out_date_ DATE;
+   order_ NUMBER := 0;
+   
+   FUNCTION Get_Attr___ (
+      level_               IN VARCHAR2,
+      child_part_no_       IN VARCHAR2,
+      bom_type_            IN VARCHAR2,
+      child_eng_chg_level_ IN VARCHAR2,
+      alternative_no_      IN VARCHAR2,
+      child_contract_      IN VARCHAR2,
+      qty_per_assembly_    IN NUMBER) RETURN VARCHAR2
+   IS
+      attr_ VARCHAR2(32000);
+   BEGIN
+      order_ := order_ + 1;
+      Client_SYS.Clear_Attr(attr_);
+      Client_SYS.Add_To_Attr('CF$_LEVEL', level_, attr_);
+      Client_SYS.Add_To_Attr('CF$_PART_NO', child_part_no_, attr_);
+      Client_SYS.Add_To_Attr('CF$_BOM_TYPE', bom_type_, attr_);
+      Client_SYS.Add_To_Attr('CF$_ENG_CHG_LEVEL', child_eng_chg_level_, attr_);
+      Client_SYS.Add_To_Attr('CF$_ALTERNATIVE_NO', alternative_no_, attr_);
+      Client_SYS.Add_To_Attr('CF$_CONTRACT', child_contract_, attr_);
+      Client_SYS.Add_To_Attr('CF$_QTY_PER_ASSEMBLY', qty_per_assembly_, attr_);
+      Client_SYS.Add_To_Attr('CF$_REPORT_PART_NO', part_no_, attr_);
+      Client_SYS.Add_To_Attr('CF$_REPORT_ENG_CHG_LEVEL', eng_chg_level_, attr_);
+      Client_SYS.Add_To_Attr('CF$_REPORT_USER', Fnd_Session_API.Get_Fnd_User, attr_);      
+      Client_SYS.Add_To_Attr('CF$_REPORT_CONTRACT', contract_, attr_);
+      Client_SYS.Add_To_Attr('CF$_ORDER', order_, attr_);
+      RETURN attr_;
+   END Get_Attr___;
+   
+   PROCEDURE Clean_Up_Report_Entries___(
+      part_no_       IN VARCHAR2,      
+      contract_      IN VARCHAR2,
+      eng_chg_level_ IN VARCHAR2)
+   IS
+   BEGIN
+      DELETE
+        FROM cwu_report_multilevel_clt
+       WHERE cf$_report_part_no = part_no_
+         AND cf$_report_eng_chg_level = eng_chg_level_
+         AND cf$_report_contract = contract_
+         AND cf$_report_user = Fnd_Session_API.Get_Fnd_User;
+   END Clean_Up_Report_Entries___;
+   
+   PROCEDURE Create_Report_Entry___(
+      level_            IN VARCHAR2,
+      part_no_          IN VARCHAR2,
+      eng_chg_level_    IN VARCHAR2,
+      contract_         IN VARCHAR2,      
+      bom_type_         IN VARCHAR2 DEFAULT NULL,
+      alternative_no_   IN VARCHAR2 DEFAULT NULL,
+      qty_per_assembly_ IN NUMBER DEFAULT NULL)
+   IS
+      attr_ VARCHAR2(32000);
+      info_ VARCHAR2(32000);
+      objid_ VARCHAR2(50);
+      objversion_ VARCHAR2(50);
+   BEGIN
+      attr_ := Get_Attr___(level_,part_no_,bom_type_,eng_chg_level_,alternative_no_,contract_,qty_per_assembly_);
+      Cwu_Report_Multilevel_CLP.New__(info_,objid_,objversion_,attr_,'DO');
+   END Create_Report_Entry___;
+   
+   PROCEDURE Build_Part_Hierachy___(
+      hierachy_       IN OUT VARCHAR2,
+      part_no_            IN VARCHAR2,
+      contract_           IN VARCHAR2,
+      level_              IN NUMBER,
+      phase_in_date_      IN DATE,
+      phase_out_date_     IN DATE)
+   IS
+      next_level_ NUMBER;
+      CURSOR get_component_part_ IS
+         SELECT part_no,
+                bom_Type,
+                eng_chg_level,
+                alternative_no,
+                contract,
+                qty_per_assembly,
+                eff_phase_in_date,
+                eff_phase_out_date
+           FROM manuf_structure t
+          WHERE component_part = part_no_
+            AND contract = contract_
+            AND bom_type_db IN ('M', 'T')
+            AND eng_chg_level IN
+                              (SELECT eng_chg_level
+                                 FROM manuf_structure
+                                WHERE component_contract = t.component_contract
+                                  AND component_part = t.component_part
+                                  AND part_no = t.part_No
+                                  AND bom_type_db = t.bom_type_db
+                                  AND eff_phase_out_date IS NULL)
+            AND (
+                 ((eff_phase_out_date IS NULL) AND (phase_out_date_ IS NULL)) OR 
+                 ((phase_out_date_ IS NULL) AND (eff_phase_out_date >= phase_in_date_ )) OR
+                 ((eff_phase_out_date IS NULL) AND ( phase_in_date_ >= eff_phase_in_date)) OR
+                 ((eff_phase_out_date IS NULL) AND (phase_out_date_ >= eff_phase_in_date)) OR
+                 (eff_phase_in_date BETWEEN phase_in_date_ AND phase_out_date_ ) OR
+                 (eff_phase_out_date BETWEEN phase_in_date_ AND phase_out_date_ ) OR
+                 (phase_in_date_ BETWEEN eff_phase_in_date AND eff_phase_out_date) OR
+                 (phase_out_date_ BETWEEN eff_phase_in_date AND eff_phase_out_date)
+                );
+   BEGIN
+      FOR rec_ IN get_component_part_  LOOP          
+        --hierachy_ := hierachy_  ||','|| LPAD(level_,(level_),'.') || '<<#>>' ||rec_. part_no || '<<>>' || rec_. bom_Type || '<<>>' || rec_. eng_chg_level || '<<>>' || rec_. alternative_no || '<<>>' || contract_ || '<<#>>' ||rec_.qty_per_assembly;
+        Create_Report_Entry___(LPAD(level_,(level_),'.'),rec_.part_no,rec_.eng_chg_level,contract_,rec_.bom_Type,rec_.alternative_no,rec_.qty_per_assembly);
+        next_level_ := level_+1;
+        Build_Part_Hierachy___(hierachy_,rec_.part_no, contract_,next_level_,rec_.eff_phase_in_date,rec_.eff_phase_out_date);                             
+      END LOOP; 
+   END Build_Part_Hierachy___;
+
+   FUNCTION Get_Phase_In_Date___(
+      part_no_       IN VARCHAR,
+      eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC
+   IS
+      phase_in_date_ DATE;
+   BEGIN
+      SELECT eff_phase_in_date
+        INTO phase_in_date_
+        FROM part_revision
+       WHERE part_no = part_no_
+         AND eng_chg_level = eng_chg_level_;
+      RETURN phase_in_date_;
+   EXCEPTION
+      WHEN OTHERS THEN
+         RETURN NULL;
+   END Get_Phase_In_Date___;
+
+   FUNCTION Get_Phase_Out_Date___(
+      part_no_       IN VARCHAR,
+      eng_chg_level_ IN VARCHAR2) RETURN DATE DETERMINISTIC
+   IS
+      phase_in_date_ DATE;
+   BEGIN
+      SELECT eff_phase_out_date
+        INTO phase_in_date_
+        FROM part_revision
+       WHERE part_no = part_no_
+         AND eng_chg_level = eng_chg_level_;
+      RETURN phase_in_date_;
+   EXCEPTION
+      WHEN OTHERS THEN
+         RETURN NULL;
+   END Get_Phase_Out_Date___;      
+BEGIN
+   phase_in_date_:= Get_Phase_In_Date___(part_no_,eng_chg_level_);
+   phase_out_date_ := Get_Phase_Out_Date___(part_no_,part_no_);
+   --hierachy_ := '1' || '<<#>>' || part_no_ || '<<>>' || '' || '<<>>' || eng_chg_level_ || '<<>>' || '' || '<<>>' || contract_;   
+   Clean_Up_Report_Entries___(part_no_,contract_,eng_chg_level_);
+   Create_Report_Entry___('1',part_no_,eng_chg_level_,contract_);
+   Build_Part_Hierachy___(hierachy_,part_no_,contract_,2,phase_in_date_,phase_out_date_);
+END Generate_CWU_Report_Multilevel; 
+
 FUNCTION Get_Part_Hierachy__(
    part_no_       IN VARCHAR2,
    contract_      IN VARCHAR2,
@@ -2647,7 +2808,7 @@ IS
                  (phase_in_date_ BETWEEN eff_phase_in_date AND eff_phase_out_date) OR
                  (phase_out_date_ BETWEEN eff_phase_in_date AND eff_phase_out_date)
                 );
-   BEGIN                       
+   BEGIN
       FOR rec_ IN get_component_part_  LOOP          
         hierachy_ := hierachy_  ||','|| LPAD(level_,(level_),'.') || '<<#>>' ||rec_. part_no || '<<>>' || rec_. bom_Type || '<<>>' || rec_. eng_chg_level || '<<>>' || rec_. alternative_no || '<<>>' || contract_ || '<<#>>' ||rec_.qty_per_assembly;
         next_level_ := level_+1;
@@ -3500,12 +3661,21 @@ IS
       contract_   IN VARCHAR2)
    IS
    BEGIN
-      SELECT part_no,
-             serial_no
-        INTO part_no_, serial_no_
-        FROM equipment_functional_uiv
-       WHERE mch_code = object_id_
-         AND contract = contract_;
+      IF Equipment_Object_API.Get_Obj_Level(contract_,object_id_) IS NULL THEN
+         SELECT part_no,
+                serial_no
+           INTO part_no_, serial_no_
+           FROM equipment_serial_uiv
+          WHERE mch_code = object_id_
+            AND contract = contract_;
+      ELSE
+         SELECT part_no,
+                serial_no
+           INTO part_no_, serial_no_
+           FROM equipment_functional_uiv
+          WHERE mch_code = object_id_
+            AND contract = contract_;
+      END IF;
    EXCEPTION
       WHEN NO_DATA_FOUND THEN
          part_no_ := NULL;

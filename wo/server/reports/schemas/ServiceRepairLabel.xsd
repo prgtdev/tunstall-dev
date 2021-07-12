@@ -356,7 +356,7 @@
                            </xs:all>
                         </xs:complexType>
                      </xs:element>
-                     <xs:element name="TASK_SEQ">
+                     <xs:element name="PART_NO">
                         <xs:complexType>
                            <xs:all minOccurs="1" maxOccurs="1">
                               <xs:element name="DISPLAY_TEXT" nillable="true">
@@ -376,7 +376,7 @@
                            </xs:all>
                         </xs:complexType>
                      </xs:element>
-                     <xs:element name="LINE_NO">
+                     <xs:element name="SERIAL_NO">
                         <xs:complexType>
                            <xs:all minOccurs="1" maxOccurs="1">
                               <xs:element name="DISPLAY_TEXT" nillable="true">

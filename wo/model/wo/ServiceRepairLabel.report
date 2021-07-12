@@ -57,43 +57,11 @@
                <SIZE>
                   <POINT>
                      <X>156</X>
-                     <Y>527</Y>
+                     <Y>546</Y>
                   </POINT>
                </SIZE>
             </DIAGRAM_NODE>
          </NODES>
-         <EDGES>
-            <DIAGRAM_EDGE>
-               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
-               <SOURCE_NODE_ID>7f513040-d8cb-11eb-0d19-febb73f819ac</SOURCE_NODE_ID>
-               <TARGET_NODE_ID>2847e690-d8d0-11eb-0d19-febb73f819ac</TARGET_NODE_ID>
-               <IS_MERGED>0</IS_MERGED>
-               <PROPERTIES>
-                  <PROPERTY>
-                     <NAME>ReportBlockEdgeName</NAME>
-                     <VALUE>ServiceRepairs</VALUE>
-                  </PROPERTY>
-                  <PROPERTY>
-                     <NAME>IsArray</NAME>
-                     <VALUE>true</VALUE>
-                  </PROPERTY>
-                  <PROPERTY>
-                     <NAME>BlockName</NAME>
-                     <VALUE>ServiceRepair</VALUE>
-                  </PROPERTY>
-               </PROPERTIES>
-               <CONTROL_POINTS>
-                  <POINT>
-                     <X>204</X>
-                     <Y>195</Y>
-                  </POINT>
-                  <POINT>
-                     <X>254</X>
-                     <Y>332</Y>
-                  </POINT>
-               </CONTROL_POINTS>
-            </DIAGRAM_EDGE>
-         </EDGES>
       </DIAGRAM>
    </DIAGRAMS>
    <NAME>ServiceRepairLabel</NAME>
@@ -102,9 +70,31 @@
    <BLOCKS>
       <BLOCK>
          <NAME>ServiceRepair</NAME>
-         <CURSOR_DEFINITION>SELECT wr.part_no,
-       wr.serial_no,
-       wr.wo_no,
+         <CURSOR_DEFINITION>SELECT CASE 
+          WHEN Equipment_Object_API.Get_Obj_Level(wo.mch_code_contract,wo.mch_code) IS NULL THEN
+             (SELECT part_no
+                FROM equipment_serial_uiv
+               WHERE contract = wo.mch_code_contract
+                 AND mch_code = wo.mch_code)
+           ELSE 
+               (SELECT part_no
+                FROM equipment_functional_uiv
+               WHERE contract = wo.mch_code_contract
+                 AND mch_code = wo.mch_code)
+       END part_no,
+       CASE 
+          WHEN Equipment_Object_API.Get_Obj_Level(wo.mch_code_contract,wo.mch_code) IS NULL THEN
+             (SELECT serial_no
+                FROM equipment_serial_uiv
+               WHERE contract = wo.mch_code_contract
+                 AND mch_code = wo.mch_code)
+           ELSE 
+               (SELECT serial_no
+                FROM equipment_functional_uiv
+               WHERE contract = wo.mch_code_contract
+                 AND mch_code = wo.mch_code)
+       END serial_no,
+       wo.wo_no,
        wo.customer_no,
        Customer_Info_API.Get_Name(wo.customer_no) customer_name,
        wo.contract,
@@ -130,29 +120,26 @@
        wo.err_descr_lo other_info,
        (SELECT std_job_id 
           FROM work_order_job 
-         WHERE wo_no = wr.wo_no 
+         WHERE wo_no = rb.cf$_repair_wo_no 
          FETCH FIRST 1 ROW ONLY) con_type,
-       Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(mch_code,mch_code_contract) AS within_warranty,
-       wr.objkey               
-  FROM work_order_returns_uiv wr, active_separate_uiv wo,product_repair_booking_clv rb
- WHERE wr.wo_no = wo.wo_no
-   AND wr.wo_no = rb.cf$_wo_no(+)
-   AND wr.part_no = rb.cf$_part_no(+)
-   AND wr.serial_no = rb.cf$_serial_no(+)
-   AND wr.wo_no = wo_no_
-   AND wr.task_seq = task_seq_
-   AND wr.line_no = line_no_</CURSOR_DEFINITION>
+       Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(wo.mch_code,wo.mch_code_contract) AS within_warranty,
+       rb.objkey               
+  FROM product_repair_booking_clv rb, active_separate_uiv wo
+ WHERE rb.cf$_wo_no = wo.wo_no
+   AND rb.cf$_wo_no = wo_no_
+   AND rb.cf$_part_no = part_no_
+   AND rb.cf$_serial_no = serial_no_</CURSOR_DEFINITION>
          <PARAMETERS>
             <BLOCK_PARAMETER>
                <NAME>WoNo</NAME>
                <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
             </BLOCK_PARAMETER>
             <BLOCK_PARAMETER>
-               <NAME>TaskSeq</NAME>
+               <NAME>PartNo</NAME>
                <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
             </BLOCK_PARAMETER>
             <BLOCK_PARAMETER>
-               <NAME>LineNo</NAME>
+               <NAME>SerialNo</NAME>
                <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
             </BLOCK_PARAMETER>
          </PARAMETERS>
@@ -276,29 +263,17 @@
       <PARAMETER>
          <NAME>WoNo</NAME>
          <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
-         <IS_MANDATORY>0</IS_MANDATORY>
-         <IS_CUSTOM>0</IS_CUSTOM>
-         <IS_SINGLE>0</IS_SINGLE>
-         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
-         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+         <LENGTH>10</LENGTH>
       </PARAMETER>
       <PARAMETER>
-         <NAME>TaskSeq</NAME>
-         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
-         <IS_MANDATORY>0</IS_MANDATORY>
-         <IS_CUSTOM>0</IS_CUSTOM>
-         <IS_SINGLE>0</IS_SINGLE>
-         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
-         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+         <NAME>PartNo</NAME>
+         <PARAMETER_DATATYPE>TEXT</PARAMETER_DATATYPE>
+         <LENGTH>50</LENGTH>
       </PARAMETER>
       <PARAMETER>
-         <NAME>LineNo</NAME>
-         <PARAMETER_DATATYPE>NUMBER</PARAMETER_DATATYPE>
-         <IS_MANDATORY>0</IS_MANDATORY>
-         <IS_CUSTOM>0</IS_CUSTOM>
-         <IS_SINGLE>0</IS_SINGLE>
-         <ALLOW_BETWEEN>0</ALLOW_BETWEEN>
-         <ALLOW_WILDCARDS>0</ALLOW_WILDCARDS>
+         <NAME>SerialNo</NAME>
+         <PARAMETER_DATATYPE>TEXT</PARAMETER_DATATYPE>
+         <LENGTH>50</LENGTH>
       </PARAMETER>
    </PARAMETERS>
    <TEXTS>
@@ -317,10 +292,10 @@
                <NAME>WoNo</NAME>
             </AGGREGATE_ATTRIBUTE>
             <AGGREGATE_ATTRIBUTE>
-               <NAME>TaskSeq</NAME>
+               <NAME>PartNo</NAME>
             </AGGREGATE_ATTRIBUTE>
             <AGGREGATE_ATTRIBUTE>
-               <NAME>LineNo</NAME>
+               <NAME>SerialNo</NAME>
             </AGGREGATE_ATTRIBUTE>
          </ATTRIBUTES>
       </AGGREGATE>

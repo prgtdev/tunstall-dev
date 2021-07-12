@@ -27,8 +27,8 @@ PROCEDURE Execute_Report (
 
 FUNCTION Test (
    wo_no_                    IN NUMBER,
-   task_seq_                 IN NUMBER,
-   line_no_                  IN NUMBER)
+   part_no_                  IN VARCHAR2,
+   serial_no_                IN VARCHAR2)
    RETURN NUMBER;
 
 PROCEDURE Init;
@@ -53,9 +53,7 @@ BEGIN
    Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO', 'NUMBER', 'N');
    Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'NUMBER', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'WO_NO', 'NUMBER', 'Y');
-   Database_SYS.Set_Table_Column(columns_, 'TASK_SEQ', 'NUMBER', 'Y');
-   Database_SYS.Set_Table_Column(columns_, 'LINE_NO', 'NUMBER', 'Y');
-   Database_SYS.Set_Table_Column(columns_, 'PART_NO', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_NO', 'VARCHAR2(50)', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'SERIAL_NO', 'VARCHAR2(50)', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'CUSTOMER_NO', 'VARCHAR2(20)', 'Y');
    Database_SYS.Set_Table_Column(columns_, 'CUSTOMER_NAME', 'VARCHAR2(4000)', 'Y');
@@ -99,7 +97,7 @@ PROMPT Creating report view SERVICE_REPAIR_LABEL_REP
 
 CREATE OR REPLACE VIEW SERVICE_REPAIR_LABEL_REP AS
 SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
-   ,WO_NO,TASK_SEQ,LINE_NO,PART_NO,SERIAL_NO,CUSTOMER_NO,CUSTOMER_NAME,CONTRACT,COMPANY,GROUP_ID,RET_TYPE,REPAIR_WO_NO,TEL_ADAPTOR_DB,TRANSFORMER_DB,BT_LEAD_DB,NECK_CODE_DB,AERIAL_DB,WRISTSTRAP_DB,CLIP_DB,ORIGINAL_TRIGGER,DATE_CREATED,OTHER_INFO,CON_TYPE,WITHIN_WARRANTY,OBJKEY
+   ,WO_NO,PART_NO,SERIAL_NO,CUSTOMER_NO,CUSTOMER_NAME,CONTRACT,COMPANY,GROUP_ID,RET_TYPE,REPAIR_WO_NO,TEL_ADAPTOR_DB,TRANSFORMER_DB,BT_LEAD_DB,NECK_CODE_DB,AERIAL_DB,WRISTSTRAP_DB,CLIP_DB,ORIGINAL_TRIGGER,DATE_CREATED,OTHER_INFO,CON_TYPE,WITHIN_WARRANTY,OBJKEY
 FROM   SERVICE_REPAIR_LABEL_RPT t
 WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
 WITH   read only;
@@ -113,14 +111,10 @@ COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.row_no
    IS 'FLAGS=M----^DATATYPE=NUMBER^';
 COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.wo_no
    IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Wo No^QUERY=Wo No:^QFLAGS=OW---^';
-COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.task_seq
-   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Task Seq^QUERY=Task Seq:^QFLAGS=OW---^';
-COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.line_no
-   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Line No^QUERY=Line No:^QFLAGS=OW---^';
 COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.part_no
-   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^';
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Part No^QUERY=Part No:^QFLAGS=OW---^';
 COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.serial_no
-   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Serial No^';
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Serial No^QUERY=Serial No:^QFLAGS=OW---^';
 COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.customer_no
    IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Customer No^';
 COMMENT ON COLUMN SERVICE_REPAIR_LABEL_REP.customer_name
@@ -184,13 +178,35 @@ CREATE OR REPLACE PACKAGE BODY SERVICE_REPAIR_LABEL_RPI IS
 
    TYPE binds$ IS RECORD (
       wo_no                     NUMBER,
-      task_seq                  NUMBER,
-      line_no                   NUMBER);
+      part_no                   VARCHAR2(32000),
+      serial_no                 VARCHAR2(32000));
 
-   CURSOR get_service_repair (wo_no_ VARCHAR2, task_seq_ VARCHAR2, line_no_ VARCHAR2) IS
-      SELECT wr.part_no,
-             wr.serial_no,
-             wr.wo_no,
+   CURSOR get_service_repair (wo_no_ VARCHAR2, part_no_ VARCHAR2, serial_no_ VARCHAR2) IS
+      SELECT CASE 
+                WHEN Equipment_Object_API.Get_Obj_Level(wo.mch_code_contract,wo.mch_code) IS NULL THEN
+                   (SELECT part_no
+                      FROM equipment_serial_uiv
+                     WHERE contract = wo.mch_code_contract
+                       AND mch_code = wo.mch_code)
+                 ELSE 
+                     (SELECT part_no
+                      FROM equipment_functional_uiv
+                     WHERE contract = wo.mch_code_contract
+                       AND mch_code = wo.mch_code)
+             END part_no,
+             CASE 
+                WHEN Equipment_Object_API.Get_Obj_Level(wo.mch_code_contract,wo.mch_code) IS NULL THEN
+                   (SELECT serial_no
+                      FROM equipment_serial_uiv
+                     WHERE contract = wo.mch_code_contract
+                       AND mch_code = wo.mch_code)
+                 ELSE 
+                     (SELECT serial_no
+                      FROM equipment_functional_uiv
+                     WHERE contract = wo.mch_code_contract
+                       AND mch_code = wo.mch_code)
+             END serial_no,
+             wo.wo_no,
              wo.customer_no,
              Customer_Info_API.Get_Name(wo.customer_no) customer_name,
              wo.contract,
@@ -216,18 +232,15 @@ CREATE OR REPLACE PACKAGE BODY SERVICE_REPAIR_LABEL_RPI IS
              wo.err_descr_lo other_info,
              (SELECT std_job_id 
                 FROM work_order_job 
-               WHERE wo_no = wr.wo_no 
+               WHERE wo_no = rb.cf$_repair_wo_no 
                FETCH FIRST 1 ROW ONLY) con_type,
-             Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(mch_code,mch_code_contract) AS within_warranty,
-             wr.objkey               
-        FROM work_order_returns_uiv wr, active_separate_uiv wo,product_repair_booking_clv rb
-       WHERE wr.wo_no = wo.wo_no
-         AND wr.wo_no = rb.cf$_wo_no(+)
-         AND wr.part_no = rb.cf$_part_no(+)
-         AND wr.serial_no = rb.cf$_serial_no(+)
-         AND wr.wo_no = wo_no_
-         AND wr.task_seq = task_seq_
-         AND wr.line_no = line_no_;
+             Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(wo.mch_code,wo.mch_code_contract) AS within_warranty,
+             rb.objkey               
+        FROM product_repair_booking_clv rb, active_separate_uiv wo
+       WHERE rb.cf$_wo_no = wo.wo_no
+         AND rb.cf$_wo_no = wo_no_
+         AND rb.cf$_part_no = part_no_
+         AND rb.cf$_serial_no = serial_no_;
 
 -----------------------------------------------------------------------------
 -------------------- RESULT SET METHODS -------------------------------------
@@ -244,8 +257,6 @@ BEGIN
    INSERT INTO SERVICE_REPAIR_LABEL_RPT (
       result_key,
       wo_no,
-      task_seq,
-      line_no,
       part_no,
       serial_no,
       customer_no,
@@ -273,10 +284,10 @@ BEGIN
       result_key$_,
       nvl(rec_service_repair_.wo_no,
       binds$_.wo_no),
-      binds$_.task_seq,
-      binds$_.line_no,
-      rec_service_repair_.part_no,
-      rec_service_repair_.serial_no,
+      nvl(rec_service_repair_.part_no,
+      binds$_.part_no),
+      nvl(rec_service_repair_.serial_no,
+      binds$_.serial_no),
       rec_service_repair_.customer_no,
       rec_service_repair_.customer_name,
       rec_service_repair_.contract,
@@ -320,21 +331,20 @@ IS
    has_service_repair_ BOOLEAN;
    rec_service_repair_ get_service_repair%ROWTYPE;
    par_service_repair_ binds$;
-   
    within_warranty_ VARCHAR2(5);
 BEGIN
    General_SYS.Init_Method(lu_name_, 'SERVICE_REPAIR_LABEL_RPI', 'Execute_Report');
    result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
    binds$_.wo_no                := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('WO_NO', parameter_attr_));
-   binds$_.task_seq             := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('TASK_SEQ', parameter_attr_));
-   binds$_.line_no              := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('LINE_NO', parameter_attr_));
+   binds$_.part_no              := Client_SYS.Get_Item_Value('PART_NO', parameter_attr_); 
+   binds$_.serial_no            := Client_SYS.Get_Item_Value('SERIAL_NO', parameter_attr_); 
 
    Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'SERVICE_REPAIR_LABEL_REP', 'Service Repair Label');
 
    has_service_repair_ := FALSE;
    par_service_repair_ := binds$_;
    Xml_Record_Writer_SYS.Start_Element(xml$_, 'SERVICE_REPAIRS');
-   OPEN get_service_repair(binds$_.wo_no, binds$_.task_seq, binds$_.line_no);
+   OPEN get_service_repair(binds$_.wo_no, binds$_.part_no, binds$_.serial_no);
    LOOP
       FETCH get_service_repair INTO rec_service_repair_;
       has_service_repair_ := get_service_repair%FOUND OR get_service_repair%ROWCOUNT > 0;
@@ -345,7 +355,7 @@ BEGIN
       ELSE
          within_warranty_ := 'No';
       END CASE;
-      
+            
       Xml_Record_Writer_SYS.Start_Element(xml$_, 'SERVICE_REPAIR');
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_NO', rec_service_repair_.part_no);
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', rec_service_repair_.serial_no);
@@ -370,7 +380,6 @@ BEGIN
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'CON_TYPE', rec_service_repair_.con_type);
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'WITHIN_WARRANTY', within_warranty_);
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'OBJKEY', rec_service_repair_.objkey);
-      Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'WorkOrderReturns', rec_service_repair_.objkey, 'SERVICE_REPAIR_LABEL_REP');
       Xml_Record_Writer_SYS.End_Element(xml$_, 'SERVICE_REPAIR');
       Add_Result_Row___(result_key$_,
                         binds$_ => binds$_,
@@ -408,8 +417,8 @@ END Execute_Report;
 
 FUNCTION Test (
    wo_no_                    IN NUMBER,
-   task_seq_                 IN NUMBER,
-   line_no_                  IN NUMBER)
+   part_no_                  IN VARCHAR2,
+   serial_no_                IN VARCHAR2)
 RETURN NUMBER
 IS
    result_key_     NUMBER;
@@ -422,11 +431,11 @@ BEGIN
    IF (wo_no_ IS NOT NULL) THEN
       Client_SYS.Add_To_Attr('WO_NO', wo_no_, parameter_attr_);
    END IF;
-   IF (task_seq_ IS NOT NULL) THEN
-      Client_SYS.Add_To_Attr('TASK_SEQ', task_seq_, parameter_attr_);
+   IF (part_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('PART_NO', part_no_, parameter_attr_);
    END IF;
-   IF (line_no_ IS NOT NULL) THEN
-      Client_SYS.Add_To_Attr('LINE_NO', line_no_, parameter_attr_);
+   IF (serial_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('SERIAL_NO', serial_no_, parameter_attr_);
    END IF;
    Execute_Report(report_attr_, parameter_attr_);
    RETURN result_key_;

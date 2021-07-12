@@ -1,0 +1,346 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: StandardDeliveryLabelRep
+--
+--  Report:       StandardDeliveryLabel
+--
+--  IFS Developer Studio Template Version 1.3
+--
+--  NOTE: This file is generated and will be overwritten at next model change
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE SPECIFICATION ----------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating STANDARD_DELIVERY_LABEL_RPI specification
+
+CREATE OR REPLACE PACKAGE STANDARD_DELIVERY_LABEL_RPI AS
+
+module_ CONSTANT VARCHAR2(6) := 'INVENT';
+lu_name_ CONSTANT VARCHAR2(25) := 'StandardDeliveryLabelRep';
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 );
+
+FUNCTION Test (
+   handling_unit_id_         IN NUMBER)
+   RETURN NUMBER;
+
+PROCEDURE Init;
+
+END STANDARD_DELIVERY_LABEL_RPI;
+/
+SHOW ERROR
+
+-----------------------------------------------------------------------------
+-------------------- VIEWS FOR REPORT META DATA -----------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating report table STANDARD_DELIVERY_LABEL_RPT
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'STANDARD_DELIVERY_LABEL_RPT';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'HANDLING_UNIT_ID', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONTRACT', 'VARCHAR2(5)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COURIER_ID', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'DAMAGED', 'VARCHAR2(100)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'NUMBER_OF_PARCELS', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'NUMBER_OF_PALLETS', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OFF_LOADER_NAME', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'RECEIVING_OPERATOR', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TRACKING_NUMBER', 'VARCHAR2(200)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SUPPLIER', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PRIORITY_LINES', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'NONE_PRIORITY_LINES', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OBJKEY', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
+END;
+/
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'STANDARD_DELIVERY_LABEL_RPT';
+   index_name_ VARCHAR2(30) := 'STANDARD_DELIVERY_LABEL_RPK';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO');
+   Database_SYS.Create_Constraint(table_name_, index_name_, columns_, 'P', '&IFSAPP_REPORT_INDEX', NULL, TRUE, TRUE);
+   Database_SYS.Reset_Column_Table(columns_);
+END;
+/
+
+PROMPT Creating report view STANDARD_DELIVERY_LABEL_REP
+
+CREATE OR REPLACE VIEW STANDARD_DELIVERY_LABEL_REP AS
+SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
+   ,HANDLING_UNIT_ID,CONTRACT,COURIER_ID,DAMAGED,NUMBER_OF_PARCELS,NUMBER_OF_PALLETS,OFF_LOADER_NAME,RECEIVING_OPERATOR,TRACKING_NUMBER,SUPPLIER,PRIORITY_LINES,NONE_PRIORITY_LINES,OBJKEY
+FROM   STANDARD_DELIVERY_LABEL_RPT t
+WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
+WITH   read only;
+
+COMMENT ON TABLE STANDARD_DELIVERY_LABEL_REP
+   IS 'LU=StandardDeliveryLabelRep^PROMPT=Standard Delivery Label^MODULE=INVENT^TITLETEXT=Standard Delivery Label^';
+
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.result_key
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.row_no
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.handling_unit_id
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Handling Unit Id^QUERY=Handling Unit Id:^QFLAGS=M----^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.contract
+   IS 'FLAGS=A----^DATATYPE=STRING(5)^TITLE=Contract^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.courier_id
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Courier Id^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.damaged
+   IS 'FLAGS=A----^DATATYPE=STRING(100)^TITLE=Damaged^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.number_of_parcels
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Number Of Parcels^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.number_of_pallets
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Number Of Pallets^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.off_loader_name
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Off Loader Name^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.receiving_operator
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Receiving Operator^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.tracking_number
+   IS 'FLAGS=A----^DATATYPE=STRING(200)^TITLE=Tracking Number^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.supplier
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Supplier^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.priority_lines
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Priority Lines^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.none_priority_lines
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=None Priority Lines^';
+COMMENT ON COLUMN STANDARD_DELIVERY_LABEL_REP.objkey
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Objkey^';
+
+-----------------------------------------------------------------------------
+-------------------- REPORT REGISTRATION ------------------------------------
+-----------------------------------------------------------------------------
+
+BEGIN
+   Report_SYS.Define_Report_('STANDARD_DELIVERY_LABEL_REP', 'INVENT', 'StandardDeliveryLabelRep', 'Standard Delivery Label', 'STANDARD_DELIVERY_LABEL_RPT', 'STANDARD_DELIVERY_LABEL_RPI.Execute_Report', 0);
+   Report_SYS.Define_Report_Text_('STANDARD_DELIVERY_LABEL_REP', 'STANDARD_DELIVERY_LABEL', 'Sample');
+   Report_SYS.Refresh_('STANDARD_DELIVERY_LABEL_REP');
+   Report_Lu_Definition_API.Clear_Custom_Fields_For_Report('STANDARD_DELIVERY_LABEL_REP');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('STANDARD_DELIVERY_LABEL_REP','HandlingUnit','STANDARD_DELIVERY_LABEL_REP/HANDLING_UNIT_IDS/HANDLING_UNIT');  
+END;
+/
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE IMPLEMENTATION ---------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating STANDARD_DELIVERY_LABEL_RPI implementation
+
+CREATE OR REPLACE PACKAGE BODY STANDARD_DELIVERY_LABEL_RPI IS
+
+   TYPE binds$ IS RECORD (
+      handling_unit_id          NUMBER);
+
+   CURSOR get_handling_unit (handling_unit_id_ NUMBER) IS
+      SELECT h.handling_unit_id,
+             h.contract,
+             v.cf$_courier_id courier_id, 
+             v.cf$_damaged damaged, 
+             v.cf$_numberofparcels number_of_parcels,
+             v.cf$_numberofpallets number_of_pallets,
+             v.cf$_off_loader_name off_loader_name,
+             v.cf$_receiving_operator receiving_operator,
+             v.cf$_tracking_number tracking_number,
+             (SELECT (SELECT Supplier_API.Get_Vendor_name(vendor_no)
+                        FROM purchase_order
+                       WHERE order_no = t.SOURCE_REF1) supplier
+                FROM receipt_info_cfv t
+               WHERE t.cf$_rec_huid = h.handling_unit_id fetch first 1 row only) supplier,
+             (SELECT COUNT(*) 
+                FROM receipt_info_cfv v 
+               WHERE v.cf$_rec_huid = h.handling_unit_id 
+                 AND v.cf$_delivery_control_code IS NOT NULL) priority_lines,
+             (SELECT COUNT(*) 
+                FROM receipt_info_cfv v 
+               WHERE v.cf$_rec_huid = h.handling_unit_id 
+                 AND v.cf$_delivery_control_code IS NULL) none_priority_lines,
+             h.objkey
+        FROM handling_unit h, goods_in_off_load_clv v
+       WHERE h.handling_unit_id = v.cf$_h_id
+         AND h.handling_unit_id = handling_unit_id_;
+
+-----------------------------------------------------------------------------
+-------------------- RESULT SET METHODS -------------------------------------
+-----------------------------------------------------------------------------
+
+--@IgnoreWrongParamOrder
+PROCEDURE Add_Result_Row___ (
+   result_key$_               IN NUMBER,
+   binds$_                    IN binds$,
+   rec_handling_unit_         IN get_handling_unit%ROWTYPE DEFAULT NULL,
+   row_no$_                   IN OUT NUMBER)
+IS
+BEGIN
+   INSERT INTO STANDARD_DELIVERY_LABEL_RPT (
+      result_key,
+      handling_unit_id,
+      contract,
+      courier_id,
+      damaged,
+      number_of_parcels,
+      number_of_pallets,
+      off_loader_name,
+      receiving_operator,
+      tracking_number,
+      supplier,
+      priority_lines,
+      none_priority_lines,
+      objkey,
+      row_no, parent_row_no)
+   VALUES (
+      result_key$_,
+      nvl(rec_handling_unit_.handling_unit_id,
+      binds$_.handling_unit_id),
+      rec_handling_unit_.contract,
+      rec_handling_unit_.courier_id,
+      rec_handling_unit_.damaged,
+      rec_handling_unit_.number_of_parcels,
+      rec_handling_unit_.number_of_pallets,
+      rec_handling_unit_.off_loader_name,
+      rec_handling_unit_.receiving_operator,
+      rec_handling_unit_.tracking_number,
+      rec_handling_unit_.supplier,
+      rec_handling_unit_.priority_lines,
+      rec_handling_unit_.none_priority_lines,
+      rec_handling_unit_.objkey,
+      row_no$_, 0);
+   row_no$_ := row_no$_+1;
+END Add_Result_Row___;
+
+-----------------------------------------------------------------------------
+-------------------- REPORT EXECUTION ---------------------------------------
+-----------------------------------------------------------------------------
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 )
+IS
+   result_key$_              NUMBER;
+   row_no$_                  NUMBER := 1;
+   binds$_                   binds$;
+   xml$_                     CLOB;
+   outer_filter_attr$_       VARCHAR2(32000);
+   outer_filter_where$_      VARCHAR2(32000);
+   inner_filter_attr$_       VARCHAR2(32000);
+   inner_filter_where$_      VARCHAR2(32000);
+   has_handling_unit_ BOOLEAN;
+   rec_handling_unit_ get_handling_unit%ROWTYPE;
+   par_handling_unit_ binds$;
+   
+   max_counter_ NUMBER := 0;
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'STANDARD_DELIVERY_LABEL_RPI', 'Execute_Report');
+   result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
+   binds$_.handling_unit_id     := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('HANDLING_UNIT_ID', parameter_attr_));
+
+   Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'STANDARD_DELIVERY_LABEL_REP', 'Standard Delivery Label');
+
+   has_handling_unit_ := FALSE;
+   par_handling_unit_ := binds$_;
+   Xml_Record_Writer_SYS.Start_Element(xml$_, 'HANDLING_UNIT_IDS');
+   OPEN get_handling_unit(binds$_.handling_unit_id);
+   LOOP
+      FETCH get_handling_unit INTO rec_handling_unit_;
+      has_handling_unit_ := get_handling_unit%FOUND OR get_handling_unit%ROWCOUNT > 0;
+      EXIT WHEN get_handling_unit%NOTFOUND;
+      /* Print the label multiple times based on the value of the number_of_parcels*/
+      max_counter_ := NVL(rec_handling_unit_.number_of_parcels,0) + NVL(rec_handling_unit_.number_of_pallets,0) ;
+      FOR l_counter_ IN 1..max_counter_
+      LOOP             
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'HANDLING_UNIT');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'HANDLING_UNIT_ID', rec_handling_unit_.handling_unit_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_handling_unit_.contract);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COURIER_ID', rec_handling_unit_.courier_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'DAMAGED', rec_handling_unit_.damaged);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'NUMBER_OF_PARCELS', rec_handling_unit_.number_of_parcels);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'NUMBER_OF_PALLETS', rec_handling_unit_.number_of_pallets);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OFF_LOADER_NAME', rec_handling_unit_.off_loader_name);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RECEIVING_OPERATOR', rec_handling_unit_.receiving_operator);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'TRACKING_NUMBER', rec_handling_unit_.tracking_number);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'SUPPLIER', rec_handling_unit_.supplier);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PRIORITY_LINES', rec_handling_unit_.priority_lines);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'NONE_PRIORITY_LINES', rec_handling_unit_.none_priority_lines);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COUNTER', l_counter_);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OBJKEY', rec_handling_unit_.objkey);
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'HandlingUnit', rec_handling_unit_.objkey, 'HANDLING_UNIT_LABEL_REP');
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'HANDLING_UNIT');
+         Add_Result_Row___(result_key$_,
+                           binds$_ => binds$_,
+                           rec_handling_unit_ => rec_handling_unit_,
+                           row_no$_ => row_no$_);
+      END LOOP;   
+   END LOOP;
+   CLOSE get_handling_unit;
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'HANDLING_UNIT_IDS');
+   binds$_ := par_handling_unit_;
+   IF NOT has_handling_unit_ THEN
+      Add_Result_Row___(result_key$_,
+                        binds$_ => binds$_,
+                        row_no$_ => row_no$_);
+   END IF;
+
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'STANDARD_DELIVERY_LABEL_REP');
+   Report_SYS.Finish_Xml_Report('STANDARD_DELIVERY_LABEL_REP', result_key$_, xml$_);
+   EXCEPTION
+      WHEN OTHERS THEN
+         IF get_handling_unit%ISOPEN THEN
+            CLOSE get_handling_unit;
+         END IF;
+         RAISE;
+END Execute_Report;
+
+-----------------------------------------------------------------------------
+-------------------- FOUNDATION1 METHODS ------------------------------------
+-----------------------------------------------------------------------------
+-- Test
+--   Invokes the report method for testing purposes.
+-- Init
+--   Dummy procedure that can be called at database startup to ensure that
+--   this package is loaded into memory for performance reasons only.
+-----------------------------------------------------------------------------
+
+FUNCTION Test (
+   handling_unit_id_         IN NUMBER)
+RETURN NUMBER
+IS
+   result_key_     NUMBER;
+   report_attr_    VARCHAR2(200);
+   parameter_attr_ VARCHAR2(32000);
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'STANDARD_DELIVERY_LABEL_RPI', 'Test');
+   Report_SYS.Get_Result_Key__(result_key_);
+   Client_SYS.Add_To_Attr('RESULT_KEY', result_key_, report_attr_);
+   IF (handling_unit_id_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('HANDLING_UNIT_ID', handling_unit_id_, parameter_attr_);
+   END IF;
+   Execute_Report(report_attr_, parameter_attr_);
+   RETURN result_key_;
+END Test;
+
+
+PROCEDURE Init
+IS
+BEGIN
+   NULL;
+END Init;
+
+END STANDARD_DELIVERY_LABEL_RPI;
+/
+SHOW ERROR

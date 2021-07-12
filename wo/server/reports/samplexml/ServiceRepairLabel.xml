@@ -66,14 +66,14 @@
          <DISPLAY_TEXT>Wo No:</DISPLAY_TEXT>
          <VALUE/>
       </WO_NO>
-      <TASK_SEQ>
-         <DISPLAY_TEXT>Task Seq:</DISPLAY_TEXT>
+      <PART_NO>
+         <DISPLAY_TEXT>Part No:</DISPLAY_TEXT>
          <VALUE/>
-      </TASK_SEQ>
-      <LINE_NO>
-         <DISPLAY_TEXT>Line No:</DISPLAY_TEXT>
+      </PART_NO>
+      <SERIAL_NO>
+         <DISPLAY_TEXT>Serial No:</DISPLAY_TEXT>
          <VALUE/>
-      </LINE_NO>
+      </SERIAL_NO>
    </SERVICE_REPAIR_LABEL_REP_DATA_ASSEMBLY_PARAMETERS>
    <SERVICE_REPAIR_LABEL_REP_ARCHIVE_VARIABLES/>
    <SERVICE_REPAIR_LABEL_REP_TRANSLATIONS>
