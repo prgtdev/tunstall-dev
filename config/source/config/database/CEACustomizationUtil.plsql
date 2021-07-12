@@ -3974,4 +3974,55 @@ IS
 END Attach_Docs_In_PO;
 -- C0321 EntChamuA (END)
 
+-- C458 EntMahesR (START)
+FUNCTION Get_SLA (
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   resource_seq_ NUMBER;
+   sla_met_task_count_ NUMBER := 0;
+   total_task_count_ NUMBER := 0;
+   
+   CURSOR get_sla_met_work_assignments(resource_seq_ NUMBER) IS
+      SELECT COUNT(1)
+      FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+      WHERE jei.resource_seq = resource_seq_
+      AND jei.resource_type_db ='PERSON' 
+      AND jei.task_seq = jt.task_seq
+      AND jei.objstate = 'COMPLETED'
+      AND jt.company = company_      
+      AND jt.cf$_tunstall_sla IS NOT NULL
+      AND TRUNC(jei.work_finish) < TRUNC(jt.cf$_tunstall_sla)
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;      
+      
+   CURSOR get_finished_work_assignments(resource_seq_ NUMBER) IS
+      SELECT COUNT(1)
+      FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+      WHERE jei.resource_seq = resource_seq_
+      AND jei.resource_type_db ='PERSON' 
+      AND jei.task_seq = jt.task_seq
+      AND jei.objstate = 'COMPLETED' 
+      AND jt.company = company_  
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;       
+BEGIN   
+   resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
+   
+   OPEN get_sla_met_work_assignments(resource_seq_);
+   FETCH get_sla_met_work_assignments INTO sla_met_task_count_;
+   CLOSE get_sla_met_work_assignments;
+   
+   OPEN get_finished_work_assignments(resource_seq_);
+   FETCH get_finished_work_assignments INTO total_task_count_;
+   CLOSE get_finished_work_assignments;
+   
+   IF (total_task_count_ = 0 ) THEN
+      RETURN 0;
+   ELSE    
+      RETURN ROUND(sla_met_task_count_/total_task_count_*100);
+   END IF;
+END Get_SLA; 
+-- C458 EntMahesR (END)
+
 -------------------- LU  NEW METHODS -------------------------------------
