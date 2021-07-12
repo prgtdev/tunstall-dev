@@ -318,7 +318,10 @@ BEGIN
          invoice_header_notes_rec_ := Invoice_Header_Notes_API.Get_By_Rowkey(objkey_);
          Client_SYS.Clear_Attr(attr_);
          Client_SYS.Add_To_Attr(''FOLLOW_UP_DATE'', follow_up_date_ , attr_);
-         IF invoice_header_notes_rec_.note_id IS NOT NULL AND follow_up_date_ <> SYSDATE THEN
+        --C0367 EntChathI (START)          
+        -- IF invoice_header_notes_rec_.note_id IS NOT NULL AND follow_up_date_ <> SYSDATE THEN
+         IF (invoice_header_notes_rec_.note_id IS NOT NULL AND (follow_up_date_ <> SYSDATE OR follow_up_date_ IS NULL) )THEN
+        --C0367 EntChathI (END)
             objversion_ := to_char(invoice_header_notes_rec_.rowversion,''YYYYMMDDHH24MISS'');
             Invoice_Header_Notes_API.Modify__(info_, invoice_header_notes_rec_."rowid",objversion_ , attr_, ''DO'');
          END IF;
@@ -350,7 +353,14 @@ BEGIN
       objkey_:= Invoice_Header_Notes_API.Get_Objkey(company_, invoice_id_, note_id_);
       note_status_days_ := Get_Note_Status_Follow_Up_Days___ (company_ ,note_status_id_ );
 
-      follow_up_date_ := Get_Follow_Up_Date___(calender_id_,note_status_id_,note_status_days_);  
+   --C0367 EntChathI (START) 
+    --follow_up_date_ := Get_Follow_Up_Date___(calender_id_,note_status_id_,note_status_days_);
+    IF(note_status_id_ =2 OR Credit_Note_Status_API.Get_Note_Status_Description(company_ ,note_status_id_)  =''Complete'')THEN
+      follow_up_date_:= NULL;
+    ELSE  
+      follow_up_date_ := Get_Follow_Up_Date___(calender_id_,note_status_id_,note_status_days_); 
+    END IF;  
+   --C0367 EntChathI (END)
       Update_Follow_Up_Date___(objkey_,follow_up_date_);         
    END;';
    RETURN stmt_;
@@ -2165,8 +2175,7 @@ BEGIN
 
       IF (type_ = 'Open') THEN
          IF (follow_up_date_ IS NOT NULL AND follow_up_date_ > SYSDATE AND
-            status_ IN ('In Query') AND
-            inv_state_ NOT IN ('Preliminary', 'Cancelled', 'PaidPosted')) THEN
+            status_ IN ('In Query') ) THEN
            temp_ := 'TRUE';
            EXIT;
          END IF;
@@ -2365,7 +2374,60 @@ BEGIN
       CLOSE get_cash_collected;
    
       RETURN NVL(cash_collected_, 0);
-END Get_Cash_Collected;
+   END Get_Cash_Collected;
+   
+   FUNCTION Check_Inv_Courtesy_Call(company_        IN VARCHAR2,
+                                   identity_       IN VARCHAR2)  RETURN VARCHAR2 IS
+   
+      status_ VARCHAR2(100);
+      inv_state_ VARCHAR2(100);
+      temp_   VARCHAR2(5) := 'FALSE';
+      
+      CURSOR get_inv_headers(identity_       VARCHAR2,
+                             company_        VARCHAR2) IS
+         SELECT identity,invoice_id
+           FROM OUTGOING_INVOICE_QRY
+          WHERE identity = identity_
+            AND company LIKE NVL(company_,'%');
+   
+      CURSOR get_inv_header_notes(company_    VARCHAR2, identity_ VARCHAR2, invoice_id_ NUMBER) is
+         SELECT *
+           FROM (SELECT Credit_Note_Status_API.Get_Note_Status_Description(COMPANY, NOTE_STATUS_ID)
+                   FROM invoice_header_notes 
+                  WHERE company = company_
+                    AND identity = identity_
+                    AND party_type = 'Customer'
+                    AND invoice_id = invoice_id_
+                  ORDER BY note_date DESC, note_id DESC)
+          WHERE ROWNUM = 1;
+          
+          CURSOR get_inv_info(company_ VARCHAR2,identity_ VARCHAR2, invoice_id_ NUMBER) IS
+         SELECT inv_state
+           FROM INVOICE_LEDGER_ITEM_CU_QRY
+          WHERE company = company_
+            AND identity = identity_
+            AND invoice_id = invoice_id_
+            AND open_amount>=10000;
+   
+   BEGIN
+   
+      FOR rec_ in get_inv_headers(identity_, company_) LOOP
+         OPEN get_inv_header_notes(company_,rec_.identity,rec_.invoice_id);
+         FETCH get_inv_header_notes
+          INTO status_;
+         CLOSE get_inv_header_notes;
+         
+         OPEN get_inv_info(company_, rec_.identity, rec_.invoice_id);
+         FETCH get_inv_info INTO inv_state_;
+         CLOSE get_inv_info;      
+     
+         IF (status_ IN ('Large Invoice Call') AND inv_state_ NOT IN ('Preliminary', 'Cancelled', 'PaidPosted')  ) THEN
+            temp_ := 'TRUE';
+            EXIT;
+         END IF;
+      END LOOP;
+      RETURN temp_;
+   END Check_Inv_Courtesy_Call;
 --C0367 EntChathI (END)
 
 --C0448 EntPrageG (START)
