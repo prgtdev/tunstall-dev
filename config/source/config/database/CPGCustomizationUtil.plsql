@@ -47,7 +47,8 @@ CURSOR get_inventory_transaction_history_line (wo_no_ NUMBER,maint_material_orde
           AND source_ref3 = maint_material_order_no_
           AND contract = contract_
           AND part_no = part_no_
-          AND date_created > (SYSDATE - 1);
+          AND date_created > (SYSDATE - 1)
+          AND serial_no != '*';
 --C0380 EntPrageG (START)       
 
 -------------------- LU SPECIFIC IMPLEMENTATION METHODS ---------------------
@@ -147,17 +148,18 @@ BEGIN
     SELECT object_id       
       INTO object_id_
       FROM fa_object t         
-     WHERE object_id = (SELECT object_id
-                          FROM fa_object_property t
-                         WHERE t.property_code = 'SERIAL'
-                           AND t.value_string = serial_no_
-                           AND object_id = t.object_id)
+     WHERE object_id IN (SELECT object_id
+                           FROM fa_object_property t
+                          WHERE t.property_code = 'SERIAL'
+                            AND t.value_string = serial_no_
+                            AND object_id = t.object_id)
        AND object_id IN (SELECT object_id
                            FROM fa_object_property t
                           WHERE t.property_code = 'PART'
-                           AND t.value_string = part_no_
-                           AND object_id = t.object_id)
-       AND state = 'Active';
+                            AND t.value_string = part_no_
+                            AND object_id = t.object_id)
+       AND state = 'Active'
+    FETCH FIRST ROW ONLY;
    RETURN TRUE;
 EXCEPTION
    WHEN NO_DATA_FOUND THEN
@@ -839,60 +841,69 @@ PROCEDURE Create_Voucher_Row___(
          debit_amount_         OUT NUMBER,
          tax_base_amount_      OUT NUMBER,
          tax_amount_           OUT NUMBER)
-       IS
-       BEGIN
-          debit_amount_ := amount_; 
-          curr_tax_base_amount_ := amount_;
-          curr_debit_amount_:= amount_;
-          curr_tax_amount_ := 0;
-          tax_base_amount_ := amount_;
-          tax_amount_ := 0;            
-       END Get_Debit_Amount___;
+      IS
+      BEGIN
+         debit_amount_ := amount_; 
+         curr_tax_base_amount_ := amount_;
+         curr_debit_amount_:= amount_;
+         curr_tax_amount_ := 0;
+         tax_base_amount_ := amount_;
+         tax_amount_ := 0;            
+      END Get_Debit_Amount___;
        
-       PROCEDURE Get_Credit_Amount___(  -- minus amount
+      PROCEDURE Get_Credit_Amount___(  -- minus amount
          curr_credit_amount_   OUT NUMBER,
          curr_tax_base_amount_ OUT NUMBER,
          curr_tax_amount_      OUT NUMBER,
          credit_amount_        OUT NUMBER,
          tax_base_amount_      OUT NUMBER,
          tax_amount_           OUT NUMBER)
-       IS
-       BEGIN
-          curr_credit_amount_ := amount_;
-          curr_tax_base_amount_ := (- amount_);
-          curr_tax_amount_ := 0;
-          credit_amount_ := amount_;
-          tax_base_amount_ := (- amount_);
-          tax_amount_ := 0;  
-       END Get_Credit_Amount___;
+      IS
+      BEGIN
+         curr_credit_amount_ := amount_;
+         curr_tax_base_amount_ := (- amount_);
+         curr_tax_amount_ := 0;
+         credit_amount_ := amount_;
+         tax_base_amount_ := (- amount_);
+         tax_amount_ := 0;  
+      END Get_Credit_Amount___;
        
-       FUNCTION Get_Credit_Account___ RETURN VARCHAR2
-       IS
-          account_ VARCHAR2(20);
-       BEGIN
-          SELECT default_value
-            INTO account_
-            FROM posting_ctrl_master
-           WHERE posting_type = 'TP2'
-             AND company = company_
-             AND code_name = 'Account';
-          RETURN account_;
-       EXCEPTION
-          WHEN OTHERS THEN
-             RETURN NULL;
-       END Get_Credit_Account___;
+      FUNCTION Get_Credit_Account___ RETURN VARCHAR2
+      IS
+         account_ VARCHAR2(20);
+      BEGIN
+         SELECT code_part_value
+           INTO account_
+           FROM posting_ctrl_detail
+          WHERE posting_type = 'TP2'
+            AND company = company_
+            AND code_name = 'Account'
+            AND control_type_value LIKE 'CREATEFA%';
+         IF account_ IS NULL THEN    
+            SELECT default_value
+              INTO account_
+              FROM posting_ctrl_master
+             WHERE posting_type = 'TP2'
+               AND company = company_
+               AND code_name = 'Account';
+         END IF;
+         RETURN account_;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RETURN NULL;
+      END Get_Credit_Account___;
        
-       FUNCTION Get_text___ RETURN VARCHAR2
-       IS
-       BEGIN
-          RETURN part_no_ || '-' || serial_no_ || ' - ' || wo_no_ || ' - ' || task_seq_;
-       END Get_text___;
+      FUNCTION Get_text___ RETURN VARCHAR2
+      IS
+      BEGIN
+         RETURN part_no_ || '-' || serial_no_ || ' - ' || wo_no_ || ' - ' || task_seq_;
+      END Get_text___;
        
-       FUNCTION Get_Voucher_Msg___ RETURN VARCHAR2
-       IS
-       BEGIN
-          RETURN company_ ||'^'|| acc_year_ ||'^'|| voucher_type_ ||'^'|| voucher_no_ ||'^$';
-       END Get_Voucher_Msg___;
+      FUNCTION Get_Voucher_Msg___ RETURN VARCHAR2
+      IS
+      BEGIN
+         RETURN company_ ||'^'|| acc_year_ ||'^'|| voucher_type_ ||'^'|| voucher_no_ ||'^$';
+      END Get_Voucher_Msg___;
    BEGIN      
       pre_accounting_id_ := Jt_Task_API.Get_Pre_Accounting_Id(task_seq_);
       Get_Preposting_Data___(code_b_,code_c_,code_d_,code_e_,code_f_,code_g_,code_h_,code_j_,pre_accounting_id_);      
@@ -1126,7 +1137,7 @@ IS
          RETURN NULL;
    END Get_Cost___;
 BEGIN    
-      Log_Progress___('Create FA Objects - Started'); 
+   Log_Progress___('Create FA Objects - Started'); 
    FOR req_line_rec_ IN  get_material_req_lines      
       LOOP
       FOR trans_his_line_rec_ IN get_inventory_transaction_history_line(req_line_rec_.wo_no, 
@@ -1136,7 +1147,9 @@ BEGIN
       LOOP
          BEGIN
             IF NOT Fixed_Asset_Object_Exist___(object_id_,trans_his_line_rec_.part_no,trans_his_line_rec_.serial_no) THEN            
-               Log_Info___('Creating Object');   
+               Log_Info___('Creating Object - Wo No: '|| req_line_rec_.wo_no||
+                           ' Part No: ' || trans_his_line_rec_.part_no || 
+                           ' Serial No: ' || trans_his_line_rec_.serial_no);   
                Create_Fixed_Asset_Object___(objid_,
                                             objversion_,
                                             object_id_,
@@ -1149,7 +1162,7 @@ BEGIN
                Log_Info___('Updating object status to investment');
                Update_Object_Status___(objid_,objversion_,'INVESTMENT');
                
-               Log_Info___('Removing default property codes');                              
+               --Log_Info___('Removing default property codes');                              
                Remove_Default_property_Codes___(object_id_);   
                
                Log_Info___('Adding Object Properties');         
@@ -1207,10 +1220,12 @@ BEGIN
                Log_Warning___(SUBSTR(SQLERRM, 1, 200));
          END;
       END LOOP;      
-   END LOOP;
-   Log_Progress___('Create FA Objects - Completed');
+   END LOOP;   
    IF NOT success_ THEN
+      Log_Progress___('Create FA Objects - Completed with warnings! please check the log');
       Log_Info___('No FA Objects Ceated!');
+   ELSE
+      Log_Progress___('Create FA Objects - Completed');
    END IF;
 EXCEPTION
    WHEN OTHERS THEN
