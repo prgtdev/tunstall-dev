@@ -4023,6 +4023,38 @@ BEGIN
       RETURN ROUND(sla_met_task_count_/total_task_count_*100);
    END IF;
 END Get_SLA; 
+
+FUNCTION Get_First_Fix (
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER   
+IS
+   resource_seq_ NUMBER; 
+   first_fix_task_count_ NUMBER := 0;
+   
+   CURSOR get_first_fix_work_assignments(resource_seq_ NUMBER) IS
+      SELECT COUNT(1) FROM(SELECT DISTINCT jt.WO_NO
+                           FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+                           WHERE jei.resource_seq = resource_seq_
+                           AND jei.resource_type_db ='PERSON' 
+                           AND jei.task_seq = jt.task_seq
+                           AND jei.objstate = 'COMPLETED'
+                           AND jt.company = company_  
+                           AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_
+                           AND jt.cf$_incomplete_cause = 'Job Complete'
+                           AND jt.WO_NO IN (select wo_no FROM (SELECT count(1) count, wo_no 
+                                                               FROM jt_task_uiv 
+                                                               group by wo_no)
+                                                               WHERE count = 1));
+BEGIN
+   resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
+   OPEN get_first_fix_work_assignments(resource_seq_);
+   FETCH get_first_fix_work_assignments INTO first_fix_task_count_;
+   CLOSE get_first_fix_work_assignments;
+   
+   RETURN first_fix_task_count_;
+END Get_First_Fix; 
 -- C458 EntMahesR (END)
 
 -------------------- LU  NEW METHODS -------------------------------------
