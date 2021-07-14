@@ -3995,7 +3995,7 @@ IS
       AND jt.company = company_      
       AND jt.cf$_tunstall_sla IS NOT NULL
       AND TRUNC(jei.work_finish) < TRUNC(jt.cf$_tunstall_sla)
-      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;      
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_; 
       
    CURSOR get_finished_work_assignments(resource_seq_ NUMBER) IS
       SELECT COUNT(1)
@@ -4005,7 +4005,7 @@ IS
       AND jei.task_seq = jt.task_seq
       AND jei.objstate = 'COMPLETED' 
       AND jt.company = company_  
-      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;       
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;    
 BEGIN   
    resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
    
@@ -4015,8 +4015,8 @@ BEGIN
    
    OPEN get_finished_work_assignments(resource_seq_);
    FETCH get_finished_work_assignments INTO total_task_count_;
-   CLOSE get_finished_work_assignments;
-   
+   CLOSE get_finished_work_assignments;   
+      
    IF (total_task_count_ = 0 ) THEN
       RETURN 0;
    ELSE    
@@ -4031,10 +4031,11 @@ FUNCTION Get_First_Fix (
    end_date_   IN DATE) RETURN NUMBER   
 IS
    resource_seq_ NUMBER; 
-   first_fix_task_count_ NUMBER := 0;
+   first_fix_one_task_ass_count_ NUMBER := 0;
+   first_fix_many_task_ass_count_ NUMBER := 0;
    
-   CURSOR get_first_fix_work_assignments(resource_seq_ NUMBER) IS
-      SELECT COUNT(1) FROM(SELECT DISTINCT jt.WO_NO
+   CURSOR get_first_fix_one_task_ass(resource_seq_ NUMBER) IS
+      SELECT COUNT(1) FROM(SELECT DISTINCT jt.wo_no
                            FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
                            WHERE jei.resource_seq = resource_seq_
                            AND jei.resource_type_db ='PERSON' 
@@ -4043,18 +4044,47 @@ IS
                            AND jt.company = company_  
                            AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_
                            AND jt.cf$_incomplete_cause = 'Job Complete'
-                           AND jt.WO_NO IN (select wo_no FROM (SELECT count(1) count, wo_no 
+                           AND jt.wo_no IN (select wo_no FROM (SELECT count(1) count, wo_no 
                                                                FROM jt_task_uiv 
                                                                group by wo_no)
                                                                WHERE count = 1));
+   
+   CURSOR get_first_fix_many_task_ass(resource_seq_ NUMBER) IS
+      SELECT COUNT(*) 
+      FROM(SELECT wo_no, count (1) 
+           FROM(SELECT jt.wo_no, jei.work_finish
+                FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+                WHERE jei.resource_seq = resource_seq_
+                AND jei.resource_type_db ='PERSON' 
+                AND jei.task_seq = jt.task_seq
+                AND jei.objstate = 'COMPLETED'
+                AND jt.company = company_
+                AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_
+                AND jt.cf$_incomplete_cause = 'Job Complete'
+                AND jt.wo_no IN (SELECT wo_no 
+                                 FROM (SELECT count(1) count, wo_no 
+                                       FROM jt_task_uiv 
+                                       GROUP BY wo_no)
+                                 WHERE count > 1) 
+                AND jt.wo_no IN (SELECT wo_no
+                                 FROM (SELECT wo_no , count(1) count 
+                                       FROM jt_execution_instance_uiv 
+                                       group by wo_no)
+                                 WHERE count = 1))
+      GROUP BY wo_no);
+
 BEGIN
    resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
-   OPEN get_first_fix_work_assignments(resource_seq_);
-   FETCH get_first_fix_work_assignments INTO first_fix_task_count_;
-   CLOSE get_first_fix_work_assignments;
+   OPEN get_first_fix_one_task_ass(resource_seq_);
+   FETCH get_first_fix_one_task_ass INTO first_fix_one_task_ass_count_;
+   CLOSE get_first_fix_one_task_ass;
    
-   RETURN first_fix_task_count_;
-END Get_First_Fix; 
+   OPEN get_first_fix_many_task_ass(resource_seq_);
+   FETCH get_first_fix_many_task_ass INTO first_fix_many_task_ass_count_;
+   CLOSE get_first_fix_many_task_ass;
+   
+   RETURN first_fix_one_task_ass_count_ + first_fix_many_task_ass_count_;
+END Get_First_Fix;   
 -- C458 EntMahesR (END)
 
 -------------------- LU  NEW METHODS -------------------------------------
