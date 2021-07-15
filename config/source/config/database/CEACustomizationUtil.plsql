@@ -4106,6 +4106,38 @@ BEGIN
    END IF;  
    
 END Get_First_Fix; 
+
+-- Note that here survey_id and question_no has hardcoded because 
+-- method intended to retrieve values focusing the survey CUSTOMER_SATISFAC 
+-- and its question no 2 for the specific column in the crystal report.
+-- Also return value never take 999,as answer value always in the range 1 - 10 
+FUNCTION Get_NPS(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   nps_ NUMBER;
+   CURSOR get_nps IS      
+      SELECT ROUND(AVG(answer) * 10)
+      FROM jt_task_survey_answers jtsa, survey_question sq
+      WHERE jtsa.survey_id = 'CUSTOMER_SATISFAC'
+      AND jtsa.emp_no = emp_no_
+      AND jtsa.company_id = company_
+      AND jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 2
+      AND jtsa.date_created BETWEEN start_date_ AND end_date_;
+BEGIN   
+   OPEN get_nps;
+   FETCH get_nps INTO nps_;
+   CLOSE get_nps;   
+   IF (nps_ IS NULL) THEN
+      RETURN 999;
+   ELSE
+      RETURN nps_;
+   END IF;      
+END Get_NPS;
 -- C458 EntMahesR (END)
 
 -- C364 EntNadeeL (START)
