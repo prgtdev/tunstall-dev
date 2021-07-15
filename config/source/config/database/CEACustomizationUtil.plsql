@@ -4110,7 +4110,7 @@ END Get_First_Fix;
 -- Note that here survey_id and question_no has hardcoded because 
 -- method intended to retrieve values focusing the survey CUSTOMER_SATISFAC 
 -- and its question no 2 for the specific column in the crystal report.
--- Also return value never take 999,as answer value always in the range 1 - 10 
+-- Also return value never take 999, as answer value always in the range 1 - 10 
 FUNCTION Get_NPS(
    emp_no_     VARCHAR2,
    company_    VARCHAR2,
