@@ -4614,7 +4614,7 @@ select *
                    and 
                    to_date(forecast, ''DD/MM/YYYY'') > trunc(sysdate) - 7))             
                    
-pivot (SUM(FORECAST) for WEEK in ('||pivot_clause_date||'))
+pivot (COUNT(FORECAST) for WEEK in ('||pivot_clause_date||'))
 
 UNION 
 select *
