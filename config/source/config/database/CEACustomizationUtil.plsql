@@ -3995,7 +3995,7 @@ IS
       AND jt.company = company_      
       AND jt.cf$_tunstall_sla IS NOT NULL
       AND TRUNC(jei.work_finish) < TRUNC(jt.cf$_tunstall_sla)
-      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;      
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_; 
       
    CURSOR get_finished_work_assignments(resource_seq_ NUMBER) IS
       SELECT COUNT(1)
@@ -4005,7 +4005,7 @@ IS
       AND jei.task_seq = jt.task_seq
       AND jei.objstate = 'COMPLETED' 
       AND jt.company = company_  
-      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;       
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;    
 BEGIN   
    resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
    
@@ -4015,8 +4015,8 @@ BEGIN
    
    OPEN get_finished_work_assignments(resource_seq_);
    FETCH get_finished_work_assignments INTO total_task_count_;
-   CLOSE get_finished_work_assignments;
-   
+   CLOSE get_finished_work_assignments;   
+      
    IF (total_task_count_ = 0 ) THEN
       RETURN 0;
    ELSE    
@@ -4031,10 +4031,12 @@ FUNCTION Get_First_Fix (
    end_date_   IN DATE) RETURN NUMBER   
 IS
    resource_seq_ NUMBER; 
-   first_fix_task_count_ NUMBER := 0;
+   first_fix_one_task_ass_count_ NUMBER := 0;
+   first_fix_many_task_ass_count_ NUMBER := 0;
+   completed_work_order_count_ NUMBER := 0;
    
-   CURSOR get_first_fix_work_assignments(resource_seq_ NUMBER) IS
-      SELECT COUNT(1) FROM(SELECT DISTINCT jt.WO_NO
+   CURSOR get_first_fix_one_task_ass(resource_seq_ NUMBER) IS
+      SELECT COUNT(1) FROM(SELECT DISTINCT jt.wo_no
                            FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
                            WHERE jei.resource_seq = resource_seq_
                            AND jei.resource_type_db ='PERSON' 
@@ -4043,18 +4045,655 @@ IS
                            AND jt.company = company_  
                            AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_
                            AND jt.cf$_incomplete_cause = 'Job Complete'
-                           AND jt.WO_NO IN (select wo_no FROM (SELECT count(1) count, wo_no 
+                           AND jt.wo_no IN (select wo_no FROM (SELECT count(1) count, wo_no 
                                                                FROM jt_task_uiv 
                                                                group by wo_no)
                                                                WHERE count = 1));
+   
+   CURSOR get_first_fix_many_task_ass(resource_seq_ NUMBER) IS
+      SELECT COUNT(*) 
+      FROM(SELECT wo_no, count (1) 
+           FROM(SELECT jt.wo_no, jei.work_finish
+                FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+                WHERE jei.resource_seq = resource_seq_
+                AND jei.resource_type_db ='PERSON' 
+                AND jei.task_seq = jt.task_seq
+                AND jei.objstate = 'COMPLETED'
+                AND jt.company = company_
+                AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_
+                AND jt.cf$_incomplete_cause = 'Job Complete'
+                AND jt.wo_no IN (SELECT wo_no 
+                                 FROM (SELECT count(1) count, wo_no 
+                                       FROM jt_task_uiv 
+                                       GROUP BY wo_no)
+                                 WHERE count > 1) 
+                AND jt.wo_no IN (SELECT wo_no
+                                 FROM (SELECT wo_no , count(1) count 
+                                       FROM jt_execution_instance_uiv 
+                                       group by wo_no)
+                                 WHERE count = 1))
+      GROUP BY wo_no);
+      
+   CURSOR get_completed_work_orders(resource_seq_ NUMBER) IS   
+      SELECT COUNT(DISTINCT wo_no) 
+      FROM(SELECT jt.WO_NO, jei.task_seq
+           FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+           WHERE jei.resource_seq = resource_seq_
+           AND jei.resource_type_db ='PERSON' 
+           AND jei.task_seq = jt.task_seq
+           AND jei.objstate = 'COMPLETED' 
+           AND jt.company = company_
+           AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_);
 BEGIN
    resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
-   OPEN get_first_fix_work_assignments(resource_seq_);
-   FETCH get_first_fix_work_assignments INTO first_fix_task_count_;
-   CLOSE get_first_fix_work_assignments;
    
-   RETURN first_fix_task_count_;
+   OPEN get_first_fix_one_task_ass(resource_seq_);
+   FETCH get_first_fix_one_task_ass INTO first_fix_one_task_ass_count_;
+   CLOSE get_first_fix_one_task_ass;
+   
+   OPEN get_first_fix_many_task_ass(resource_seq_);
+   FETCH get_first_fix_many_task_ass INTO first_fix_many_task_ass_count_;
+   CLOSE get_first_fix_many_task_ass;
+   
+   OPEN get_completed_work_orders(resource_seq_);
+   FETCH get_completed_work_orders INTO completed_work_order_count_;
+   CLOSE get_completed_work_orders;
+   
+   IF (completed_work_order_count_ = 0 ) THEN
+      RETURN 0;
+   ELSE    
+      RETURN ROUND((first_fix_one_task_ass_count_ + first_fix_many_task_ass_count_)/completed_work_order_count_ * 100);
+   END IF;  
+   
 END Get_First_Fix; 
+
+-- Note that here survey_id and question_no has hardcoded because 
+-- method intended to retrieve values focusing the survey CUSTOMER_SATISFAC 
+-- and its question no 2 for the specific column in the crystal report.
+-- Also return value never take 999, as answer value always in the range 1 - 10 
+FUNCTION Get_NPS(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   nps_ NUMBER;
+   CURSOR get_nps IS      
+      SELECT ROUND(AVG(answer) * 10)
+      FROM jt_task_survey_answers jtsa, survey_question sq
+      WHERE jtsa.survey_id = 'CUSTOMER_SATISFAC'
+      AND jtsa.emp_no = emp_no_
+      AND jtsa.company_id = company_
+      AND jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 2
+      AND jtsa.date_created BETWEEN start_date_ AND end_date_;
+BEGIN   
+   OPEN get_nps;
+   FETCH get_nps INTO nps_;
+   CLOSE get_nps;   
+   IF (nps_ IS NULL) THEN
+      RETURN 999;
+   ELSE
+      RETURN nps_;
+   END IF;      
+END Get_NPS;
 -- C458 EntMahesR (END)
+
+-- C364 EntNadeeL (START)
+PROCEDURE Create_Supplier_Forecast_Temp_View IS
+  sql_stmt              VARCHAR2(32000);
+  pivot_clause          clob; 
+  pivot_clause_date     clob; 
+begin
+  select listagg('''' || to_date(forecast, 'DD/MM/YYYY') || '''' , ',') within group (order by to_date(forecast, 'DD/MM/YYYY') asc) 
+  into pivot_clause_date
+  from   (Select *
+          from (select *
+                  from (select t.CF$_PART_NO,
+                               t.CF$_SUPPLIER_NO,
+                               t.CF$_WEEK_STR_01,
+                               t.CF$_WEEK_STR_02,
+                               t.CF$_WEEK_STR_03,
+                               t.CF$_WEEK_STR_04,
+                               t.CF$_WEEK_STR_05,
+                               t.CF$_WEEK_STR_06,
+                               t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,
+                               t.CF$_WEEK_STR_09,
+                               t.CF$_WEEK_STR_10,
+                               t.CF$_WEEK_STR_11,
+                               t.CF$_WEEK_STR_12,
+                               t.CF$_WEEK_STR_13,
+                               t.CF$_WEEK_STR_14,
+                               t.CF$_WEEK_STR_15,
+                               t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,
+                               t.CF$_WEEK_STR_18,
+                               t.CF$_WEEK_STR_19,
+                               t.CF$_WEEK_STR_20,
+                               t.CF$_WEEK_STR_21,
+                               t.CF$_WEEK_STR_22,
+                               t.CF$_WEEK_STR_23,
+                               t.CF$_WEEK_STR_24,
+                               t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,
+                               t.CF$_WEEK_STR_27,
+                               t.CF$_WEEK_STR_28,
+                               t.CF$_WEEK_STR_29,
+                               t.CF$_WEEK_STR_30,
+                               t.CF$_WEEK_STR_31,
+                               t.CF$_WEEK_STR_32,
+                               t.CF$_WEEK_STR_33,
+                               t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,
+                               t.CF$_WEEK_STR_36,
+                               t.CF$_WEEK_STR_37,
+                               t.CF$_WEEK_STR_38,
+                               t.CF$_WEEK_STR_39,
+                               t.CF$_WEEK_STR_40,
+                               t.CF$_WEEK_STR_41,
+                               t.CF$_WEEK_STR_42,
+                               t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,
+                               t.CF$_WEEK_STR_45,
+                               t.CF$_WEEK_STR_46,
+                               t.CF$_WEEK_STR_47,
+                               t.CF$_WEEK_STR_48,
+                               t.CF$_WEEK_STR_49,
+                               t.CF$_WEEK_STR_50,
+                               t.CF$_WEEK_STR_51,
+                               t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,
+                                                                                       CF$_WEEK_STR_02,
+                                                                                       CF$_WEEK_STR_03,
+                                                                                       CF$_WEEK_STR_04,
+                                                                                               CF$_WEEK_STR_05,
+                                                                                               CF$_WEEK_STR_06,
+                                                                                               CF$_WEEK_STR_07,
+                                                                                               CF$_WEEK_STR_08,
+                                                                                               CF$_WEEK_STR_09,
+                                                                                               CF$_WEEK_STR_10,
+                                                                                               CF$_WEEK_STR_11,
+                                                                                               CF$_WEEK_STR_12,
+                                                                                               CF$_WEEK_STR_13,
+                                                                                               CF$_WEEK_STR_14,
+                                                                                               CF$_WEEK_STR_15,
+                                                                                               CF$_WEEK_STR_16,
+                                                                                               CF$_WEEK_STR_17,
+                                                                                               CF$_WEEK_STR_18,
+                                                                                               CF$_WEEK_STR_19,
+                                                                                               CF$_WEEK_STR_20,
+                                                                                               CF$_WEEK_STR_21,
+                                                                                               CF$_WEEK_STR_22,
+                                                                                               CF$_WEEK_STR_23,
+                                                                                               CF$_WEEK_STR_24,
+                                                                                               CF$_WEEK_STR_25,
+                                                                                               CF$_WEEK_STR_26,
+                                                                                               CF$_WEEK_STR_27,
+                                                                                               CF$_WEEK_STR_28,
+                                                                                               CF$_WEEK_STR_29,
+                                                                                               CF$_WEEK_STR_30,
+                                                                                               CF$_WEEK_STR_31,
+                                                                                               CF$_WEEK_STR_32,
+                                                                                               CF$_WEEK_STR_33,
+                                                                                               CF$_WEEK_STR_34,
+                                                                                               CF$_WEEK_STR_35,
+                                                                                               CF$_WEEK_STR_36,
+                                                                                               CF$_WEEK_STR_37,
+                                                                                               CF$_WEEK_STR_38,
+                                                                                               CF$_WEEK_STR_39,
+                                                                                               CF$_WEEK_STR_40,
+                                                                                               CF$_WEEK_STR_41,
+                                                                                               CF$_WEEK_STR_42,
+                                                                                               CF$_WEEK_STR_43,
+                                                                                               CF$_WEEK_STR_44,
+                                                                                               CF$_WEEK_STR_45,
+                                                                                               CF$_WEEK_STR_46,
+                                                                                               CF$_WEEK_STR_47,
+                                                                                               CF$_WEEK_STR_48,
+                                                                                               CF$_WEEK_STR_49,
+                                                                                               CF$_WEEK_STR_50,
+                                                                                               CF$_WEEK_STR_51,
+                                                                                               CF$_WEEK_STR_52,
+                                                                                               CF$_WEEK_STR_53))
+                 order by CF$_SUPPLIER_NO) b
+         WHERE CF$_SUPPLIER_NO IS NULL AND
+         b.forecast IN
+               (select forecast
+                  from (select *
+                          from (select t.CF$_PART_NO,
+                                       t.CF$_SUPPLIER_NO,
+                                       t.CF$_WEEK_STR_01,
+                               t.CF$_WEEK_STR_02,
+                               t.CF$_WEEK_STR_03,
+                               t.CF$_WEEK_STR_04,
+                               t.CF$_WEEK_STR_05,
+                               t.CF$_WEEK_STR_06,
+                               t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,
+                               t.CF$_WEEK_STR_09,
+                               t.CF$_WEEK_STR_10,
+                               t.CF$_WEEK_STR_11,
+                               t.CF$_WEEK_STR_12,
+                               t.CF$_WEEK_STR_13,
+                               t.CF$_WEEK_STR_14,
+                               t.CF$_WEEK_STR_15,
+                               t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,
+                               t.CF$_WEEK_STR_18,
+                               t.CF$_WEEK_STR_19,
+                               t.CF$_WEEK_STR_20,
+                               t.CF$_WEEK_STR_21,
+                               t.CF$_WEEK_STR_22,
+                               t.CF$_WEEK_STR_23,
+                               t.CF$_WEEK_STR_24,
+                               t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,
+                               t.CF$_WEEK_STR_27,
+                               t.CF$_WEEK_STR_28,
+                               t.CF$_WEEK_STR_29,
+                               t.CF$_WEEK_STR_30,
+                               t.CF$_WEEK_STR_31,
+                               t.CF$_WEEK_STR_32,
+                               t.CF$_WEEK_STR_33,
+                               t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,
+                               t.CF$_WEEK_STR_36,
+                               t.CF$_WEEK_STR_37,
+                               t.CF$_WEEK_STR_38,
+                               t.CF$_WEEK_STR_39,
+                               t.CF$_WEEK_STR_40,
+                               t.CF$_WEEK_STR_41,
+                               t.CF$_WEEK_STR_42,
+                               t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,
+                               t.CF$_WEEK_STR_45,
+                               t.CF$_WEEK_STR_46,
+                               t.CF$_WEEK_STR_47,
+                               t.CF$_WEEK_STR_48,
+                               t.CF$_WEEK_STR_49,
+                               t.CF$_WEEK_STR_50,
+                               t.CF$_WEEK_STR_51,
+                               t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,
+                                                                                               CF$_WEEK_STR_02,
+                                                                                               CF$_WEEK_STR_03,
+                                                                                               CF$_WEEK_STR_04,
+                                                                                               CF$_WEEK_STR_05,
+                                                                                               CF$_WEEK_STR_06,
+                                                                                               CF$_WEEK_STR_07,
+                                                                                               CF$_WEEK_STR_08,
+                                                                                               CF$_WEEK_STR_09,
+                                                                                               CF$_WEEK_STR_10,
+                                                                                               CF$_WEEK_STR_11,
+                                                                                               CF$_WEEK_STR_12,
+                                                                                               CF$_WEEK_STR_13,
+                                                                                               CF$_WEEK_STR_14,
+                                                                                               CF$_WEEK_STR_15,
+                                                                                               CF$_WEEK_STR_16,
+                                                                                               CF$_WEEK_STR_17,
+                                                                                               CF$_WEEK_STR_18,
+                                                                                               CF$_WEEK_STR_19,
+                                                                                               CF$_WEEK_STR_20,
+                                                                                               CF$_WEEK_STR_21,
+                                                                                               CF$_WEEK_STR_22,
+                                                                                               CF$_WEEK_STR_23,
+                                                                                               CF$_WEEK_STR_24,
+                                                                                               CF$_WEEK_STR_25,
+                                                                                               CF$_WEEK_STR_26,
+                                                                                               CF$_WEEK_STR_27,
+                                                                                               CF$_WEEK_STR_28,
+                                                                                               CF$_WEEK_STR_29,
+                                                                                               CF$_WEEK_STR_30,
+                                                                                               CF$_WEEK_STR_31,
+                                                                                               CF$_WEEK_STR_32,
+                                                                                               CF$_WEEK_STR_33,
+                                                                                               CF$_WEEK_STR_34,
+                                                                                               CF$_WEEK_STR_35,
+                                                                                               CF$_WEEK_STR_36,
+                                                                                               CF$_WEEK_STR_37,
+                                                                                               CF$_WEEK_STR_38,
+                                                                                               CF$_WEEK_STR_39,
+                                                                                               CF$_WEEK_STR_40,
+                                                                                               CF$_WEEK_STR_41,
+                                                                                               CF$_WEEK_STR_42,
+                                                                                               CF$_WEEK_STR_43,
+                                                                                               CF$_WEEK_STR_44,
+                                                                                               CF$_WEEK_STR_45,
+                                                                                               CF$_WEEK_STR_46,
+                                                                                               CF$_WEEK_STR_47,
+                                                                                               CF$_WEEK_STR_48,
+                                                                                               CF$_WEEK_STR_49,
+                                                                                               CF$_WEEK_STR_50,
+                                                                                               CF$_WEEK_STR_51,
+                                                                                               CF$_WEEK_STR_52,
+                                                                                               CF$_WEEK_STR_53))
+                         order by CF$_SUPPLIER_NO)
+                 where CF$_supplier_no is null
+                   and to_date(forecast, 'DD/MM/YYYY') > trunc(sysdate) - 7));
+                   
+  select listagg('''' || WEEK || '''' , ',') within group (order by WEEK) 
+  into   pivot_clause
+  from   (Select distinct WEEK
+          from (select *
+                  from (select t.CF$_PART_NO,
+                               t.CF$_SUPPLIER_NO,
+                               t.CF$_WEEK_STR_01,
+                               t.CF$_WEEK_STR_02,
+                               t.CF$_WEEK_STR_03,
+                               t.CF$_WEEK_STR_04,
+                               t.CF$_WEEK_STR_05,
+                               t.CF$_WEEK_STR_06,
+                               t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,
+                               t.CF$_WEEK_STR_09,
+                               t.CF$_WEEK_STR_10,
+                               t.CF$_WEEK_STR_11,
+                               t.CF$_WEEK_STR_12,
+                               t.CF$_WEEK_STR_13,
+                               t.CF$_WEEK_STR_14,
+                               t.CF$_WEEK_STR_15,
+                               t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,
+                               t.CF$_WEEK_STR_18,
+                               t.CF$_WEEK_STR_19,
+                               t.CF$_WEEK_STR_20,
+                               t.CF$_WEEK_STR_21,
+                               t.CF$_WEEK_STR_22,
+                               t.CF$_WEEK_STR_23,
+                               t.CF$_WEEK_STR_24,
+                               t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,
+                               t.CF$_WEEK_STR_27,
+                               t.CF$_WEEK_STR_28,
+                               t.CF$_WEEK_STR_29,
+                               t.CF$_WEEK_STR_30,
+                               t.CF$_WEEK_STR_31,
+                               t.CF$_WEEK_STR_32,
+                               t.CF$_WEEK_STR_33,
+                               t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,
+                               t.CF$_WEEK_STR_36,
+                               t.CF$_WEEK_STR_37,
+                               t.CF$_WEEK_STR_38,
+                               t.CF$_WEEK_STR_39,
+                               t.CF$_WEEK_STR_40,
+                               t.CF$_WEEK_STR_41,
+                               t.CF$_WEEK_STR_42,
+                               t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,
+                               t.CF$_WEEK_STR_45,
+                               t.CF$_WEEK_STR_46,
+                               t.CF$_WEEK_STR_47,
+                               t.CF$_WEEK_STR_48,
+                               t.CF$_WEEK_STR_49,
+                               t.CF$_WEEK_STR_50,
+                               t.CF$_WEEK_STR_51,
+                               t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,
+                                                                                       CF$_WEEK_STR_02,
+                                                                                       CF$_WEEK_STR_03,
+                                                                                       CF$_WEEK_STR_04,
+                                                                                               CF$_WEEK_STR_05,
+                                                                                               CF$_WEEK_STR_06,
+                                                                                               CF$_WEEK_STR_07,
+                                                                                               CF$_WEEK_STR_08,
+                                                                                               CF$_WEEK_STR_09,
+                                                                                               CF$_WEEK_STR_10,
+                                                                                               CF$_WEEK_STR_11,
+                                                                                               CF$_WEEK_STR_12,
+                                                                                               CF$_WEEK_STR_13,
+                                                                                               CF$_WEEK_STR_14,
+                                                                                               CF$_WEEK_STR_15,
+                                                                                               CF$_WEEK_STR_16,
+                                                                                               CF$_WEEK_STR_17,
+                                                                                               CF$_WEEK_STR_18,
+                                                                                               CF$_WEEK_STR_19,
+                                                                                               CF$_WEEK_STR_20,
+                                                                                               CF$_WEEK_STR_21,
+                                                                                               CF$_WEEK_STR_22,
+                                                                                               CF$_WEEK_STR_23,
+                                                                                               CF$_WEEK_STR_24,
+                                                                                               CF$_WEEK_STR_25,
+                                                                                               CF$_WEEK_STR_26,
+                                                                                               CF$_WEEK_STR_27,
+                                                                                               CF$_WEEK_STR_28,
+                                                                                               CF$_WEEK_STR_29,
+                                                                                               CF$_WEEK_STR_30,
+                                                                                               CF$_WEEK_STR_31,
+                                                                                               CF$_WEEK_STR_32,
+                                                                                               CF$_WEEK_STR_33,
+                                                                                               CF$_WEEK_STR_34,
+                                                                                               CF$_WEEK_STR_35,
+                                                                                               CF$_WEEK_STR_36,
+                                                                                               CF$_WEEK_STR_37,
+                                                                                               CF$_WEEK_STR_38,
+                                                                                               CF$_WEEK_STR_39,
+                                                                                               CF$_WEEK_STR_40,
+                                                                                               CF$_WEEK_STR_41,
+                                                                                               CF$_WEEK_STR_42,
+                                                                                               CF$_WEEK_STR_43,
+                                                                                               CF$_WEEK_STR_44,
+                                                                                               CF$_WEEK_STR_45,
+                                                                                               CF$_WEEK_STR_46,
+                                                                                               CF$_WEEK_STR_47,
+                                                                                               CF$_WEEK_STR_48,
+                                                                                               CF$_WEEK_STR_49,
+                                                                                               CF$_WEEK_STR_50,
+                                                                                               CF$_WEEK_STR_51,
+                                                                                               CF$_WEEK_STR_52,
+                                                                                               CF$_WEEK_STR_53))
+                 order by CF$_SUPPLIER_NO) b
+         WHERE CF$_SUPPLIER_NO IS NOT NULL AND
+         b.WEEK IN
+               (select week
+                  from (select *
+                          from (select t.CF$_PART_NO,
+                                       t.CF$_SUPPLIER_NO,
+                                       t.CF$_WEEK_STR_01,
+                               t.CF$_WEEK_STR_02,
+                               t.CF$_WEEK_STR_03,
+                               t.CF$_WEEK_STR_04,
+                               t.CF$_WEEK_STR_05,
+                               t.CF$_WEEK_STR_06,
+                               t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,
+                               t.CF$_WEEK_STR_09,
+                               t.CF$_WEEK_STR_10,
+                               t.CF$_WEEK_STR_11,
+                               t.CF$_WEEK_STR_12,
+                               t.CF$_WEEK_STR_13,
+                               t.CF$_WEEK_STR_14,
+                               t.CF$_WEEK_STR_15,
+                               t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,
+                               t.CF$_WEEK_STR_18,
+                               t.CF$_WEEK_STR_19,
+                               t.CF$_WEEK_STR_20,
+                               t.CF$_WEEK_STR_21,
+                               t.CF$_WEEK_STR_22,
+                               t.CF$_WEEK_STR_23,
+                               t.CF$_WEEK_STR_24,
+                               t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,
+                               t.CF$_WEEK_STR_27,
+                               t.CF$_WEEK_STR_28,
+                               t.CF$_WEEK_STR_29,
+                               t.CF$_WEEK_STR_30,
+                               t.CF$_WEEK_STR_31,
+                               t.CF$_WEEK_STR_32,
+                               t.CF$_WEEK_STR_33,
+                               t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,
+                               t.CF$_WEEK_STR_36,
+                               t.CF$_WEEK_STR_37,
+                               t.CF$_WEEK_STR_38,
+                               t.CF$_WEEK_STR_39,
+                               t.CF$_WEEK_STR_40,
+                               t.CF$_WEEK_STR_41,
+                               t.CF$_WEEK_STR_42,
+                               t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,
+                               t.CF$_WEEK_STR_45,
+                               t.CF$_WEEK_STR_46,
+                               t.CF$_WEEK_STR_47,
+                               t.CF$_WEEK_STR_48,
+                               t.CF$_WEEK_STR_49,
+                               t.CF$_WEEK_STR_50,
+                               t.CF$_WEEK_STR_51,
+                               t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,
+                                                                                               CF$_WEEK_STR_02,
+                                                                                               CF$_WEEK_STR_03,
+                                                                                               CF$_WEEK_STR_04,
+                                                                                               CF$_WEEK_STR_05,
+                                                                                               CF$_WEEK_STR_06,
+                                                                                               CF$_WEEK_STR_07,
+                                                                                               CF$_WEEK_STR_08,
+                                                                                               CF$_WEEK_STR_09,
+                                                                                               CF$_WEEK_STR_10,
+                                                                                               CF$_WEEK_STR_11,
+                                                                                               CF$_WEEK_STR_12,
+                                                                                               CF$_WEEK_STR_13,
+                                                                                               CF$_WEEK_STR_14,
+                                                                                               CF$_WEEK_STR_15,
+                                                                                               CF$_WEEK_STR_16,
+                                                                                               CF$_WEEK_STR_17,
+                                                                                               CF$_WEEK_STR_18,
+                                                                                               CF$_WEEK_STR_19,
+                                                                                               CF$_WEEK_STR_20,
+                                                                                               CF$_WEEK_STR_21,
+                                                                                               CF$_WEEK_STR_22,
+                                                                                               CF$_WEEK_STR_23,
+                                                                                               CF$_WEEK_STR_24,
+                                                                                               CF$_WEEK_STR_25,
+                                                                                               CF$_WEEK_STR_26,
+                                                                                               CF$_WEEK_STR_27,
+                                                                                               CF$_WEEK_STR_28,
+                                                                                               CF$_WEEK_STR_29,
+                                                                                               CF$_WEEK_STR_30,
+                                                                                               CF$_WEEK_STR_31,
+                                                                                               CF$_WEEK_STR_32,
+                                                                                               CF$_WEEK_STR_33,
+                                                                                               CF$_WEEK_STR_34,
+                                                                                               CF$_WEEK_STR_35,
+                                                                                               CF$_WEEK_STR_36,
+                                                                                               CF$_WEEK_STR_37,
+                                                                                               CF$_WEEK_STR_38,
+                                                                                               CF$_WEEK_STR_39,
+                                                                                               CF$_WEEK_STR_40,
+                                                                                               CF$_WEEK_STR_41,
+                                                                                               CF$_WEEK_STR_42,
+                                                                                               CF$_WEEK_STR_43,
+                                                                                               CF$_WEEK_STR_44,
+                                                                                               CF$_WEEK_STR_45,
+                                                                                               CF$_WEEK_STR_46,
+                                                                                               CF$_WEEK_STR_47,
+                                                                                               CF$_WEEK_STR_48,
+                                                                                               CF$_WEEK_STR_49,
+                                                                                               CF$_WEEK_STR_50,
+                                                                                               CF$_WEEK_STR_51,
+                                                                                               CF$_WEEK_STR_52,
+                                                                                               CF$_WEEK_STR_53))
+                         order by CF$_SUPPLIER_NO)
+                 where CF$_supplier_no is null
+                   and to_date(forecast, 'DD/MM/YYYY') > trunc(sysdate) - 7));
+  
+ dbms_output.put_line(pivot_clause);
+  dbms_output.put_line(pivot_clause_date); 
+  sql_stmt := 'CREATE OR REPLACE VIEW SUPPLIER_FORECAST_TEMP_QRY AS   
+select *
+  from (Select *
+          from (select *
+                  from (select t.CF$_PART_NO,t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,
+                               CF$_WEEK_STR_07,CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,
+                               CF$_WEEK_STR_17,CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21, CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,
+                               CF$_WEEK_STR_27,CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,
+                               CF$_WEEK_STR_37,CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,
+                               CF$_WEEK_STR_47,CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53))
+                 order by CF$_SUPPLIER_NO) b
+         WHERE CF$_SUPPLIER_NO IS NULL AND
+         b.forecast IN
+               (select forecast
+                  from (select *
+                          from (select t.CF$_PART_NO,t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,
+                               CF$_WEEK_STR_07,CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,
+                               CF$_WEEK_STR_17,CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21, CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,
+                               CF$_WEEK_STR_27,CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,
+                               CF$_WEEK_STR_37,CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,
+                               CF$_WEEK_STR_47,CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53))
+                         order by CF$_SUPPLIER_NO)
+                 where CF$_supplier_no is null
+                   and 
+                   to_date(forecast, ''DD/MM/YYYY'') > trunc(sysdate) - 7))             
+                   
+pivot (COUNT(FORECAST) for WEEK in ('||pivot_clause_date||'))
+
+UNION 
+select *
+  from (Select CF$_PART_NO,CF$_SUPPLIER_NO,WEEK,
+               to_number(FORECAST) as forecast
+          from (select *
+                  from (select t.CF$_PART_NO,t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,
+                               CF$_WEEK_STR_07,CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,
+                               CF$_WEEK_STR_17,CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21, CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,
+                               CF$_WEEK_STR_27,CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,
+                               CF$_WEEK_STR_37,CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,
+                               CF$_WEEK_STR_47,CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53))
+                 order by CF$_SUPPLIER_NO) b
+         WHERE CF$_SUPPLIER_NO IS NOT NULL AND
+         b.WEEK IN
+               (select week
+                  from (select *
+                          from (select t.CF$_PART_NO,t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,
+                               t.CF$_WEEK_STR_08,t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,
+                               t.CF$_WEEK_STR_17,t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,
+                               t.CF$_WEEK_STR_26,t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,
+                               t.CF$_WEEK_STR_35,t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,
+                               t.CF$_WEEK_STR_44,t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,
+                               t.CF$_WEEK_STR_53
+                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,
+                               CF$_WEEK_STR_07,CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,
+                               CF$_WEEK_STR_17,CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21, CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,
+                               CF$_WEEK_STR_27,CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,
+                               CF$_WEEK_STR_37,CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,
+                               CF$_WEEK_STR_47,CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53))
+                         order by CF$_SUPPLIER_NO)
+                 where CF$_supplier_no is null
+                   and to_date(forecast,''DD/MM/YYYY'') > trunc(sysdate) - 7))          
+                   
+pivot (SUM(FORECAST) for WEEK in ('||pivot_clause||'))';
+
+   dbms_output.put_line(sql_stmt);      
+ execute immediate sql_stmt;
+END Create_Supplier_Forecast_Temp_View;
+-- C364 EntNadeeL (END)
+
 
 -------------------- LU  NEW METHODS -------------------------------------
