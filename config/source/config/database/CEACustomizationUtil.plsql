@@ -4127,7 +4127,7 @@ IS
       AND jtsa.survey_id = sq.survey_id
       AND jtsa.question_id = sq.question_id
       AND sq.question_no = 2
-      AND jtsa.date_created BETWEEN start_date_ AND end_date_;
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_;
 BEGIN   
    OPEN get_nps;
    FETCH get_nps INTO nps_;
@@ -4138,6 +4138,55 @@ BEGIN
       RETURN nps_;
    END IF;      
 END Get_NPS;
+
+FUNCTION Get_No_Access(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   resource_seq_ NUMBER; 
+   no_access_wo_count_ NUMBER := 0;
+   completed_work_order_count_ NUMBER := 0;
+   
+   CURSOR get_no_access_work_orders(resource_seq_ NUMBER) IS      
+      SELECT COUNT(DISTINCT jt.wo_no)
+      FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+      WHERE jei.task_seq = jt.task_seq
+      AND jei.resource_seq = resource_seq_
+      AND jei.resource_type_db ='PERSON' 
+      AND jt.cf$_incomplete_cause = 'No Access'
+      AND jei.objstate = 'COMPLETED'
+      AND jt.company = company_
+      AND TRUNC(jt.actual_finish) BETWEEN start_date_ AND end_date_;  
+      
+   CURSOR get_completed_work_orders(resource_seq_ NUMBER) IS   
+      SELECT COUNT(DISTINCT jt.wo_no)       
+      FROM jt_execution_instance_uiv jei, jt_task_uiv_cfv jt
+      WHERE jei.resource_seq = resource_seq_
+      AND jei.resource_type_db ='PERSON' 
+      AND jei.task_seq = jt.task_seq
+      AND jei.objstate = 'COMPLETED' 
+      AND jt.company = company_
+      AND TRUNC(jei.work_finish) BETWEEN start_date_ AND end_date_;    
+BEGIN
+   resource_seq_ := Maint_Person_Employee_API.Get_Resource_Seq(emp_no_, company_);
+   
+   OPEN get_no_access_work_orders(resource_seq_);
+   FETCH get_no_access_work_orders INTO no_access_wo_count_;
+   CLOSE get_no_access_work_orders;
+   
+   OPEN get_completed_work_orders(resource_seq_);
+   FETCH get_completed_work_orders INTO completed_work_order_count_;
+   CLOSE get_completed_work_orders;
+   
+   IF (completed_work_order_count_ = 0 ) THEN
+      RETURN 0;
+   ELSE    
+      RETURN ROUND(no_access_wo_count_/completed_work_order_count_ * 100);
+   END IF;
+   
+END Get_No_Access; 
 -- C458 EntMahesR (END)
 
 -- C364 EntNadeeL (START)
