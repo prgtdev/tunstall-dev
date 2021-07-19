@@ -182,30 +182,8 @@ CREATE OR REPLACE PACKAGE BODY SERVICE_REPAIR_LABEL_RPI IS
       serial_no                 VARCHAR2(32000));
 
    CURSOR get_service_repair (wo_no_ VARCHAR2, part_no_ VARCHAR2, serial_no_ VARCHAR2) IS
-      SELECT CASE 
-                WHEN Equipment_Object_API.Get_Obj_Level(wo.mch_code_contract,wo.mch_code) IS NULL THEN
-                   (SELECT part_no
-                      FROM equipment_serial_uiv
-                     WHERE contract = wo.mch_code_contract
-                       AND mch_code = wo.mch_code)
-                 ELSE 
-                     (SELECT part_no
-                      FROM equipment_functional_uiv
-                     WHERE contract = wo.mch_code_contract
-                       AND mch_code = wo.mch_code)
-             END part_no,
-             CASE 
-                WHEN Equipment_Object_API.Get_Obj_Level(wo.mch_code_contract,wo.mch_code) IS NULL THEN
-                   (SELECT serial_no
-                      FROM equipment_serial_uiv
-                     WHERE contract = wo.mch_code_contract
-                       AND mch_code = wo.mch_code)
-                 ELSE 
-                     (SELECT serial_no
-                      FROM equipment_functional_uiv
-                     WHERE contract = wo.mch_code_contract
-                       AND mch_code = wo.mch_code)
-             END serial_no,
+      SELECT rb.cf$_part_no part_no,
+             rb.cf$_serial_no serial_no,
              wo.wo_no,
              wo.customer_no,
              Customer_Info_API.Get_Name(wo.customer_no) customer_name,
@@ -234,7 +212,7 @@ CREATE OR REPLACE PACKAGE BODY SERVICE_REPAIR_LABEL_RPI IS
                 FROM work_order_job 
                WHERE wo_no = rb.cf$_repair_wo_no 
                FETCH FIRST 1 ROW ONLY) con_type,
-             Active_Separate_Cfp.Get_Cf$_Tunstall_Warranty(wo.mch_code,wo.mch_code_contract) AS within_warranty,
+             rb.cf$_tunstall_warranty AS within_warranty,
              rb.objkey               
         FROM product_repair_booking_clv rb, active_separate_uiv wo
        WHERE rb.cf$_wo_no = wo.wo_no
@@ -355,7 +333,6 @@ BEGIN
       ELSE
          within_warranty_ := 'No';
       END CASE;
-            
       Xml_Record_Writer_SYS.Start_Element(xml$_, 'SERVICE_REPAIR');
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_NO', rec_service_repair_.part_no);
       Xml_Record_Writer_SYS.Add_Element(xml$_, 'SERIAL_NO', rec_service_repair_.serial_no);

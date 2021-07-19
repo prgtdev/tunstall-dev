@@ -3724,11 +3724,9 @@ END Get_Total_Charge_Cost;
 
 -- C526 EntPragG (START)
 FUNCTION Get_Warranty_Expiray_Date(
-   object_id_ IN VARCHAR2,
-   contract_  IN VARCHAR2)RETURN DATE
+   barcode_   IN VARCHAR2)RETURN DATE
 IS  
    part_no_ VARCHAR2(20);
-   serial_no_ VARCHAR2(20);
    
    year_ NUMBER;
    week_ NUMBER;
@@ -3740,50 +3738,26 @@ IS
    warranty_type_id_ VARCHAR2(20);
    period_ NUMBER;
    time_unit_ VARCHAR2(10); 
-        
-   PROCEDURE Get_Part_Info___(
-      part_no_   OUT VARCHAR2,
-      serial_no_ OUT VARCHAR2,
-      object_id_  IN VARCHAR2,
-      contract_   IN VARCHAR2)
-   IS
-   BEGIN
-      IF Equipment_Object_API.Get_Obj_Level(contract_,object_id_) IS NULL THEN
-         SELECT part_no,
-                serial_no
-           INTO part_no_, serial_no_
-           FROM equipment_serial_uiv
-          WHERE mch_code = object_id_
-            AND contract = contract_;
-      ELSE
-         SELECT part_no,
-                serial_no
-           INTO part_no_, serial_no_
-           FROM equipment_functional_uiv
-          WHERE mch_code = object_id_
-            AND contract = contract_;
-      END IF;
-   EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-         part_no_ := NULL;
-         serial_no_ := NULL;
-   END Get_Part_Info___;
-   
-   PROCEDURE Extract_Date_From_Seial_No___ (
+          
+   PROCEDURE Extract_Data_From_Barcode___ (
+      part_no_  OUT VARCHAR2,
       year_     OUT NUMBER,
       week_     OUT NUMBER,
-      serial_no_ IN VARCHAR2)
-   IS
-      
+      barcode_   IN VARCHAR2)
+   IS      
+      year_week_ VARCHAR2(5);
    BEGIN
-      year_ := TO_NUMBER(SUBSTR(serial_no_,3,2));
-      week_ := TO_NUMBER(SUBSTR(serial_no_,0,2));
+      part_no_ :=  REPLACE(REGEXP_SUBSTR(barcode_ ,'[^-]*(-|$)',1,1), '-', '' );
+      year_week_ := REPLACE(REGEXP_SUBSTR(barcode_ ,'[^-]*(-|$)',1,3), '-', '' );
+      
+      year_ := TO_NUMBER(SUBSTR(year_week_,3,2));
+      week_ := TO_NUMBER(SUBSTR(year_week_,0,2));
       year_ := year_ + 2000; /* Year format YY, Therefore 2000 is added to get the full year (YYYY)*/      
    EXCEPTION
       WHEN INVALID_NUMBER THEN
          year_ := NULL;
          week_ := NULL;   
-   END Extract_Date_From_Seial_No___;   
+   END Extract_Data_From_Barcode___;   
      
    FUNCTION Get_Warranty_Type_Id___ (
       wrranty_id_ IN NUMBER)RETURN VARCHAR2
@@ -3820,8 +3794,7 @@ IS
    END Get_Warranty_Info___;      
 
 BEGIN
-   Get_Part_Info___(part_no_,serial_no_,object_id_,contract_);
-   Extract_Date_From_Seial_No___(year_,week_,serial_no_);
+   Extract_Data_From_Barcode___(part_no_,year_,week_,barcode_);
    
    warranty_start_date_ := Get_Begin_Date__(year_,NULL,NULL, week_);   
    warranty_id_ := Part_Catalog_API.Get_Cust_Warranty_Id(part_no_);
