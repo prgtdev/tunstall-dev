@@ -872,13 +872,18 @@ PROCEDURE Create_Voucher_Row___(
       IS
          account_ VARCHAR2(20);
       BEGIN
-         SELECT code_part_value
-           INTO account_
-           FROM posting_ctrl_detail
-          WHERE posting_type = 'TP2'
-            AND company = company_
-            AND code_name = 'Account'
-            AND control_type_value LIKE 'CREATEFA%';
+         BEGIN
+            SELECT code_part_value
+              INTO account_
+              FROM posting_ctrl_detail
+             WHERE posting_type = 'TP2'
+               AND company = company_
+               AND code_name = 'Account'
+               AND control_type_value LIKE 'CREATEFA%';
+         EXCEPTION 
+            WHEN NO_DATA_FOUND THEN
+               account_ := NULL;
+         END;
          IF account_ IS NULL THEN    
             SELECT default_value
               INTO account_
@@ -1157,15 +1162,15 @@ BEGIN
                                             trans_his_line_rec_.task_seq,
                                             trans_his_line_rec_.part_no,
                                             trans_his_line_rec_.part_desc);
-               Log_Info___('Object Created! ' || object_id_);
+               Log_Info___('- Object Created! ' || object_id_);
                
-               Log_Info___('Updating object status to investment');
+               Log_Info___('- Updating object status to investment');
                Update_Object_Status___(objid_,objversion_,'INVESTMENT');
                
                --Log_Info___('Removing default property codes');                              
                Remove_Default_property_Codes___(object_id_);   
                
-               Log_Info___('Adding Object Properties');         
+               Log_Info___('- Adding Object Properties');         
                Create_Properties___(object_id_,
                                     trans_his_line_rec_.company,
                                     req_line_rec_.contract,
@@ -1175,7 +1180,7 @@ BEGIN
                                     trans_his_line_rec_.date_created,
                                     trans_his_line_rec_.condition_code);
                                     
-               Log_Info___('Creating manual transaction'); 
+               Log_Info___('- Creating manual transaction'); 
                cost_ := Get_Cost___(req_line_rec_.part_no,
                                     trans_his_line_rec_.serial_no,
                                     req_line_rec_.spare_contract,
@@ -1191,7 +1196,7 @@ BEGIN
                                              'CREATEFA',
                                              cost_);
                                              
-               Log_Info___('Creating manual voucher');                                                      
+               Log_Info___('- Creating manual voucher');                                                      
                Create_Manual_Voucher___(voucher_no_,
                                         voucher_msg_,
                                         acc_year_,
@@ -1205,19 +1210,27 @@ BEGIN
                                         voucher_type_,
                                         voucher_amount_);
                                         
-               Log_Info___('Approving manual voucher');
+               Log_Info___('- Approving manual voucher');
                Approve_Manual_Voucher___(trans_his_line_rec_.company,voucher_no_,voucher_type_,acc_year_);
                
-               Log_Info___('Updating General Ledger');                      
+               Log_Info___('- Updating General Ledger');                      
                Update_General_Ledger___(trans_his_line_rec_.company,voucher_msg_);
                
-               Log_Info___('Updating object status to Active');
+               Log_Info___('- Updating object status to Active');
                Update_Object_Status___(objid_,objversion_,'ACTIVE');
                success_ := TRUE;
+               Log_Info___('- FA Object flow completed successfully');
+               Log_Info___('----------');
             END IF;
+            @ApproveTransactionStatement(2021-07-12,EntPragG)
+            COMMIT;
          EXCEPTION
             WHEN OTHERS THEN
-               Log_Warning___(SUBSTR(SQLERRM, 1, 200));
+               Log_Warning___('  - '||SUBSTR(SQLERRM, 1, 200));
+               Log_Info___('- Roll Back Transaction');
+               Log_Info___('----------');
+               @ApproveTransactionStatement(2021-07-12,EntPragG)
+               ROLLBACK;
          END;
       END LOOP;      
    END LOOP;   
