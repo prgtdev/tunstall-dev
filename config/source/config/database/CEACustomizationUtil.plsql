@@ -2428,6 +2428,40 @@ BEGIN
       END LOOP;
       RETURN temp_;
    END Check_Inv_Courtesy_Call;
+   
+   FUNCTION Check_Note_Latest(company_        IN VARCHAR2,
+                              identity_       IN VARCHAR2,
+                              invoice_id_     IN NUMBER,
+                              note_id_        IN NUMBER) RETURN VARCHAR2 IS
+      
+      temp_note_id_ NUMBER;
+      out_ VARCHAR2(5) :='FALSE';
+      
+       CURSOR get_inv_header_notes(company_  VARCHAR2,
+                                identity_   VARCHAR2,
+                                invoice_id_ NUMBER) IS
+         SELECT *
+           FROM (SELECT note_id
+                   FROM invoice_header_notes
+                  WHERE company = company_
+                    AND identity = identity_
+                    AND party_type = 'Customer'
+                    AND invoice_id = invoice_id_
+                  ORDER BY follow_up_date DESC, note_id DESC)
+          WHERE rownum = 1;
+          
+      BEGIN
+         
+      OPEN get_inv_header_notes(company_, identity_, invoice_id_);
+      FETCH get_inv_header_notes INTO temp_note_id_; 
+      CLOSE get_inv_header_notes;
+      
+      IF (temp_note_id_ = note_id_ )THEN
+         out_ :='TRUE';
+         END IF;
+         
+         RETURN out_;
+   END  Check_Note_Latest;    
 --C0367 EntChathI (END)
 
 --C0448 EntPrageG (START)
