@@ -4378,7 +4378,7 @@ SELECT *
 
 UNION 
 SELECT *
-  FROM (_SELECT *
+  FROM (SELECT *
           FROM (SELECT *
                   FROM (SELECT t.cf$_part_no AS "Part No",
                                t.cf$_part_description AS "Part Description",

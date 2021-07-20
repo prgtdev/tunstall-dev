@@ -1,0 +1,21 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: CEACustomizationUtil
+--  Component:    CONFIG
+--
+--  IFS Developer Studio Template Version 3.0
+--
+--  Date    Sign    History
+--  ------  ------  ---------------------------------------------------------
+-----------------------------------------------------------------------------
+
+layer Core;
+
+-------------------- PUBLIC VIEW DEFINITIONS ------------------------------
+VIEW DEMAND_FORECAST_TEMP_QRY IS
+SELECT * FROM dual;
+
+VIEW SUPPLIER_FORECAST_TEMP_QRY IS
+SELECT * FROM dual;
+-------------------- PRIVATE VIEW DEFINITIONS -------------------------------
+
