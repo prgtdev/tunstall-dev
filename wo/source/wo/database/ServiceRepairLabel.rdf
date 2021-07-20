@@ -212,7 +212,7 @@ CREATE OR REPLACE PACKAGE BODY SERVICE_REPAIR_LABEL_RPI IS
                 FROM work_order_job 
                WHERE wo_no = rb.cf$_repair_wo_no 
                FETCH FIRST 1 ROW ONLY) con_type,
-             rb.cf$_tunstall_warranty AS within_warranty,
+             rb.cf$_tunstall_warranty_db AS within_warranty,
              rb.objkey               
         FROM product_repair_booking_clv rb, active_separate_uiv wo
        WHERE rb.cf$_wo_no = wo.wo_no
