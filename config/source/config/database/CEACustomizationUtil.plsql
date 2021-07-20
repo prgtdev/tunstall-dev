@@ -4197,259 +4197,289 @@ END Get_No_Access;
 -- C458 EntMahesR (END)
 
 -- C364 EntNadeeL (START)
-PROCEDURE Create_Supp_Forecast_View IS
+PROCEDURE Create_Supp_Forecast_View_ IS
   sql_stmt              VARCHAR2(32000);
-  pivot_clause          clob; 
-  pivot_clause_date     clob; 
-begin
-  select listagg('''' || to_date(forecast, 'DD/MM/YYYY') || '''' , ',') within group (order by to_date(forecast, 'DD/MM/YYYY') asc) 
-  into pivot_clause_date
-  from   (Select *
-          from (select *
-                  from (select t.CF$_PART_NO,
-                               t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+  pivot_clause          CLOB; 
+  pivot_clause_date     CLOB; 
+BEGIN
+  SELECT LISTAGG('''' || to_date(forecast, 'DD/MM/YYYY') || '''' , ',') WITHIN GROUP (ORDER BY to_date(forecast, 'DD/MM/YYYY') ASC) 
+  INTO pivot_clause_date
+  FROM   (SELECT *
+          FROM (SELECT *
+                  FROM (SELECT t.cf$_part_no,
+                               t.cf$_supplier_no,t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							          t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79))
-                 order by CF$_SUPPLIER_NO) b
-         WHERE CF$_SUPPLIER_NO IS NULL AND
+                          FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79))
+                 ORDER BY cf$_supplier_no) b
+         WHERE cf$_supplier_no IS NULL AND
          b.forecast IN
-               (select forecast
-                  from (select *
-                          from (select t.CF$_PART_NO,
-                                       t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+               (SELECT forecast
+                  FROM (SELECT *
+                          FROM (SELECT t.cf$_part_no,
+                               t.cf$_supplier_no,t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							          t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79))
-                         order by CF$_SUPPLIER_NO)
-                 where CF$_supplier_no is null
-                   and to_date(forecast, 'DD/MM/YYYY') > trunc(sysdate) - 7));
+                                FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79))
+                         ORDER BY cf$_supplier_no)
+                 WHERE CF$_supplier_no is null
+                   AND to_date(forecast, 'DD/MM/YYYY') > trunc(SYSDATE) - 7));
                    
-  select listagg('''' || WEEK || '''' , ',') within group (order by WEEK) 
-  into   pivot_clause
-  from   (Select distinct WEEK
-          from (select *
-                  from (select t.CF$_PART_NO,
-                               t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+  SELECT LISTAGG('''' || week || '''' , ',') WITHIN GROUP (ORDER BY week) 
+  INTO   pivot_clause
+  FROM   (SELECT DISTINCT week
+          FROM (SELECT *
+                  FROM (SELECT t.cf$_part_no,
+                               t.cf$_supplier_no,t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							          t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79))
-                 order by CF$_SUPPLIER_NO) b
-         WHERE CF$_SUPPLIER_NO IS NOT NULL AND
-         b.WEEK IN
-               (select week
-                  from (select *
-                          from (select t.CF$_PART_NO,
-                                       t.CF$_SUPPLIER_NO,t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+                          FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79))
+                 ORDER BY cf$_supplier_no) b
+         WHERE cf$_supplier_no IS NOT NULL AND
+         b.week IN
+               (SELECT week
+                  FROM (SELECT *
+                          FROM (SELECT t.cf$_part_no,
+                                       t.cf$_supplier_no,t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							          t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79))
-                         order by CF$_SUPPLIER_NO)
-                 where CF$_supplier_no is null
-                   and to_date(forecast, 'DD/MM/YYYY') > trunc(sysdate) - 7));
+                                  FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79))
+                         ORDER BY cf$_supplier_no)
+                 WHERE cf$_supplier_no IS NULL
+                   AND to_date(forecast, 'DD/MM/YYYY') > trunc(SYSDATE) - 7));
   
- dbms_output.put_line(pivot_clause);
-  dbms_output.put_line(pivot_clause_date); 
   sql_stmt := 'CREATE OR REPLACE VIEW SUPPLIER_FORECAST_TEMP_QRY AS   
-select *
-  from (Select *
-          from (select *
-                  from (select t.CF$_PART_NO as "Part No",
-                               t.CF$_PART_DESCRIPTION as "Part Description",
-                               t.CF$_SUPPLIER_NO as "Supplier No",
-                               t.CF$_SUPPLIER_NAME as "Supplier Name",
-                               t.CF$_FORECAST_DATE as "Forecast Date",
-                               t.CF$_MANUFACTURER_ID as "Manufacturer",
-                               t.CF$_MANUFACTURER_PART_NO as "Manufacturer Part No",
-                               t.CF$_REQ_OR_ORDER as "Req or Order",
-                               t.CF$_WEEK_QTY_00 as "Week Qty Overdue",
-                               t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+SELECT *
+  FROM (SELECT *
+          FROM (SELECT *
+                  FROM (SELECT t.cf$_part_no AS "Part No",
+                               t.cf$_part_description AS "Part Description",
+                               t.cf$_supplier_no AS "Supplier No",
+                               t.cf$_supplier_name AS "Supplier Name",
+                               t.cf$_forecast_date AS "Forecast Date",
+                               t.cf$_manufacturer_id AS "Manufacturer",
+                               t.cf$_manufacturer_part_no AS "Manufacturer Part No",
+                               t.cf$_req_or_order AS "Req or Order",
+                               t.cf$_week_qty_00 AS "Week Qty Overdue",
+                               t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							          t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79))) b
+                          FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79))) b
          WHERE "Supplier No" IS NULL AND
          b.forecast IN
-               (select forecast
-                  from (select *
-                          from (select t.CF$_PART_NO as "Part No",
-                               t.CF$_PART_DESCRIPTION as "Part Description",
-                               t.CF$_SUPPLIER_NO as "Supplier No",
-                               t.CF$_SUPPLIER_NAME as "Supplier Name",
-                               t.CF$_FORECAST_DATE as "Forecast Date",
-                               t.CF$_MANUFACTURER_ID as "Manufacturer",
-                               t.CF$_MANUFACTURER_PART_NO as "Manufacturer Part No",
-                               t.CF$_REQ_OR_ORDER as "Req or Order",
-                               t.CF$_WEEK_QTY_00 as "Week Qty Overdue",t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+               (SELECT forecast
+                  FROM (SELECT *
+                          FROM (SELECT t.cf$_part_no AS "Part No",
+                               t.cf$_part_description AS "Part Description",
+                               t.cf$_supplier_no AS "Supplier No",
+                               t.cf$_supplier_name AS "Supplier Name",
+                               t.cf$_forecast_date AS "Forecast Date",
+                               t.cf$_manufacturer_id AS "Manufacturer",
+                               t.cf$_manufacturer_part_no AS "Manufacturer Part No",
+                               t.cf$_req_or_order AS "Req or Order",
+                               t.cf$_week_qty_00 AS "Week Qty Overdue",t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							                 t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79)))
-                 where "Supplier No" is null
-                   and 
-                   to_date(forecast, ''DD/MM/YYYY'') > trunc(sysdate) - 7))             
-                   
-pivot (COUNT(FORECAST) for WEEK in ('||pivot_clause_date||'))
+                                  FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79)))
+                 WHERE "Supplier No" IS NULL
+                   AND 
+                   to_date(forecast, ''DD/MM/YYYY'') > trunc(SYSDATE) - 7))  
+                   PIVOT (COUNT(forecast) FOR week IN ('||pivot_clause_date||'))
 
 UNION 
-select *
-  from (Select *
-          from (select *
-                  from (select t.CF$_PART_NO as "Part No",
-                               t.CF$_PART_DESCRIPTION as "Part Description",
-                               t.CF$_SUPPLIER_NO as "Supplier No",
-                               t.CF$_SUPPLIER_NAME as "Supplier Name",
-                               t.CF$_FORECAST_DATE as "Forecast Date",
-                               t.CF$_MANUFACTURER_ID as "Manufacturer",
-                               t.CF$_MANUFACTURER_PART_NO as "Manufacturer Part No",
-                               t.CF$_REQ_OR_ORDER as "Req or Order",
-                               t.CF$_WEEK_QTY_00 as "Week Qty Overdue",t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+SELECT *
+  FROM (_SELECT *
+          FROM (SELECT *
+                  FROM (SELECT t.cf$_part_no AS "Part No",
+                               t.cf$_part_description AS "Part Description",
+                               t.cf$_supplier_no AS "Supplier No",
+                               t.cf$_supplier_name AS "Supplier Name",
+                               t.cf$_forecast_date AS "Forecast Date",
+                               t.cf$_manufacturer_id AS "Manufacturer",
+                               t.cf$_manufacturer_part_no AS "Manufacturer Part No",
+                               t.cf$_req_or_order AS "Req or Order",
+                               t.cf$_week_qty_00 AS "Week Qty Overdue",t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							                 t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                          from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79))) b
+                          FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79))) b
          WHERE "Supplier No" IS NOT NULL AND
          b.WEEK IN
-               (select week
-                  from (select *
-                          from (select t.CF$_PART_NO as "Part No",
-                               t.CF$_PART_DESCRIPTION as "Part Description",
-                               t.CF$_SUPPLIER_NO as "Supplier No",
-                               t.CF$_SUPPLIER_NAME as "Supplier Name",
-                               t.CF$_FORECAST_DATE as "Forecast Date",
-                               t.CF$_MANUFACTURER_ID as "Manufacturer",
-                               t.CF$_MANUFACTURER_PART_NO as "Manufacturer Part No",
-                               t.CF$_REQ_OR_ORDER as "Req or Order",
-                               t.CF$_WEEK_QTY_00 as "Week Qty Overdue",t.CF$_WEEK_STR_01,t.CF$_WEEK_STR_02,t.CF$_WEEK_STR_03,t.CF$_WEEK_STR_04,t.CF$_WEEK_STR_05,t.CF$_WEEK_STR_06,t.CF$_WEEK_STR_07,t.CF$_WEEK_STR_08,
-                               t.CF$_WEEK_STR_09,t.CF$_WEEK_STR_10,t.CF$_WEEK_STR_11,t.CF$_WEEK_STR_12,t.CF$_WEEK_STR_13,t.CF$_WEEK_STR_14,t.CF$_WEEK_STR_15,t.CF$_WEEK_STR_16,t.CF$_WEEK_STR_17,
-                               t.CF$_WEEK_STR_18,t.CF$_WEEK_STR_19,t.CF$_WEEK_STR_20,t.CF$_WEEK_STR_21,t.CF$_WEEK_STR_22,t.CF$_WEEK_STR_23,t.CF$_WEEK_STR_24,t.CF$_WEEK_STR_25,t.CF$_WEEK_STR_26,
-                               t.CF$_WEEK_STR_27,t.CF$_WEEK_STR_28,t.CF$_WEEK_STR_29,t.CF$_WEEK_STR_30,t.CF$_WEEK_STR_31,t.CF$_WEEK_STR_32,t.CF$_WEEK_STR_33,t.CF$_WEEK_STR_34,t.CF$_WEEK_STR_35,
-                               t.CF$_WEEK_STR_36,t.CF$_WEEK_STR_37,t.CF$_WEEK_STR_38,t.CF$_WEEK_STR_39,t.CF$_WEEK_STR_40,t.CF$_WEEK_STR_41,t.CF$_WEEK_STR_42,t.CF$_WEEK_STR_43,t.CF$_WEEK_STR_44,
-                               t.CF$_WEEK_STR_45,t.CF$_WEEK_STR_46,t.CF$_WEEK_STR_47,t.CF$_WEEK_STR_48,t.CF$_WEEK_STR_49,t.CF$_WEEK_STR_50,t.CF$_WEEK_STR_51,t.CF$_WEEK_STR_52,t.CF$_WEEK_STR_53,
-							                 t.CF$_WEEK_STR_54,t.CF$_WEEK_STR_55,t.CF$_WEEK_STR_56,t.CF$_WEEK_STR_57,t.CF$_WEEK_STR_58,t.CF$_WEEK_STR_59,t.CF$_WEEK_STR_60,t.CF$_WEEK_STR_61,t.CF$_WEEK_STR_62,
-                               t.CF$_WEEK_STR_63,t.CF$_WEEK_STR_64,t.CF$_WEEK_STR_65,t.CF$_WEEK_STR_66,t.CF$_WEEK_STR_67,t.CF$_WEEK_STR_68,t.CF$_WEEK_STR_69,t.CF$_WEEK_STR_70,t.CF$_WEEK_STR_71,
-                               t.CF$_WEEK_STR_72,t.CF$_WEEK_STR_73,t.CF$_WEEK_STR_74,t.CF$_WEEK_STR_75,t.CF$_WEEK_STR_76,t.CF$_WEEK_STR_77,t.CF$_WEEK_STR_78,t.CF$_WEEK_STR_79
+               (SELECT week
+                  FROM (SELECT *
+                          FROM (SELECT t.cf$_part_no AS "Part No",
+                               t.cf$_part_description AS "Part Description",
+                               t.cf$_supplier_no AS "Supplier No",
+                               t.cf$_supplier_name AS "Supplier Name",
+                               t.cf$_forecast_date AS "Forecast Date",
+                               t.cf$_manufacturer_id AS "Manufacturer",
+                               t.cf$_manufacturer_part_no AS "Manufacturer Part No",
+                               t.cf$_req_or_order AS "Req or Order",
+                               t.cf$_week_qty_00 AS "Week Qty Overdue",t.cf$_week_str_01,t.cf$_week_str_02,t.cf$_week_str_03,t.cf$_week_str_04,t.cf$_week_str_05,t.cf$_week_str_06,t.cf$_week_str_07,t.cf$_week_str_08,
+                               t.cf$_week_str_09,t.cf$_week_str_10,t.cf$_week_str_11,t.cf$_week_str_12,t.cf$_week_str_13,t.cf$_week_str_14,t.cf$_week_str_15,t.cf$_week_str_16,t.cf$_week_str_17,
+                               t.cf$_week_str_18,t.cf$_week_str_19,t.cf$_week_str_20,t.cf$_week_str_21,t.cf$_week_str_22,t.cf$_week_str_23,t.cf$_week_str_24,t.cf$_week_str_25,t.cf$_week_str_26,
+                               t.cf$_week_str_27,t.cf$_week_str_28,t.cf$_week_str_29,t.cf$_week_str_30,t.cf$_week_str_31,t.cf$_week_str_32,t.cf$_week_str_33,t.cf$_week_str_34,t.cf$_week_str_35,
+                               t.cf$_week_str_36,t.cf$_week_str_37,t.cf$_week_str_38,t.cf$_week_str_39,t.cf$_week_str_40,t.cf$_week_str_41,t.cf$_week_str_42,t.cf$_week_str_43,t.cf$_week_str_44,
+                               t.cf$_week_str_45,t.cf$_week_str_46,t.cf$_week_str_47,t.cf$_week_str_48,t.cf$_week_str_49,t.cf$_week_str_50,t.cf$_week_str_51,t.cf$_week_str_52,t.cf$_week_str_53,
+							                 t.cf$_week_str_54,t.cf$_week_str_55,t.cf$_week_str_56,t.cf$_week_str_57,t.cf$_week_str_58,t.cf$_week_str_59,t.cf$_week_str_60,t.cf$_week_str_61,t.cf$_week_str_62,
+                               t.cf$_week_str_63,t.cf$_week_str_64,t.cf$_week_str_65,t.cf$_week_str_66,t.cf$_week_str_67,t.cf$_week_str_68,t.cf$_week_str_69,t.cf$_week_str_70,t.cf$_week_str_71,
+                               t.cf$_week_str_72,t.cf$_week_str_73,t.cf$_week_str_74,t.cf$_week_str_75,t.cf$_week_str_76,t.cf$_week_str_77,t.cf$_week_str_78,t.cf$_week_str_79
                                
-                                  from SUPPLIER_FORECAST_CLV t) a unpivot(Forecast for Week in(CF$_WEEK_STR_01,CF$_WEEK_STR_02,CF$_WEEK_STR_03,CF$_WEEK_STR_04,CF$_WEEK_STR_05,CF$_WEEK_STR_06,CF$_WEEK_STR_07,
-                                CF$_WEEK_STR_08,CF$_WEEK_STR_09,CF$_WEEK_STR_10,CF$_WEEK_STR_11,CF$_WEEK_STR_12,CF$_WEEK_STR_13,CF$_WEEK_STR_14,CF$_WEEK_STR_15,CF$_WEEK_STR_16,CF$_WEEK_STR_17,
-                                CF$_WEEK_STR_18,CF$_WEEK_STR_19,CF$_WEEK_STR_20,CF$_WEEK_STR_21,CF$_WEEK_STR_22,CF$_WEEK_STR_23,CF$_WEEK_STR_24,CF$_WEEK_STR_25,CF$_WEEK_STR_26,CF$_WEEK_STR_27,
-                                CF$_WEEK_STR_28,CF$_WEEK_STR_29,CF$_WEEK_STR_30,CF$_WEEK_STR_31,CF$_WEEK_STR_32,CF$_WEEK_STR_33,CF$_WEEK_STR_34,CF$_WEEK_STR_35,CF$_WEEK_STR_36,CF$_WEEK_STR_37,
-                                CF$_WEEK_STR_38,CF$_WEEK_STR_39,CF$_WEEK_STR_40,CF$_WEEK_STR_41,CF$_WEEK_STR_42,CF$_WEEK_STR_43,CF$_WEEK_STR_44,CF$_WEEK_STR_45,CF$_WEEK_STR_46,CF$_WEEK_STR_47,
-                                CF$_WEEK_STR_48,CF$_WEEK_STR_49,CF$_WEEK_STR_50,CF$_WEEK_STR_51,CF$_WEEK_STR_52,CF$_WEEK_STR_53,CF$_WEEK_STR_54,CF$_WEEK_STR_55,CF$_WEEK_STR_56,CF$_WEEK_STR_57,
-                                CF$_WEEK_STR_58,CF$_WEEK_STR_59,CF$_WEEK_STR_60,CF$_WEEK_STR_61,CF$_WEEK_STR_62,CF$_WEEK_STR_63,CF$_WEEK_STR_64,CF$_WEEK_STR_65,CF$_WEEK_STR_66,CF$_WEEK_STR_67,
-                                CF$_WEEK_STR_68,CF$_WEEK_STR_69,CF$_WEEK_STR_70,CF$_WEEK_STR_71,CF$_WEEK_STR_72,CF$_WEEK_STR_73,CF$_WEEK_STR_74,CF$_WEEK_STR_75,CF$_WEEK_STR_76,CF$_WEEK_STR_77,
-                                CF$_WEEK_STR_78,CF$_WEEK_STR_79)))
-                 where "Supplier No" is null
-                   and to_date(forecast,''DD/MM/YYYY'') > trunc(sysdate) - 7))          
-                   
-pivot (SUM(to_number(FORECAST)) for WEEK in ('||pivot_clause||'))';
+                                  FROM supplier_forecast_clv t) a UNPIVOT(forecast FOR week IN(cf$_week_str_01,cf$_week_str_02,cf$_week_str_03,cf$_week_str_04,cf$_week_str_05,cf$_week_str_06,cf$_week_str_07,
+                                cf$_week_str_08,cf$_week_str_09,cf$_week_str_10,cf$_week_str_11,cf$_week_str_12,cf$_week_str_13,cf$_week_str_14,cf$_week_str_15,cf$_week_str_16,cf$_week_str_17,
+                                cf$_week_str_18,cf$_week_str_19,cf$_week_str_20,cf$_week_str_21,cf$_week_str_22,cf$_week_str_23,cf$_week_str_24,cf$_week_str_25,cf$_week_str_26,cf$_week_str_27,
+                                cf$_week_str_28,cf$_week_str_29,cf$_week_str_30,cf$_week_str_31,cf$_week_str_32,cf$_week_str_33,cf$_week_str_34,cf$_week_str_35,cf$_week_str_36,cf$_week_str_37,
+                                cf$_week_str_38,cf$_week_str_39,cf$_week_str_40,cf$_week_str_41,cf$_week_str_42,cf$_week_str_43,cf$_week_str_44,cf$_week_str_45,cf$_week_str_46,cf$_week_str_47,
+                                cf$_week_str_48,cf$_week_str_49,cf$_week_str_50,cf$_week_str_51,cf$_week_str_52,cf$_week_str_53,cf$_week_str_54,cf$_week_str_55,cf$_week_str_56,cf$_week_str_57,
+                                cf$_week_str_58,cf$_week_str_59,cf$_week_str_60,cf$_week_str_61,cf$_week_str_62,cf$_week_str_63,cf$_week_str_64,cf$_week_str_65,cf$_week_str_66,cf$_week_str_67,
+                                cf$_week_str_68,cf$_week_str_69,cf$_week_str_70,cf$_week_str_71,cf$_week_str_72,cf$_week_str_73,cf$_week_str_74,cf$_week_str_75,cf$_week_str_76,cf$_week_str_77,
+                                cf$_week_str_78,cf$_week_str_79)))
+                 WHERE "Supplier No" IS NULL
+                   AND to_date(forecast,''DD/MM/YYYY'') > trunc(SYSDATE) - 7))                  
+PIVOT (SUM(to_number(forecast)) FOR week IN ('||pivot_clause||'))';
 
    dbms_output.put_line(sql_stmt);      
  execute immediate sql_stmt;
-END Create_Supp_Forecast_View;
+END Create_Supp_Forecast_View_;
 -- C364 EntNadeeL (END)
 
+--C0457 EntNadeeL (START) 
+PROCEDURE Create_Demand_Forecast_ IS
+   sql_stmt          VARCHAR2(32000);
+   pivot_clause      CLOB;
+   pivot_clause_date CLOB;
+BEGIN
+   SELECT LISTAGG('''' || replace(to_char(ms_date, 'Month') || '-' || to_char(ms_date, 'YY'),' ','') || '''',',') WITHIN GROUP(ORDER BY ms_date ASC)
+     INTO pivot_clause
+     FROM (SELECT to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY') as ms_date
+             FROM PERIOD_TEMPLATE_DETAIL t
+            WHERE t.template_id = '14'
+              AND t.period_begin_counter >= 0
+              AND to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter), 'DD/MM/YYYY') BETWEEN
+                  to_date(SYSDATE, 'DD/MM/YYYY') AND
+                  add_months(to_date(SYSDATE, 'DD/MM/YYYY'), 14));
+ 
+   sql_stmt := 'SELECT  *
+   FROM (SELECT   t.contract,
+                  t.part_no,
+                  t.ms_set,
+                  replace(to_char(ms_date,''Month'')||''-''||to_char(ms_date,''YY''), '' '', '''') as month,
+                  t.forecast_lev0,
+                  t.forecast_lev1 
+         FROM level_1_forecast t
+         WHERE t.ms_set = 1
+         AND to_date(t.ms_date, ''DD/MM/YYYY'') >= to_date(SYSDATE, ''DD/MM/YYYY'')
+         ORDER BY ms_date ASC)                  
+   PIVOT (SUM(forecast_lev0) AS forecast0,
+   SUM(forecast_lev1) AS forecast1 for month IN (' ||pivot_clause|| '))';  
+   
+   EXECUTE IMMEDIATE sql_stmt;
+   
+END Create_Demand_Forecast_; 
+--C0457 EntNadeeL (END)
 
 -------------------- LU  NEW METHODS -------------------------------------
