@@ -4455,7 +4455,7 @@ PROCEDURE Create_Demand_Forecast_ IS
 BEGIN
    SELECT LISTAGG('''' || replace(to_char(ms_date, 'Month') || '-' || to_char(ms_date, 'YY'),' ','') || '''',',') WITHIN GROUP(ORDER BY ms_date ASC)
      INTO pivot_clause
-     FROM (SELECT to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY') as ms_date
+     FROM (SELECT to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY') AS ms_date
              FROM PERIOD_TEMPLATE_DETAIL t
             WHERE t.template_id = '14'
               AND t.period_begin_counter >= 0
@@ -4463,19 +4463,21 @@ BEGIN
                   to_date(SYSDATE, 'DD/MM/YYYY') AND
                   add_months(to_date(SYSDATE, 'DD/MM/YYYY'), 14));
  
-   sql_stmt := 'SELECT  *
-   FROM (SELECT   t.contract,
-                  t.part_no,
-                  t.ms_set,
-                  replace(to_char(ms_date,''Month'')||''-''||to_char(ms_date,''YY''), '' '', '''') as month,
+   sql_stmt := 'CREATE OR REPLACE VIEW DEMAND_FORECAST_TEMP_QRY AS
+            SELECT  *
+            FROM (SELECT   t.contract,
+                  Inventory_Part_Api.Get_Prime_Commodity(t.contract,t.part_no) AS "Comm Group",
+                  t.part_no AS "Part No",
+                  Inventory_Part_Api.Get_Description(t.contract,t.part_no) AS "Description",
+                  replace(to_char(ms_date,''Month'')||''-''||to_char(ms_date,''YY''), '' '', '''') AS month,
                   t.forecast_lev0,
                   t.forecast_lev1 
          FROM level_1_forecast t
          WHERE t.ms_set = 1
          AND to_date(t.ms_date, ''DD/MM/YYYY'') >= to_date(SYSDATE, ''DD/MM/YYYY'')
-         ORDER BY ms_date ASC)                  
+         ORDER BY "Comm Group" ASC)                  
    PIVOT (SUM(forecast_lev0) AS forecast0,
-   SUM(forecast_lev1) AS forecast1 for month IN (' ||pivot_clause|| '))';  
+   SUM(forecast_lev1) AS forecast1 FOR month IN (' ||pivot_clause|| '))';  
    
    EXECUTE IMMEDIATE sql_stmt;
    
