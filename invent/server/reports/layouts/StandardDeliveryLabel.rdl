@@ -4,10 +4,10 @@
    <properties>
       <height>41.3mm</height>
       <initial-page-number>1</initial-page-number>
-      <margin-bottom>2mm</margin-bottom>
-      <margin-left>0.2mm</margin-left>
-      <margin-right>0.2mm</margin-right>
-      <margin-top>2mm</margin-top>
+      <margin-bottom>0.5mm</margin-bottom>
+      <margin-left>2mm</margin-left>
+      <margin-right>1mm</margin-right>
+      <margin-top>3mm</margin-top>
       <report-id>STANDARD_DELIVERY_LABEL_REP</report-id>
       <report-title>Portrait</report-title>
       <schema>StandardDeliveryLabel.xsd</schema>
@@ -35,17 +35,17 @@
          </properties>
          <table-column>
             <properties>
-               <width>29.382407mm</width>
+               <width>28.515741mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>30.110011mm</width>
+               <width>29.243345mm</width>
             </properties>
          </table-column>
          <table-column>
             <properties>
-               <width>28.654803mm</width>
+               <width>27.788137mm</width>
             </properties>
          </table-column>
          <table-body>
@@ -225,7 +225,7 @@
                      </properties>
                      <table-column>
                         <properties>
-                           <width>17.500116mm</width>
+                           <width>17.072512mm</width>
                         </properties>
                      </table-column>
                      <table-body>
@@ -286,12 +286,12 @@
                      </properties>
                      <table-column>
                         <properties>
-                           <width>23.04978mm</width>
+                           <width>22.864682mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>34.373946mm</width>
+                           <width>34.188848mm</width>
                         </properties>
                      </table-column>
                      <table-body>
@@ -531,7 +531,7 @@
                                  <padding-top>2pt</padding-top>
                                  <text-align>center</text-align>
                               </properties>
-                              <data>'Lable No'</data>
+                              <data>'Label No'</data>
                               <text-field>
                                  <properties>
                                     <left>0cm</left>
@@ -587,27 +587,27 @@
                      </properties>
                      <table-column>
                         <properties>
-                           <width>17.629444mm</width>
+                           <width>17.109444mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>17.629444mm</width>
+                           <width>17.109444mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>17.629444mm</width>
+                           <width>17.109444mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>19.084652mm</width>
+                           <width>18.564652mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>16.174236mm</width>
+                           <width>15.654236mm</width>
                         </properties>
                      </table-column>
                      <table-body>
@@ -788,22 +788,22 @@
                      </properties>
                      <table-column>
                         <properties>
-                           <width>15.401621mm</width>
+                           <width>15.169098mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>45.564121mm</width>
+                           <width>45.331598mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>13.02037mm</width>
+                           <width>12.787847mm</width>
                         </properties>
                      </table-column>
                      <table-column>
                         <properties>
-                           <width>12.491203mm</width>
+                           <width>12.25868mm</width>
                         </properties>
                      </table-column>
                      <table-body>
