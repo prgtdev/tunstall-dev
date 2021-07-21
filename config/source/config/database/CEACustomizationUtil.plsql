@@ -4194,6 +4194,64 @@ BEGIN
    END IF;
    
 END Get_No_Access; 
+
+FUNCTION Get_Value_Added_Work(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   total_wo_and_travel_time_ NUMBER := 0;
+   total_shift_time_ NUMBER := 0;
+   
+   CURSOR get_work_order_and_travel_time(employee_id_ VARCHAR2) IS      
+      SELECT SUM(jtc.work_hours)
+      FROM jt_task_clocking_uiv jtc, jt_task_uiv_cfv jt
+      WHERE jtc.task_seq = jt.task_seq
+      AND jtc.employee_id = employee_id_
+      AND jtc.clocking_category_db IN ('WORK', 'TRAVEL')
+      AND jt.actual_finish IS NOT NULL
+      AND jt.company = company_
+      AND TRUNC(jtc.start_time) BETWEEN start_date_ AND end_date_
+      AND TRUNC(jtc.stop_time) BETWEEN start_date_ AND end_date_;
+      
+   CURSOR get_total_shift_time(emp_no_ VARCHAR2) IS 
+      WITH shift_begin AS (SELECT TRUNC(jtsa.date_created) trunc_date_created,MIN(jtsa.date_created) shift_begin_time , jtsa.emp_no emp_no
+                           FROM jt_task_survey_answers jtsa, survey_question sq
+                           WHERE jtsa.survey_id = sq.survey_id
+                           AND jtsa.question_id = sq.question_id
+                           AND sq.question_no = 1
+                           AND jtsa.survey_id IN  ('DAILY_VEC_CHECK','MON_VEC_CHECK')
+                           AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_
+                           GROUP BY TRUNC(jtsa.date_created), jtsa.emp_no)
+      SELECT SUM(((jtsa.date_created - shift_begin.shift_begin_time) * 24)) sum_shift_time
+      FROM jt_task_survey_answers jtsa, survey_question sq, shift_begin
+      WHERE jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 1
+      AND jtsa.emp_no = emp_no_
+      AND jtsa.survey_id = 'END_MILEAGE'
+      AND jtsa.company_id = company_
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_
+      AND shift_begin.trunc_date_created = TRUNC(jtsa.date_created)
+      AND shift_begin.emp_no = jtsa.emp_no;
+BEGIN
+   OPEN get_work_order_and_travel_time(emp_no_);
+   FETCH get_work_order_and_travel_time INTO total_wo_and_travel_time_;
+   CLOSE get_work_order_and_travel_time;
+   
+   OPEN get_total_shift_time(emp_no_);
+   FETCH get_total_shift_time INTO total_shift_time_;
+   CLOSE get_total_shift_time;
+   
+   IF (total_shift_time_ = 0 ) THEN
+      RETURN 0;
+   ELSE    
+      RETURN ROUND(total_wo_and_travel_time_/total_shift_time_*100);
+   END IF; 
+   
+END Get_Value_Added_Work; 
+
 -- C458 EntMahesR (END)
 
 -- C364 EntNadeeL (START)
