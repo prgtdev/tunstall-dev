@@ -4201,7 +4201,8 @@ IS
       AND jt.company = company_
       AND TRUNC(jtc.start_time) BETWEEN start_date_ AND end_date_
       AND TRUNC(jtc.stop_time) BETWEEN start_date_ AND end_date_;
-      
+   
+   -- return value in hours    
    CURSOR get_total_shift_time(emp_no_ VARCHAR2) IS 
       WITH shift_begin AS (SELECT TRUNC(jtsa.date_created) trunc_date_created,MIN(jtsa.date_created) shift_begin_time , jtsa.emp_no emp_no
                            FROM jt_task_survey_answers jtsa, survey_question sq
@@ -4238,6 +4239,76 @@ BEGIN
    END IF; 
    
 END Get_Value_Added_Work; 
+
+FUNCTION Get_Non_Value_Added_Work(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   total_daily_vec_chk_q5_ NUMBER;
+   total_mon_vec_chk_q14_ NUMBER;
+   total_non_work_order_travel_ NUMBER;
+   
+   -- return value in hours
+   CURSOR get_daily_vec_chk_q5_total IS
+      SELECT (SUM(jtsa.answer)) * (1/60)
+      FROM jt_task_survey_answers jtsa, survey_question sq
+      WHERE jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 5
+      AND jtsa.survey_id = 'DAILY_VEC_CHECK'
+      AND jtsa.emp_no = emp_no_
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_;
+   
+   -- return value in hours   
+   CURSOR get_mon_vec_chk_q14_total IS
+      SELECT (SUM(jtsa.answer)) * (1/60)
+      FROM jt_task_survey_answers jtsa, survey_question sq
+      WHERE jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 14
+      AND jtsa.survey_id = 'MON_VEC_CHECK'
+      AND jtsa.emp_no = emp_no_
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_;
+   
+   -- return value in hours 
+   CURSOR get_non_work_order_travel_tot IS
+      WITH question_2 AS (SELECT jtsa.date_created q2_date_created, jtsa.emp_no q2_emp_no, sq.question_no, jtsa.answer q2_answer,  jtsa.survey_id
+                          FROM jt_task_survey_answers jtsa, survey_question sq
+                          WHERE jtsa.survey_id = sq.survey_id
+                          AND jtsa.question_id = sq.question_id
+                          AND sq.question_no = 2
+                          AND jtsa.survey_id = 'NON WO MILEAGE'
+                          AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_)
+      SELECT SUM(((TO_DATE(jtsa.answer, 'YYYY-MM-DD-HH24.MI.SS') - TO_DATE(question_2.q2_answer, 'YYYY-MM-DD-HH24.MI.SS'))*24)) total_time_diff
+      FROM jt_task_survey_answers jtsa, survey_question sq, question_2
+      WHERE jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 4
+      AND jtsa.survey_id = 'NON WO MILEAGE'
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_
+      AND TRUNC(question_2.q2_date_created) = TRUNC(jtsa.date_created)
+      AND question_2.q2_emp_no = jtsa.emp_no
+      AND jtsa.emp_no = emp_no_;
+
+BEGIN
+   OPEN get_daily_vec_chk_q5_total;
+   FETCH get_daily_vec_chk_q5_total INTO total_daily_vec_chk_q5_;
+   CLOSE get_daily_vec_chk_q5_total;
+   
+   OPEN get_mon_vec_chk_q14_total;
+   FETCH get_mon_vec_chk_q14_total INTO total_mon_vec_chk_q14_;
+   CLOSE get_mon_vec_chk_q14_total;
+   OPEN get_mon_vec_chk_q14_total;
+   
+   OPEN get_non_work_order_travel_tot;
+   FETCH get_non_work_order_travel_tot INTO total_non_work_order_travel_;
+   CLOSE get_non_work_order_travel_tot;
+   
+   RETURN total_non_work_order_travel_;
+   -- To do complete this
+END Get_Non_Value_Added_Work;
 
 -- C458 EntMahesR (END)
 
