@@ -1,0 +1,2653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REPORT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:ifsworld-com:schemas:report_report">
+   <CODE_GENERATION_PROPERTIES>
+      <CODE_GENERATION_PROPERTIES>
+         <GENERATE_RDF>yes</GENERATE_RDF>
+         <SCHEMA_SOURCE_NAME>EaShopOrderRep</SCHEMA_SOURCE_NAME>
+      </CODE_GENERATION_PROPERTIES>
+   </CODE_GENERATION_PROPERTIES>
+   <DIAGRAMS>
+      <DIAGRAM>
+         <NAME>Main</NAME>
+         <DIAGRAM_TYPE>REPORT_STRUCTURE</DIAGRAM_TYPE>
+         <NODES>
+            <DIAGRAM_NODE>
+               <ID>b2a27390-8e46-11df-1173-a30695a4c37b</ID>
+               <NODE_TYPE>REPORT</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>EntityName</NAME>
+                     <VALUE>ShopOrder</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>LUName</NAME>
+                     <VALUE>ShopOrd</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>767</X>
+                     <Y>84</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>128</X>
+                     <Y>95</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopOrderHead</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>738</X>
+                     <Y>217</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>205</X>
+                     <Y>470</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c0393f40-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopMaterialAllocation</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>418</X>
+                     <Y>716</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>230</X>
+                     <Y>541</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c03b3b10-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopMaterialAllocGuide</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>421</X>
+                     <Y>1314</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>201</X>
+                     <Y>275</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c03c7390-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopOrderConfiguration</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>64</X>
+                     <Y>532</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>204</X>
+                     <Y>275</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c03d8500-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopOrderOperation</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>746</X>
+                     <Y>715</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>184</X>
+                     <Y>503</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c03fcef0-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopMaterialOperation</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>1096</X>
+                     <Y>1162</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>217</X>
+                     <Y>598</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c0432a50-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopMaterialOperationGuide</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>1100</X>
+                     <Y>1742</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>229</X>
+                     <Y>275</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c0443bc0-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopOrderOperGuide</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>649</X>
+                     <Y>1315</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>188</X>
+                     <Y>199</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>c044d800-1fe3-11e1-1763-eaffeb9c48ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopOrderOperTool</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>855</X>
+                     <Y>1313</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>180</X>
+                     <Y>256</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>ca6dc5d0-8203-11e1-19c2-fab83a18e5a4</ID>
+               <NODE_TYPE>NOTE</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>NoteId</NAME>
+                     <VALUE>pawelk 2012.04.09 AD at 10:50:59 IST</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>Note</NAME>
+                     <VALUE>RDF is auto-generated from this model.</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>500</X>
+                     <Y>76</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>223</X>
+                     <Y>60</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>dfbc0190-c588-11e1-3376-e6982b6f98ec</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>DocPhrase</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>1005</X>
+                     <Y>580</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>137</X>
+                     <Y>123</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+            <DIAGRAM_NODE>
+               <ID>f804d740-479a-11e4-2172-9899e99bce41</ID>
+               <NODE_TYPE>REPORT_BLOCK</NODE_TYPE>
+               <MINIMIZED>0</MINIMIZED>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockName</NAME>
+                     <VALUE>ShopOrderByProduct</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <LOCATION>
+                  <POINT>
+                     <X>1144</X>
+                     <Y>161</Y>
+                  </POINT>
+               </LOCATION>
+               <SIZE>
+                  <POINT>
+                     <X>211</X>
+                     <Y>356</Y>
+                  </POINT>
+               </SIZE>
+            </DIAGRAM_NODE>
+         </NODES>
+         <EDGES>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c0393f40-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopMaterialAllocations</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopMaterialAllocation</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>737</X>
+                     <Y>629</Y>
+                  </POINT>
+                  <POINT>
+                     <X>647</X>
+                     <Y>785</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+               <LABEL_LOCATION>
+                  <POINT>
+                     <X>-68</X>
+                     <Y>2</Y>
+                  </POINT>
+               </LABEL_LOCATION>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c03d8500-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c044d800-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopOrderOperTools</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopOrderOperTool</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>894</X>
+                     <Y>1217</Y>
+                  </POINT>
+                  <POINT>
+                     <X>915</X>
+                     <Y>1312</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+               <LABEL_LOCATION>
+                  <POINT>
+                     <X>-32</X>
+                     <Y>4</Y>
+                  </POINT>
+               </LABEL_LOCATION>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>dfbc0190-c588-11e1-3376-e6982b6f98ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>DocPhrases</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>DocPhrase</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>942</X>
+                     <Y>534</Y>
+                  </POINT>
+                  <POINT>
+                     <X>1004</X>
+                     <Y>584</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c0393f40-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c03b3b10-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopMaterialAllocGuides</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopMaterialAllocGuide</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>525</X>
+                     <Y>1256</Y>
+                  </POINT>
+                  <POINT>
+                     <X>524</X>
+                     <Y>1313</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+               <LABEL_LOCATION>
+                  <POINT>
+                     <X>-127</X>
+                     <Y>9</Y>
+                  </POINT>
+               </LABEL_LOCATION>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c03d8500-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopOrderOperations</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopOrderOperation</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>837</X>
+                     <Y>686</Y>
+                  </POINT>
+                  <POINT>
+                     <X>837</X>
+                     <Y>714</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c03c7390-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopOrderConfigurations</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopOrderConfiguration</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>737</X>
+                     <Y>484</Y>
+                  </POINT>
+                  <POINT>
+                     <X>267</X>
+                     <Y>635</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c03fcef0-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c0432a50-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopMaterialOperationGuides</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopMaterialOperationGuide</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>1099</X>
+                     <Y>1759</Y>
+                  </POINT>
+                  <POINT>
+                     <X>1099</X>
+                     <Y>1758</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c03d8500-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c0443bc0-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopOrderOperGuides</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopOrderOperGuide</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>784</X>
+                     <Y>1217</Y>
+                  </POINT>
+                  <POINT>
+                     <X>763</X>
+                     <Y>1314</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+               <LABEL_LOCATION>
+                  <POINT>
+                     <X>-55</X>
+                     <Y>3</Y>
+                  </POINT>
+               </LABEL_LOCATION>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>b2a27390-8e46-11df-1173-a30695a4c37b</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopOrderHeads</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopOrderHead</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>831</X>
+                     <Y>178</Y>
+                  </POINT>
+                  <POINT>
+                     <X>832</X>
+                     <Y>216</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c03d8500-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>c03fcef0-1fe3-11e1-1763-eaffeb9c48ec</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopMaterialOperations</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopMaterialOperation</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>929</X>
+                     <Y>1089</Y>
+                  </POINT>
+                  <POINT>
+                     <X>1095</X>
+                     <Y>1313</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+               <LABEL_LOCATION>
+                  <POINT>
+                     <X>-30</X>
+                     <Y>-48</Y>
+                  </POINT>
+               </LABEL_LOCATION>
+            </DIAGRAM_EDGE>
+            <DIAGRAM_EDGE>
+               <EDGE_TYPE>AGGREGATE</EDGE_TYPE>
+               <SOURCE_NODE_ID>c036a730-1fe3-11e1-1763-eaffeb9c48ec</SOURCE_NODE_ID>
+               <TARGET_NODE_ID>f804d740-479a-11e4-2172-9899e99bce41</TARGET_NODE_ID>
+               <IS_MERGED>0</IS_MERGED>
+               <PROPERTIES>
+                  <PROPERTY>
+                     <NAME>ReportBlockEdgeName</NAME>
+                     <VALUE>ShopOrderByProduct</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>IsArray</NAME>
+                     <VALUE>true</VALUE>
+                  </PROPERTY>
+                  <PROPERTY>
+                     <NAME>BlockName</NAME>
+                     <VALUE>ShopOrderByProduct</VALUE>
+                  </PROPERTY>
+               </PROPERTIES>
+               <CONTROL_POINTS>
+                  <POINT>
+                     <X>942</X>
+                     <Y>423</Y>
+                  </POINT>
+                  <POINT>
+                     <X>1143</X>
+                     <Y>367</Y>
+                  </POINT>
+               </CONTROL_POINTS>
+               <LABEL_LOCATION>
+                  <POINT>
+                     <X>-50</X>
+                     <Y>-11</Y>
+                  </POINT>
+               </LABEL_LOCATION>
+            </DIAGRAM_EDGE>
+         </EDGES>
+      </DIAGRAM>
+   </DIAGRAMS>
+   <COMMENTS>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  Date    Sign   History
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>// ------  ----
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  141110  Ranhlk PRMF-3374, Merged LCS patch 119532.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  141110         141103  ErSrLK Bug 119532, Enabled report to print company logo and company name properly.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  141103  ChDelk PRMF-3206, Merged LCS bug 118967.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  141103         141003 ChDelk Bug 118967, Modified ShopOrderHead query to use SHOP_ORD view instead of the SHOP_ORD_TAB table to filter data for user allowed sites in the report.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  140929  ChDelk PRMF-2278, Merged LCS bug 117380.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  140929         140806 Chdelk Bug 117380, Add new report block called ShopOrderByProduct and connect that by aggregate relationship with the ShopOrderHead report block.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  140102  Hasplk PCM-3178, Added method call to update shop order report print flag.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  121012  RaNhlk Bug 105875, Enabled custom fields.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  120807  SBalLK Bug 101597, Modified to print document phrase on location basis.
+</COMMENT_TEXT>
+      </COMMENT>
+      <COMMENT>
+         <POSITION>0</POSITION>
+         <COMMENT_TEXT>//  120704  SBallk Bug 103080, Modified to print document phrases in line level.
+</COMMENT_TEXT>
+      </COMMENT>
+   </COMMENTS>
+   <NAME>EaShopOrder</NAME>
+   <COMPONENT>SHPORD</COMPONENT>
+   <LU_NAME>ShopOrd</LU_NAME>
+   <BLOCKS>
+      <BLOCK>
+         <NAME>ShopOrderHead</NAME>
+         <CURSOR_DEFINITION>SELECT   so.order_no,
+         so.release_no,
+         so.sequence_no,
+         so.contract,
+         so.part_no,
+         Inventory_Part_API.Get_Description(so.contract, so.part_no) part_description,
+         so.revised_due_date,
+         so.revised_qty_due,
+         so.revised_start_date,
+         NULL oe_order_no,
+         Document_Text_API.Get_All_Notes(note_id, &apos;10&apos;) order_notes,
+         Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), &apos;10&apos;) inv_part_notes,
+         Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), &apos;TRUE&apos;, Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), &apos;10&apos;), Document_Text_API.Get_All_Notes(NULL, &apos;10&apos;)) part_catalog_notes,     
+         so.configuration_id,
+         so.note_id,
+         so.condition_code,
+         Condition_Code_API.Get_Description(so.condition_code) condition_code_description,            
+         Part_ownership_api.decode(so.part_ownership)  part_ownership,            
+         so.owning_customer_no part_owner_id,
+         null part_owner_name,
+         Shop_Ord_API.Get_Order_Code(so.order_no, so.release_no, so.sequence_no) order_code,
+         so.objkey rowkey
+  FROM  SHOP_ORD so
+  WHERE Report_SYS.Parse_Parameter(so.order_no, :OrderNo) = &apos;TRUE&apos;
+  AND   Report_SYS.Parse_Parameter(so.release_no, :ReleaseNo) = &apos;TRUE&apos;
+  AND   Report_SYS.Parse_Parameter(so.sequence_no, :SequenceNo) = &apos;TRUE&apos;</CURSOR_DEFINITION>
+         <BLOCK_DEFINITION>DECLARE
+   archive_notes_             VARCHAR2(2000);
+   oe_rel_no_                 VARCHAR2(4);
+   oe_line_no_                VARCHAR2(4);
+   oe_line_item_no_           NUMBER;
+   company_rec_               Company_API.Public_Rec;
+BEGIN
+      Shop_Ord_Util_API.Get_Original_Order(:OeOrderNo, oe_rel_no_, oe_line_no_, oe_line_item_no_, :OrderNo, :ReleaseNo, :SequenceNo);
+      archive_notes_ := Language_SYS.Translate_Constant(lu_name_, &apos;REPORTSHOPORDER: Shop Order&apos;) ;
+      archive_notes_ := archive_notes_|| &apos; : &apos;||:OrderNo||&apos;/&apos;||:ReleaseNo||&apos;/&apos;||:SequenceNo;
+      Archive_API.Set_Notes(archive_notes_);
+      company_rec_ := Company_API.Get(Site_API.Get_Company(Shop_Ord_API.Get_Contract(binds$_.order_no , binds$_.release_no, binds$_.sequence_no)));
+      IF (company_rec_.logotype IS NOT NULL) THEN
+         Archive_Variable_API.Set_Object(result_key$_, &apos;rhSysLogo&apos;, company_rec_.logotype);
+         Archive_Variable_API.Set_Variable(result_key$_, &apos;companyName&apos;, company_rec_.name);
+      END IF;
+      :ConfiguredPart := (Part_Catalog_Api.Get_Configurable_Db(:PartNo) = &apos;CONFIGURED&apos;);
+      :ConfigId := :ConfigurationId !=&apos;*&apos;;
+
+      IF part_ownership_API.encode(:PartOwnership) =&apos;COMPANY OWNED&apos; THEN
+         :PartOwnerName           := NULL;
+      ELSIF  part_ownership_API.encode(:PartOwnership) =&apos;CUSTOMER OWNED&apos;  THEN
+         $IF Component_Order_SYS.INSTALLED $THEN
+            :PartOwnerName := Cust_Ord_Customer_API.Get_Name(:PartOwnerId);
+         $ELSE
+            NULL;
+         $END
+      ELSIF  part_ownership_API.encode(:PartOwnership) =&apos;SUPPLIER LOANED&apos;  THEN
+         $IF Component_Purch_SYS.INSTALLED $THEN
+            :PartOwnerName  := SUPPLIER_API.Get_Vendor_Name(:PartOwnerId);
+         $ELSE
+            NULL;
+         $END
+      END IF;   
+END;
+BEGIN
+   Shop_Ord_API.Update_Printed_Flag( rec_shop_order_head_.order_no, rec_shop_order_head_.release_no, rec_shop_order_head_.sequence_no, &apos;SHOP_ORDER&apos;, NULL, NULL, NULL, result_key$_, result_key$_, NULL);
+END;</BLOCK_DEFINITION>
+         <FILTERS>
+            <BLOCK_FILTER>
+               <NAME>OrderNo</NAME>
+            </BLOCK_FILTER>
+            <BLOCK_FILTER>
+               <NAME>ReleaseNo</NAME>
+            </BLOCK_FILTER>
+            <BLOCK_FILTER>
+               <NAME>SequenceNo</NAME>
+            </BLOCK_FILTER>
+         </FILTERS>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Shop Order No</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OrderNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>12</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ReleaseNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>SequenceNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Site</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>PartNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>25</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>PartDescription</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>RevisedDueDate</NAME>
+               <DATATYPE>TIMESTAMP</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Lot Size</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>RevisedQtyDue</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>RevisedStartDate</NAME>
+               <DATATYPE>TIMESTAMP</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Corresponding Customer Order:</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OeOrderNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Shop Order Text</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OrderNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Inv. Part Text</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>InvPartNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Part Catalog Text</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>PartCatalogNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Configuration ID</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ConfigurationId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>50</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NoteId</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ConditionCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ConditionCodeDescription</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Ownership</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>PartOwnership</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>PartOwnerId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner Name</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>PartOwnerName</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Shop Order Type</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OrderCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopOrd</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+         <AGGREGATES>
+            <AGGREGATE>
+               <NAME>ShopOrderConfigurations</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopOrderConfiguration</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>PartNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ConfigurationId</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+               <CONDITIONS>
+                  <AGGREGATE_CONDITION>
+                     <NAME>ConfiguredPart</NAME>
+                  </AGGREGATE_CONDITION>
+                  <AGGREGATE_CONDITION>
+                     <NAME>ConfigId</NAME>
+                  </AGGREGATE_CONDITION>
+               </CONDITIONS>
+            </AGGREGATE>
+            <AGGREGATE>
+               <NAME>ShopMaterialAllocations</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopMaterialAllocation</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+            <AGGREGATE>
+               <NAME>ShopOrderOperations</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopOrderOperation</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+            <AGGREGATE>
+               <NAME>DocPhrases</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>DocPhrase</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>Contract</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+            <AGGREGATE>
+               <NAME>ShopOrderByProduct</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopOrderByProduct</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+         </AGGREGATES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopMaterialAllocation</NAME>
+         <CURSOR_DEFINITION>SELECT line_item_no,
+       part_no component_part,
+       contract,
+       Inventory_Part_API.Get_Description(contract, part_no) comp_part_desc,
+       SUBSTR(qty_required,0, 17) qty_required,
+       Inventory_Part_API.Get_Unit_Meas(contract, part_no) unit_meas, 
+       note_id,
+       Document_Text_API.Get_All_Notes(note_id, &apos;10&apos;) mtrl_notes,
+       Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), &apos;10&apos;) mtrl_part_notes,
+       Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), &apos;TRUE&apos;, Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), &apos;10&apos;), Document_Text_API.Get_All_Notes(NULL, &apos;10&apos;)) mtrl_part_catalog_notes,
+       print_unit,
+       null print_qty_required,
+       condition_code component_condition_code,
+       Condition_Code_API.Get_Description(condition_code) component_condition_code_desc,
+       Part_Ownership_API.Decode(part_ownership) comp_part_ownership,
+       DECODE(owning_customer_no,null,owning_vendor_no,owning_customer_no) comp_part_owner_id,
+       null comp_part_owner_name,
+       draw_pos_no,
+       order_no,
+       release_no,
+       sequence_no,
+       procedure_step,
+       rowkey
+FROM   SHOP_MATERIAL_ALLOC_TAB
+WHERE  order_no = order_no_
+AND    release_no = release_no_
+AND    sequence_no = sequence_no_
+AND    nvl(operation_no, 0) = 0
+ORDER BY line_item_no</CURSOR_DEFINITION>
+         <BLOCK_DEFINITION>DECLARE
+   uom_ varchar2(10);
+BEGIN
+   uom_ := Inventory_Part_API.Get_Unit_Meas(:Contract,:ComponentPart);
+   :PrintQtyRequired := SUBSTR(Iso_Unit_API.Convert_Unit_Quantity(:QtyRequired,uom_,:PrintUnit),0,17);
+      
+   IF part_ownership_API.encode(:CompPartOwnership) =&apos;COMPANY OWNED&apos; THEN
+      :CompPartOwnerName           := NULL;
+   ELSIF  part_ownership_API.encode(:CompPartOwnership) =&apos;CUSTOMER OWNED&apos;  THEN
+      $IF Component_Order_SYS.INSTALLED $THEN
+         :CompPartOwnerName := Cust_Ord_Customer_API.Get_Name(:CompPartOwnerId);
+      $ELSE
+         NULL;
+      $END
+   ELSIF  part_ownership_API.encode(:CompPartOwnership) =&apos;SUPPLIER LOANED&apos;  THEN
+      $IF Component_Purch_SYS.INSTALLED $THEN
+         :CompPartOwnerName  := SUPPLIER_API.Get_Vendor_Name(:CompPartOwnerId);
+      $ELSE
+         NULL;
+      $END
+   END IF;
+EXCEPTION
+WHEN OTHERS THEN
+   :PrintQtyRequired := -1;
+END;</BLOCK_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>QtyRequired</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>17</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>UnitMeas</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NoteId</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>MtrlNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>MtrlNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>MtrlPartNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>MtrlPartNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>MtrlPartCatalogNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>MtrlPartCatalogNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Print Unit Meas</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>PrintUnit</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>30</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>PrintQtyRequired</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Condition Code</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ComponentConditionCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Condition Code Description</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ComponentConditionCodeDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Ownership</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CompPartOwnership</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CompPartOwnerId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner name</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CompPartOwnerName</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Position</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>DrawPosNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OrderNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>12</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ReleaseNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>SequenceNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Position</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>LineItemNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Part No</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ComponentPart</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>25</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Part</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CompPartDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>200</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ProcedureStep</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopMaterialAlloc</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+         <AGGREGATES>
+            <AGGREGATE>
+               <NAME>ShopMaterialAllocGuides</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopMaterialAllocGuide</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>LineItemNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+         </AGGREGATES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopMaterialAllocGuide</NAME>
+         <CURSOR_DEFINITION>SELECT guideline_seq,
+       x_coordinate,
+       y_coordinate,
+       z_coordinate,
+       reference_qty,
+       guideline_text,
+       objkey  rowkey
+FROM   SHOP_MATERIAL_ALLOC_GUIDE
+WHERE  order_no = order_no_
+AND    release_no = release_no_
+AND    sequence_no = sequence_no_
+AND    line_item_no = line_item_no_
+ORDER BY guideline_seq</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>LineItemNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>GuidelineSeq</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>XCoordinate</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>YCoordinate</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ZCoordinate</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ReferenceQty</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>GuidelineText</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopMaterialAllocGuide</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopOrderConfiguration</NAME>
+         <CURSOR_DEFINITION>SELECT
+      Config_Characteristic_API.Get_Description_For_Language( csv.characteristic_id,
+                                                               Language_SYS.Get_Language) characteristic_desc,   
+      DECODE( csv.config_value_type, &apos;DISCRETEOPTION&apos;, 
+                                     Config_Option_Value_API.Get_Description_For_Language( csv.characteristic_id,
+                                                                                           csv.characteristic_value,
+                                                                                           Language_SYS.Get_Language),
+                                     csv.characteristic_value)       characteristic_value,   
+      Config_Characteristic_API.Get_Unit_Code(csv.characteristic_id) characteristic_unit_code,   
+      csv.qty_characteristic qty_characteristic,   
+      to_number(NULL) characteristic_first,   
+      to_number(0) characteristic_last,
+      ccd.rowkey  config_rowkey,
+      csv.rowkey  spec_rowkey,
+      bpc.rowkey  base_rowkey
+FROM  config_char_display_tab ccd,
+      config_spec_value_tab csv,
+      base_part_characteristic_tab bpc
+WHERE ccd.display_characteristic = &apos;YES&apos;
+AND   ccd.config_display_type = &apos;SHOPWORKINSTRUCT&apos;
+AND   csv.characteristic_id = ccd.characteristic_id
+AND   csv.configuration_id = :ConfigurationId
+AND   csv.part_no = :PartNo
+AND   bpc.part_no = csv.part_no
+AND   bpc.spec_revision_no = csv.spec_revision_no
+AND   bpc.characteristic_id = csv.characteristic_id
+ORDER BY bpc.characteristic_sequence</CURSOR_DEFINITION>
+         <BLOCK_DEFINITION>BEGIN 
+   IF (:CharacteristicsExist = FALSE) THEN
+      :CharacteristicFirst := 1;
+       :CharacteristicsExist := TRUE;
+   ELSE
+      :CharacteristicFirst := 0;
+   END IF;
+END;</BLOCK_DEFINITION>
+         <REQUIRED_COMPONENT>CFGCHR</REQUIRED_COMPONENT>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>PartNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ConfigurationId</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Characteristic</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CharacteristicDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>CharacteristicValue</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Unit</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CharacteristicUnitCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Quantity on option</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>QtyCharacteristic</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>First Characteristic</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CharacteristicFirst</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Last Characteristic</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>CharacteristicLast</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>ConfigRowkey</NAME>
+               <ENTITY_REF>ConfigCharDisplay</ENTITY_REF>
+            </ROWKEY>
+            <ROWKEY>
+               <NAME>SpecRowkey</NAME>
+               <ENTITY_REF>ConfigSpecValue</ENTITY_REF>
+            </ROWKEY>
+            <ROWKEY>
+               <NAME>BaseRowkey</NAME>
+               <ENTITY_REF>BasePartCharacteristic</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopOrderOperation</NAME>
+         <CURSOR_DEFINITION>SELECT  operation_no,
+        operation_description,
+        contract,
+        work_center_no,
+        Work_Center_API.Get_Description(contract, work_center_no) work_center_desc,
+        Document_Text_API.Get_All_Notes(note_id, &apos;10&apos;) mach_notes,
+        Shop_Order_Operation_API.Get_Remaining_Qty(order_no, release_no, sequence_no, operation_no) op_qty_remaining,
+        Shop_Order_Operation_API.Get_Remaining_Mach_Hours(order_no, release_no, sequence_no, operation_no) op_hours_remaining,  
+        op_start_date,
+        op_start_time,
+        op_finish_date,
+        op_finish_time,
+        machine_no,
+        note_id,
+        op_id,
+        oper_status_code,
+        order_no,
+        release_no,
+        sequence_no,
+        objkey  rowkey
+FROM  SHOP_ORDER_OPERATION
+WHERE order_no = order_no_
+AND   release_no = release_no_
+AND   sequence_no = sequence_no_
+ORDER BY op_sequence_no, operation_no</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>OperationNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Operation</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OperationDescription</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>35</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Site</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>WorkCenterNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Work Center</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>WorkCenterDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>MachNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>MachNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpQtyRemaining</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpHoursRemaining</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpStartDate</NAME>
+               <DATATYPE>TIMESTAMP</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpStartTime</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpFinishDate</NAME>
+               <DATATYPE>TIMESTAMP</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpFinishTime</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>MachineNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>15</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NoteId</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Operation Id</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpId</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Operation Status</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OperStatusCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OrderNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>12</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ReleaseNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>SequenceNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopOrderOperation</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+         <AGGREGATES>
+            <AGGREGATE>
+               <NAME>ShopMaterialOperations</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopMaterialOperation</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OperationNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+            <AGGREGATE>
+               <NAME>ShopOrderOperGuides</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopOrderOperGuide</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OperationNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+            <AGGREGATE>
+               <NAME>ShopOrderOperTools</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopOrderOperTool</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OperationNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+         </AGGREGATES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopMaterialOperation</NAME>
+         <CURSOR_DEFINITION>SELECT line_item_no op_line_item_no,
+       part_no op_component_part,
+       contract,
+       qty_required op_qty_required,
+       note_id,
+       print_unit op_print_unit,
+       condition_code op_comp_condition_code,
+       Condition_Code_API.Get_Description(condition_code) op_comp_condition_code_desc,
+       Part_Ownership_API.Decode(part_ownership)  op_comp_part_ownership,
+       DECODE(owning_customer_no,null,owning_vendor_no,owning_customer_no) op_comp_part_owner_id,
+       draw_pos_no op_draw_pos_no,
+       null op_comp_part_owner_name,
+       Inventory_Part_API.Get_Description(contract, part_no) op_comp_part_desc,
+       Inventory_Part_API.Get_Unit_Meas(contract, part_no) op_unit_meas,
+       Document_Text_API.Get_All_Notes(note_id, &apos;10&apos;) op_mtrl_notes,
+       Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), &apos;10&apos;) op_mtrl_part_notes,
+       Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), &apos;TRUE&apos;, Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), &apos;10&apos;), Document_Text_API.Get_All_Notes(NULL, &apos;10&apos;)) op_mtrl_part_catalog_notes,        
+       null op_print_qty_required,
+       order_no,
+       release_no,
+       sequence_no,
+       operation_no,
+       procedure_step,
+       rowkey
+FROM  SHOP_MATERIAL_ALLOC_TAB
+WHERE order_no = order_no_
+AND   release_no = release_no_
+AND   sequence_no = sequence_no_
+AND   operation_no = operation_no_
+ORDER BY line_item_no</CURSOR_DEFINITION>
+         <BLOCK_DEFINITION>BEGIN         
+   :OpPrintQtyRequired := Iso_Unit_API.Convert_Unit_Quantity(:OpQtyRequired,:OpUnitMeas,:OpPrintUnit);
+   
+   IF part_ownership_API.encode(:OpCompPartOwnership) =&apos;COMPANY OWNED&apos; THEN
+      :OpCompPartOwnerName           := NULL;
+   ELSIF  part_ownership_API.encode(:OpCompPartOwnership) =&apos;CUSTOMER OWNED&apos;  THEN
+      $IF Component_Order_SYS.INSTALLED $THEN
+         :OpCompPartOwnerName := Cust_Ord_Customer_API.Get_Name(:OpCompPartOwnerId);
+      $ELSE
+         NULL;
+      $END
+   ELSIF  part_ownership_API.encode(:OpCompPartOwnership) =&apos;SUPPLIER LOANED&apos;  THEN
+      $IF Component_Purch_SYS.INSTALLED $THEN
+         :OpCompPartOwnerName  := SUPPLIER_API.Get_Vendor_Name(:OpCompPartOwnerId);
+      $ELSE
+         NULL;
+      $END
+   END IF;
+   
+EXCEPTION
+WHEN OTHERS THEN
+   :OpPrintQtyRequired := -1;
+END;</BLOCK_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>OperationNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Position</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpLineItemNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Part No</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpComponentPart</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>25</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Qty Required</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpQtyRequired</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>NoteId</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Print Unit Meas</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpPrintUnit</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>30</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Condition Code</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpCompConditionCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Condition Code Description</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpCompConditionCodeDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Ownership</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpCompPartOwnership</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpCompPartOwnerId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Position</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpDrawPosNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner Name</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpCompPartOwnerName</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Part</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpCompPartDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Unit Meas</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpUnitMeas</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>OpMtrlNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpMtrlNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>OpMtrlPartNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpMtrlPartNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>OpMtrlPartCatalogNotes</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpMtrlPartCatalogNotes</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Print Qty Required</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpPrintQtyRequired</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OrderNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>12</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ReleaseNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>SequenceNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OperationNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <XML_ELEMENT_NAME>OP_PROCEDURE_STEP</XML_ELEMENT_NAME>
+                     <DB_COLUMN_NAME>OP_PROCEDURE_STEP</DB_COLUMN_NAME>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ProcedureStep</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopMaterialAlloc</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+         <AGGREGATES>
+            <AGGREGATE>
+               <NAME>ShopMaterialOperationGuides</NAME>
+               <IS_ARRAY>1</IS_ARRAY>
+               <BLOCK>ShopMaterialOperationGuide</BLOCK>
+               <ATTRIBUTES>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OrderNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>ReleaseNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>SequenceNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+                  <AGGREGATE_ATTRIBUTE>
+                     <NAME>OpLineItemNo</NAME>
+                  </AGGREGATE_ATTRIBUTE>
+               </ATTRIBUTES>
+            </AGGREGATE>
+         </AGGREGATES>
+      </BLOCK>
+      <BLOCK>
+         <CODE_GENERATION_PROPERTIES>
+            <CODE_GENERATION_PROPERTIES>
+               <DB_VARIABLE_NAME>shopmatopguide</DB_VARIABLE_NAME>
+            </CODE_GENERATION_PROPERTIES>
+         </CODE_GENERATION_PROPERTIES>
+         <NAME>ShopMaterialOperationGuide</NAME>
+         <CURSOR_DEFINITION>SELECT guideline_seq alloc_guideline_seq,
+       x_coordinate alloc_x_coordinate,
+       y_coordinate alloc_y_coordinate,
+       z_coordinate alloc_z_coordinate,
+       reference_qty alloc_reference_qty,
+       guideline_text mtrl_work_guidelines,
+       objkey        rowkey
+FROM   SHOP_MATERIAL_ALLOC_GUIDE
+WHERE  order_no = order_no_
+AND    release_no = release_no_
+AND    sequence_no = sequence_no_
+AND    line_item_no = op_line_item_no_
+ORDER BY guideline_seq</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>OpLineItemNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Guideline No</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>AllocGuidelineSeq</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>X Coordinate</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>AllocXCoordinate</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Y Coordinate</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>AllocYCoordinate</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Z Coordinate</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>AllocZCoordinate</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Reference Quantity</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>AllocReferenceQty</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>MtrlWorkGuidelines</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopMaterialAllocGuide</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopOrderOperGuide</NAME>
+         <CURSOR_DEFINITION>SELECT guideline_seq op_work_guide_seq, 
+       guideline_text op_work_guidelines,
+       objkey    rowkey
+FROM   SHOP_ORDER_OPER_GUIDE
+WHERE  order_no = order_no_
+AND    release_no = release_no_
+AND    sequence_no = sequence_no_
+AND    operation_no = operation_no_
+ORDER BY guideline_seq</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>OperationNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Op Work Guidelines No</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>OpWorkGuideSeq</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>OpWorkGuidelines</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopOrderOperGuide</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopOrderOperTool</NAME>
+         <CURSOR_DEFINITION>SELECT tool_sequence,
+       tool_id,
+       contract,
+       Manuf_Tool_API.Get_Tool_Description(contract, tool_id) tool_description,
+       Manuf_Tool_API.Get_Last_Used(contract, tool_id) last_used,
+       rowkey        rowkey
+FROM   SHOP_ORDER_OPER_TOOL_TAB
+WHERE  order_no = order_no_
+AND    release_no = release_no_
+AND    sequence_no = sequence_no_
+AND    operation_no = operation_no_
+ORDER BY tool_sequence</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>OperationNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>ToolSequence</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Tool ID</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ToolId</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>40</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ToolDescription</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>LastUsed</NAME>
+               <DATATYPE>TIMESTAMP</DATATYPE>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>ShopOrderOperTool</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>DocPhrase</NAME>
+         <CURSOR_DEFINITION>SELECT   phrase_text,
+         rowkey
+  FROM   MPCCOM_PHRASE_TEXT_TAB
+ WHERE   language_code = Language_SYS.Get_Language()
+ AND     phrase_id IN ( SELECT DISTINCT phrase_id
+                          FROM ( SELECT   t.phrase_id phrase_id, t.document_code document_code
+                                   FROM   phrase_on_document_tab t
+                                  WHERE   t.valid_for_all_companies = &apos;TRUE&apos;
+                                    AND   TRUNC(SYSDATE) BETWEEN TRUNC(valid_from) AND TRUNC(valid_until)
+                                  UNION
+                                 SELECT   c.phrase_id, c.document_code
+                                   FROM   document_phrase_company_tab c
+                                  WHERE   c.valid_for_all_sites = &apos;TRUE&apos;
+                                    AND   c.company = Site_api.Get_Company( contract_ )
+                                    AND   TRUNC(SYSDATE) BETWEEN TRUNC(valid_from) AND TRUNC(valid_until)
+                                  UNION
+                                 SELECT  s.phrase_id, s.document_code
+                                   FROM  document_phrase_site_tab s
+                                  WHERE  s.contract = contract_
+                                    AND  TRUNC(site_api.Get_Site_Date(contract_)) BETWEEN TRUNC(valid_from) AND TRUNC(valid_until)
+                                 )
+                         WHERE   document_code IN (SELECT   document_code
+                                                     FROM   MPCCOM_DOCUMENT_TAB
+                                                    WHERE   output_code = &apos;SOINSTR&apos;)
+                         )</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>Contract</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>PhraseText</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>2000</LENGTH>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+         <ENTITIES>
+            <ROWKEY>
+               <NAME>Rowkey</NAME>
+               <ENTITY_REF>MpccomPhraseText</ENTITY_REF>
+            </ROWKEY>
+         </ENTITIES>
+      </BLOCK>
+      <BLOCK>
+         <NAME>ShopOrderByProduct</NAME>
+         <CURSOR_DEFINITION>SELECT LINE_ITEM_NO BY_PRODUCT_LINE_ITEM_NO,
+       PART_NO BY_PRODUCT_PART_NO,
+       INVENTORY_PART_API.Get_Description(Contract,Part_No) BY_PRODUCT_PART_DESC,
+       CONTRACT,
+       QTY_PER_ASSEMBLY BY_PRODUCT_QTY_PER_UNIT,
+       Inventory_Part_API.Get_Unit_Meas(Contract, PART_NO) BY_PRODUCT_UNIT_MEAS,
+       REVISED_QTY_DUE BY_PRODUCT_LOT_SIZE,
+       CONDITION_CODE BY_PRODUCT_CONDITION_CODE,
+       CONDITION_CODE_API.Get_Description(CONDITION_CODE) BY_PROD_CONDITION_CODE_DESC, 
+       Part_ownership BY_PROD_OWNERSHIP,
+       DECODE(OWNING_CUSTOMER_NO,NULL,OWNING_VENDOR_NO,OWNING_CUSTOMER_NO) BY_PROD_OWNER,           
+       GEN_OH_COST_DISTRIBUTION BY_PROD_GEN_OH_FACTOR,
+       OPER_COST_DISTRIBUTION BY_PROD_OP_COST_FACTOR
+FROM  MANUFACTURED_PART
+WHERE ORDER_NO = order_no_
+AND   RELEASE_NO = release_no_
+AND   SEQUENCE_NO = sequence_no_
+AND   nvl(OPERATION_NO, 0) = 0
+AND   LINE_ITEM_NO != -1
+ORDER BY LINE_ITEM_NO</CURSOR_DEFINITION>
+         <PARAMETERS>
+            <BLOCK_PARAMETER>
+               <NAME>OrderNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>ReleaseNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+            <BLOCK_PARAMETER>
+               <NAME>SequenceNo</NAME>
+               <DB_DATATYPE>VARCHAR2</DB_DATATYPE>
+            </BLOCK_PARAMETER>
+         </PARAMETERS>
+         <ATTRIBUTES>
+            <ATTRIBUTE>
+               <NAME>ByProductLineItemNo</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Part No</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProductPartNo</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>25</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ByProductPartDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>Contract</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>5</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Qty Per Unit</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProductQtyPerUnit</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Unit Meas</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProductUnitMeas</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Lot Size</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProductLotSize</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Condition Code</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProductConditionCode</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>10</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <NAME>ByProdConditionCodeDesc</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Ownership</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProdOwnership</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>4000</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Owner</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProdOwner</NAME>
+               <DATATYPE>TEXT</DATATYPE>
+               <LENGTH>20</LENGTH>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Gen OH Factor</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProdGenOhFactor</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+            <ATTRIBUTE>
+               <CODE_GENERATION_PROPERTIES>
+                  <CODE_GENERATION_PROPERTIES>
+                     <LABEL_TEXT>Op Cost Factor</LABEL_TEXT>
+                  </CODE_GENERATION_PROPERTIES>
+               </CODE_GENERATION_PROPERTIES>
+               <NAME>ByProdOpCostFactor</NAME>
+               <DATATYPE>INTEGER</DATATYPE>
+            </ATTRIBUTE>
+         </ATTRIBUTES>
+      </BLOCK>
+   </BLOCKS>
+   <PARAMETERS>
+      <PARAMETER>
+         <CODE_GENERATION_PROPERTIES>
+            <CODE_GENERATION_PROPERTIES>
+               <LABEL_TEXT>Shop Order No</LABEL_TEXT>
+               <QUERY_TEXT>Shop Order No</QUERY_TEXT>
+            </CODE_GENERATION_PROPERTIES>
+         </CODE_GENERATION_PROPERTIES>
+         <NAME>OrderNo</NAME>
+         <PARAMETER_DATATYPE>TEXT</PARAMETER_DATATYPE>
+         <LENGTH>12</LENGTH>
+         <DEFAULT_VALUE>%</DEFAULT_VALUE>
+         <IS_MANDATORY>1</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>1</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>1</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <CODE_GENERATION_PROPERTIES>
+            <CODE_GENERATION_PROPERTIES>
+               <QUERY_TEXT>Shop Order Release No</QUERY_TEXT>
+            </CODE_GENERATION_PROPERTIES>
+         </CODE_GENERATION_PROPERTIES>
+         <NAME>ReleaseNo</NAME>
+         <PARAMETER_DATATYPE>TEXT</PARAMETER_DATATYPE>
+         <LENGTH>4</LENGTH>
+         <DEFAULT_VALUE>%</DEFAULT_VALUE>
+         <IS_MANDATORY>1</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>1</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>1</ALLOW_WILDCARDS>
+      </PARAMETER>
+      <PARAMETER>
+         <CODE_GENERATION_PROPERTIES>
+            <CODE_GENERATION_PROPERTIES>
+               <QUERY_TEXT>Shop Order Sequence No</QUERY_TEXT>
+            </CODE_GENERATION_PROPERTIES>
+         </CODE_GENERATION_PROPERTIES>
+         <NAME>SequenceNo</NAME>
+         <PARAMETER_DATATYPE>TEXT</PARAMETER_DATATYPE>
+         <LENGTH>4</LENGTH>
+         <DEFAULT_VALUE>%</DEFAULT_VALUE>
+         <IS_MANDATORY>1</IS_MANDATORY>
+         <IS_CUSTOM>0</IS_CUSTOM>
+         <IS_SINGLE>0</IS_SINGLE>
+         <ALLOW_BETWEEN>1</ALLOW_BETWEEN>
+         <ALLOW_WILDCARDS>1</ALLOW_WILDCARDS>
+      </PARAMETER>
+   </PARAMETERS>
+   <CONDITIONS>
+      <CONDITION>
+         <NAME>ConfiguredPart</NAME>
+         <DEFAULT_VALUE>0</DEFAULT_VALUE>
+      </CONDITION>
+      <CONDITION>
+         <NAME>ConfigManagerInstalled</NAME>
+         <DEFAULT_VALUE>0</DEFAULT_VALUE>
+      </CONDITION>
+      <CONDITION>
+         <NAME>ConfigId</NAME>
+         <DEFAULT_VALUE>0</DEFAULT_VALUE>
+      </CONDITION>
+      <CONDITION>
+         <NAME>CharacteristicsExist</NAME>
+         <DEFAULT_VALUE>0</DEFAULT_VALUE>
+      </CONDITION>
+   </CONDITIONS>
+   <TEXTS>
+      <TEXT>
+         <NAME>Configchar</NAME>
+         <VALUE>Configuration Characteristics</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Oeordertext</NAME>
+         <VALUE>Corresponding customer order:</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Matalloctext</NAME>
+         <VALUE>Material Allocations</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Allocguide</NAME>
+         <VALUE>Material Work Guideline</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Opmattext</NAME>
+         <VALUE>Operation Material Allocations</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Operguide</NAME>
+         <VALUE>Operation Work Guideline</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Qtytext</NAME>
+         <VALUE>Quantity to report</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Timetext</NAME>
+         <VALUE>Time to report</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Tooloptext</NAME>
+         <VALUE>Tool Usage</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Uniterror</NAME>
+         <VALUE>Unit Error</VALUE>
+      </TEXT>
+      <TEXT>
+         <NAME>Byprodinfo</NAME>
+         <VALUE>By Product Information</VALUE>
+      </TEXT>
+   </TEXTS>
+   <ATTRIBUTES>
+      <ATTRIBUTE>
+         <NAME>OrderNo</NAME>
+         <DATATYPE>TEXT</DATATYPE>
+         <LENGTH>12</LENGTH>
+      </ATTRIBUTE>
+      <ATTRIBUTE>
+         <NAME>ReleaseNo</NAME>
+         <DATATYPE>TEXT</DATATYPE>
+         <LENGTH>4</LENGTH>
+      </ATTRIBUTE>
+      <ATTRIBUTE>
+         <NAME>SequenceNo</NAME>
+         <DATATYPE>TEXT</DATATYPE>
+         <LENGTH>4</LENGTH>
+      </ATTRIBUTE>
+   </ATTRIBUTES>
+   <AGGREGATES>
+      <AGGREGATE>
+         <NAME>ShopOrderHeads</NAME>
+         <IS_ARRAY>1</IS_ARRAY>
+         <BLOCK>ShopOrderHead</BLOCK>
+         <ATTRIBUTES>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>OrderNo</NAME>
+            </AGGREGATE_ATTRIBUTE>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>ReleaseNo</NAME>
+            </AGGREGATE_ATTRIBUTE>
+            <AGGREGATE_ATTRIBUTE>
+               <NAME>SequenceNo</NAME>
+            </AGGREGATE_ATTRIBUTE>
+         </ATTRIBUTES>
+      </AGGREGATE>
+   </AGGREGATES>
+</REPORT>

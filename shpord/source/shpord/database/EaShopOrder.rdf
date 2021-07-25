@@ -1,0 +1,1706 @@
+-----------------------------------------------------------------------------
+--
+--  Logical unit: ShopOrd
+--
+--  Report:       EaShopOrder
+--
+--  IFS Developer Studio Template Version 1.3
+--
+--  NOTE: This file is generated and will be overwritten at next model change
+-----------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE SPECIFICATION ----------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating EA_SHOP_ORDER_RPI specification
+
+CREATE OR REPLACE PACKAGE EA_SHOP_ORDER_RPI AS
+
+module_ CONSTANT VARCHAR2(6) := 'SHPORD';
+lu_name_ CONSTANT VARCHAR2(25) := 'ShopOrd';
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 );
+
+FUNCTION Test (
+   order_no_                 IN VARCHAR2,
+   release_no_               IN VARCHAR2,
+   sequence_no_              IN VARCHAR2)
+   RETURN NUMBER;
+
+PROCEDURE Init;
+
+END EA_SHOP_ORDER_RPI;
+/
+SHOW ERROR
+
+-----------------------------------------------------------------------------
+-------------------- VIEWS FOR REPORT META DATA -----------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating report table EA_SHOP_ORDER_RPT
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'EA_SHOP_ORDER_RPT';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO', 'NUMBER', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ORDER_NO', 'VARCHAR2(12)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'RELEASE_NO', 'VARCHAR2(4)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SEQUENCE_NO', 'VARCHAR2(4)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONTRACT', 'VARCHAR2(5)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_NO', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_DESCRIPTION', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'REVISED_DUE_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'REVISED_QTY_DUE', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'REVISED_START_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OE_ORDER_NO', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ORDER_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'INV_PART_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_CATALOG_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONFIGURATION_ID', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'NOTE_ID', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONDITION_CODE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CONDITION_CODE_DESCRIPTION', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_OWNERSHIP', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_OWNER_ID', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PART_OWNER_NAME', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ORDER_CODE', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'QTY_REQUIRED', 'VARCHAR2(17)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'UNIT_MEAS', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'MTRL_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'MTRL_PART_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'MTRL_PART_CATALOG_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PRINT_UNIT', 'VARCHAR2(30)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PRINT_QTY_REQUIRED', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMPONENT_CONDITION_CODE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMPONENT_CONDITION_CODE_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMP_PART_OWNERSHIP', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMP_PART_OWNER_ID', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMP_PART_OWNER_NAME', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'DRAW_POS_NO', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LINE_ITEM_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMPONENT_PART', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMP_PART_DESC', 'VARCHAR2(200)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PROCEDURE_STEP', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'GUIDELINE_SEQ', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'X_COORDINATE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'Y_COORDINATE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'Z_COORDINATE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'REFERENCE_QTY', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'GUIDELINE_TEXT', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CHARACTERISTIC_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CHARACTERISTIC_VALUE', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CHARACTERISTIC_UNIT_CODE', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'QTY_CHARACTERISTIC', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CHARACTERISTIC_FIRST', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'CHARACTERISTIC_LAST', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OPERATION_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OPERATION_DESCRIPTION', 'VARCHAR2(35)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'WORK_CENTER_NO', 'VARCHAR2(5)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'WORK_CENTER_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'MACH_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_QTY_REMAINING', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_HOURS_REMAINING', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_START_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_START_TIME', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_FINISH_DATE', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_FINISH_TIME', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'MACHINE_NO', 'VARCHAR2(15)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_ID', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OPER_STATUS_CODE', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_LINE_ITEM_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMPONENT_PART', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_QTY_REQUIRED', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_PRINT_UNIT', 'VARCHAR2(30)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMP_CONDITION_CODE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMP_CONDITION_CODE_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMP_PART_OWNERSHIP', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMP_PART_OWNER_ID', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_DRAW_POS_NO', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMP_PART_OWNER_NAME', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_COMP_PART_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_UNIT_MEAS', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_MTRL_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_MTRL_PART_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_MTRL_PART_CATALOG_NOTES', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_PRINT_QTY_REQUIRED', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_PROCEDURE_STEP', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ALLOC_GUIDELINE_SEQ', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ALLOC_X_COORDINATE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ALLOC_Y_COORDINATE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ALLOC_Z_COORDINATE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ALLOC_REFERENCE_QTY', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'MTRL_WORK_GUIDELINES', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_WORK_GUIDE_SEQ', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'OP_WORK_GUIDELINES', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TOOL_SEQUENCE', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TOOL_ID', 'VARCHAR2(40)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TOOL_DESCRIPTION', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LAST_USED', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'PHRASE_TEXT', 'VARCHAR2(2000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_LINE_ITEM_NO', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_PART_NO', 'VARCHAR2(25)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_PART_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_QTY_PER_UNIT', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_UNIT_MEAS', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_LOT_SIZE', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PRODUCT_CONDITION_CODE', 'VARCHAR2(10)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PROD_CONDITION_CODE_DESC', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PROD_OWNERSHIP', 'VARCHAR2(4000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PROD_OWNER', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PROD_GEN_OH_FACTOR', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'BY_PROD_OP_COST_FACTOR', 'NUMBER', 'Y');
+   Database_SYS.Create_Or_Replace_Table(table_name_, columns_, '&IFSAPP_REPORT_DATA', NULL, TRUE);
+END;
+/
+
+DECLARE
+   columns_    Database_SYS.ColumnTabType;
+   table_name_ VARCHAR2(30) := 'EA_SHOP_ORDER_RPT';
+   index_name_ VARCHAR2(30) := 'EA_SHOP_ORDER_RPK';
+BEGIN
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'RESULT_KEY');
+   Database_SYS.Set_Table_Column(columns_, 'ROW_NO');
+   Database_SYS.Set_Table_Column(columns_, 'PARENT_ROW_NO');
+   Database_SYS.Create_Constraint(table_name_, index_name_, columns_, 'P', '&IFSAPP_REPORT_INDEX', NULL, TRUE, TRUE);
+   Database_SYS.Reset_Column_Table(columns_);
+END;
+/
+
+PROMPT Creating report view EA_SHOP_ORDER_REP
+
+CREATE OR REPLACE VIEW EA_SHOP_ORDER_REP AS
+SELECT RESULT_KEY, ROW_NO, PARENT_ROW_NO, ROWVERSION
+   ,ORDER_NO,RELEASE_NO,SEQUENCE_NO,CONTRACT,PART_NO,PART_DESCRIPTION,REVISED_DUE_DATE,REVISED_QTY_DUE,REVISED_START_DATE,OE_ORDER_NO,ORDER_NOTES,INV_PART_NOTES,PART_CATALOG_NOTES,CONFIGURATION_ID,NOTE_ID,CONDITION_CODE,CONDITION_CODE_DESCRIPTION,PART_OWNERSHIP,PART_OWNER_ID,PART_OWNER_NAME,ORDER_CODE,QTY_REQUIRED,UNIT_MEAS,MTRL_NOTES,MTRL_PART_NOTES,MTRL_PART_CATALOG_NOTES,PRINT_UNIT,PRINT_QTY_REQUIRED,COMPONENT_CONDITION_CODE,COMPONENT_CONDITION_CODE_DESC,COMP_PART_OWNERSHIP,COMP_PART_OWNER_ID,COMP_PART_OWNER_NAME,DRAW_POS_NO,LINE_ITEM_NO,COMPONENT_PART,COMP_PART_DESC,PROCEDURE_STEP,GUIDELINE_SEQ,X_COORDINATE,Y_COORDINATE,Z_COORDINATE,REFERENCE_QTY,GUIDELINE_TEXT,CHARACTERISTIC_DESC,CHARACTERISTIC_VALUE,CHARACTERISTIC_UNIT_CODE,QTY_CHARACTERISTIC,CHARACTERISTIC_FIRST,CHARACTERISTIC_LAST,OPERATION_NO,OPERATION_DESCRIPTION,WORK_CENTER_NO,WORK_CENTER_DESC,MACH_NOTES,OP_QTY_REMAINING,OP_HOURS_REMAINING,OP_START_DATE,OP_START_TIME,OP_FINISH_DATE,OP_FINISH_TIME,MACHINE_NO,OP_ID,OPER_STATUS_CODE,OP_LINE_ITEM_NO,OP_COMPONENT_PART,OP_QTY_REQUIRED,OP_PRINT_UNIT,OP_COMP_CONDITION_CODE,OP_COMP_CONDITION_CODE_DESC,OP_COMP_PART_OWNERSHIP,OP_COMP_PART_OWNER_ID,OP_DRAW_POS_NO,OP_COMP_PART_OWNER_NAME,OP_COMP_PART_DESC,OP_UNIT_MEAS,OP_MTRL_NOTES,OP_MTRL_PART_NOTES,OP_MTRL_PART_CATALOG_NOTES,OP_PRINT_QTY_REQUIRED,OP_PROCEDURE_STEP,ALLOC_GUIDELINE_SEQ,ALLOC_X_COORDINATE,ALLOC_Y_COORDINATE,ALLOC_Z_COORDINATE,ALLOC_REFERENCE_QTY,MTRL_WORK_GUIDELINES,OP_WORK_GUIDE_SEQ,OP_WORK_GUIDELINES,TOOL_SEQUENCE,TOOL_ID,TOOL_DESCRIPTION,LAST_USED,PHRASE_TEXT,BY_PRODUCT_LINE_ITEM_NO,BY_PRODUCT_PART_NO,BY_PRODUCT_PART_DESC,BY_PRODUCT_QTY_PER_UNIT,BY_PRODUCT_UNIT_MEAS,BY_PRODUCT_LOT_SIZE,BY_PRODUCT_CONDITION_CODE,BY_PROD_CONDITION_CODE_DESC,BY_PROD_OWNERSHIP,BY_PROD_OWNER,BY_PROD_GEN_OH_FACTOR,BY_PROD_OP_COST_FACTOR
+FROM   EA_SHOP_ORDER_RPT t
+WHERE EXISTS (SELECT 1 FROM allowed_report a WHERE a.result_key = t.result_key)
+WITH   read only;
+
+COMMENT ON TABLE EA_SHOP_ORDER_REP
+   IS 'LU=ShopOrd^PROMPT=Ea Shop Order^MODULE=SHPORD^TITLETEXT=Ea Shop Order^';
+
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.result_key
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.row_no
+   IS 'FLAGS=M----^DATATYPE=NUMBER^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.order_no
+   IS 'FLAGS=A----^DATATYPE=STRING(12)^TITLE=Shop Order No^QUERY=Shop Order No:^QFLAGS=MW-BL^QVALUE=%^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.release_no
+   IS 'FLAGS=A----^DATATYPE=STRING(4)^TITLE=Release No^QUERY=Shop Order Release No:^QFLAGS=MW-BL^QVALUE=%^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.sequence_no
+   IS 'FLAGS=A----^DATATYPE=STRING(4)^TITLE=Sequence No^QUERY=Shop Order Sequence No:^QFLAGS=MW-BL^QVALUE=%^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.contract
+   IS 'FLAGS=A----^DATATYPE=STRING(5)^TITLE=Site^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.part_no
+   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.part_description
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Part Description^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.revised_due_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Revised Due Date^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.revised_qty_due
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Lot Size^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.revised_start_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Revised Start Date^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.oe_order_no
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Corresponding Customer Order:^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.order_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Shop Order Text^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.inv_part_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Inv. Part Text^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.part_catalog_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Part Catalog Text^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.configuration_id
+   IS 'FLAGS=A----^DATATYPE=STRING(50)^TITLE=Configuration ID^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.note_id
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Note Id^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.condition_code
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Condition Code^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.condition_code_description
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Condition Code Description^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.part_ownership
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Ownership^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.part_owner_id
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Owner^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.part_owner_name
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Owner Name^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.order_code
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Shop Order Type^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.qty_required
+   IS 'FLAGS=A----^DATATYPE=STRING(17)^TITLE=Qty Required^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.unit_meas
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Unit Meas^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.mtrl_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=MtrlNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.mtrl_part_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=MtrlPartNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.mtrl_part_catalog_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=MtrlPartCatalogNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.print_unit
+   IS 'FLAGS=A----^DATATYPE=STRING(30)^TITLE=Print Unit Meas^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.print_qty_required
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Print Qty Required^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.component_condition_code
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Condition Code^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.component_condition_code_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Condition Code Description^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.comp_part_ownership
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Ownership^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.comp_part_owner_id
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Owner^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.comp_part_owner_name
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Owner name^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.draw_pos_no
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Position^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.line_item_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Position^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.component_part
+   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.comp_part_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(200)^TITLE=Part^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.procedure_step
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Procedure Step^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.guideline_seq
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Guideline Seq^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.x_coordinate
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=X Coordinate^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.y_coordinate
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Y Coordinate^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.z_coordinate
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Z Coordinate^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.reference_qty
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Reference Qty^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.guideline_text
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Guideline Text^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.characteristic_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Characteristic^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.characteristic_value
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Characteristic Value^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.characteristic_unit_code
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Unit^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.qty_characteristic
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Quantity on option^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.characteristic_first
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=First Characteristic^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.characteristic_last
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Last Characteristic^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.operation_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Operation No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.operation_description
+   IS 'FLAGS=A----^DATATYPE=STRING(35)^TITLE=Operation^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.work_center_no
+   IS 'FLAGS=A----^DATATYPE=STRING(5)^TITLE=Work Center No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.work_center_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Work Center^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.mach_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=MachNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_qty_remaining
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Op Qty Remaining^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_hours_remaining
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Op Hours Remaining^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_start_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Op Start Date^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_start_time
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Op Start Time^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_finish_date
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Op Finish Date^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_finish_time
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Op Finish Time^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.machine_no
+   IS 'FLAGS=A----^DATATYPE=STRING(15)^TITLE=Machine No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_id
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Operation Id^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.oper_status_code
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Operation Status^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_line_item_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Position^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_component_part
+   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_qty_required
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Qty Required^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_print_unit
+   IS 'FLAGS=A----^DATATYPE=STRING(30)^TITLE=Print Unit Meas^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_comp_condition_code
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Condition Code^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_comp_condition_code_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Condition Code Description^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_comp_part_ownership
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Ownership^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_comp_part_owner_id
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Owner^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_draw_pos_no
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Position^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_comp_part_owner_name
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Owner Name^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_comp_part_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Part^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_unit_meas
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Unit Meas^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_mtrl_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=OpMtrlNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_mtrl_part_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=OpMtrlPartNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_mtrl_part_catalog_notes
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=OpMtrlPartCatalogNotes^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_print_qty_required
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Print Qty Required^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_procedure_step
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Procedure Step^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.alloc_guideline_seq
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Guideline No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.alloc_x_coordinate
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=X Coordinate^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.alloc_y_coordinate
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Y Coordinate^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.alloc_z_coordinate
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Z Coordinate^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.alloc_reference_qty
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Reference Quantity^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.mtrl_work_guidelines
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Mtrl Work Guidelines^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_work_guide_seq
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Op Work Guidelines No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.op_work_guidelines
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Op Work Guidelines^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.tool_sequence
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Tool Sequence^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.tool_id
+   IS 'FLAGS=A----^DATATYPE=STRING(40)^TITLE=Tool ID^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.tool_description
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Tool Description^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.last_used
+   IS 'FLAGS=A----^DATATYPE=DATE/DATETIME^TITLE=Last Used^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.phrase_text
+   IS 'FLAGS=A----^DATATYPE=STRING(2000)^TITLE=Phrase Text^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_line_item_no
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=By Product Line Item No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_part_no
+   IS 'FLAGS=A----^DATATYPE=STRING(25)^TITLE=Part No^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_part_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=By Product Part Desc^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_qty_per_unit
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Qty Per Unit^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_unit_meas
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Unit Meas^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_lot_size
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Lot Size^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_product_condition_code
+   IS 'FLAGS=A----^DATATYPE=STRING(10)^TITLE=Condition Code^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_prod_condition_code_desc
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=By Prod Condition Code Desc^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_prod_ownership
+   IS 'FLAGS=A----^DATATYPE=STRING(4000)^TITLE=Ownership^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_prod_owner
+   IS 'FLAGS=A----^DATATYPE=STRING(20)^TITLE=Owner^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_prod_gen_oh_factor
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Gen OH Factor^';
+COMMENT ON COLUMN EA_SHOP_ORDER_REP.by_prod_op_cost_factor
+   IS 'FLAGS=A----^DATATYPE=NUMBER^TITLE=Op Cost Factor^';
+
+-----------------------------------------------------------------------------
+-------------------- REPORT REGISTRATION ------------------------------------
+-----------------------------------------------------------------------------
+
+BEGIN
+   Report_SYS.Define_Report_('EA_SHOP_ORDER_REP', 'SHPORD', 'ShopOrd', 'Ea Shop Order', 'EA_SHOP_ORDER_RPT', 'EA_SHOP_ORDER_RPI.Execute_Report', 0);
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'CONFIGCHAR', 'Configuration Characteristics');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'OEORDERTEXT', 'Corresponding customer order:');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'MATALLOCTEXT', 'Material Allocations');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'ALLOCGUIDE', 'Material Work Guideline');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'OPMATTEXT', 'Operation Material Allocations');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'OPERGUIDE', 'Operation Work Guideline');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'QTYTEXT', 'Quantity to report');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'TIMETEXT', 'Time to report');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'TOOLOPTEXT', 'Tool Usage');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'UNITERROR', 'Unit Error');
+   Report_SYS.Define_Report_Text_('EA_SHOP_ORDER_REP', 'BYPRODINFO', 'By Product Information');
+   Report_SYS.Refresh_('EA_SHOP_ORDER_REP');
+   Report_Lu_Definition_API.Clear_Custom_Fields_For_Report('EA_SHOP_ORDER_REP');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopOrd','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopMaterialAlloc','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_MATERIAL_ALLOCATIONS/SHOP_MATERIAL_ALLOCATION');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopMaterialAllocGuide','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_MATERIAL_ALLOCATIONS/SHOP_MATERIAL_ALLOCATION/SHOP_MATERIAL_ALLOC_GUIDES/SHOP_MATERIAL_ALLOC_GUIDE');
+$IF Component_CFGCHR_SYS.INSTALLED $THEN
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ConfigCharDisplay','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_CONFIGURATIONS/SHOP_ORDER_CONFIGURATION');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ConfigSpecValue','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_CONFIGURATIONS/SHOP_ORDER_CONFIGURATION');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','BasePartCharacteristic','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_CONFIGURATIONS/SHOP_ORDER_CONFIGURATION');
+$END
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopOrderOperation','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_OPERATIONS/SHOP_ORDER_OPERATION');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopMaterialAlloc','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_OPERATIONS/SHOP_ORDER_OPERATION/SHOP_MATERIAL_OPERATIONS/SHOP_MATERIAL_OPERATION');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopMaterialAllocGuide','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_OPERATIONS/SHOP_ORDER_OPERATION/SHOP_MATERIAL_OPERATIONS/SHOP_MATERIAL_OPERATION/SHOP_MATERIAL_OPERATION_GUIDES/SHOP_MATERIAL_OPERATION_GUIDE');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopOrderOperGuide','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_OPERATIONS/SHOP_ORDER_OPERATION/SHOP_ORDER_OPER_GUIDES/SHOP_ORDER_OPER_GUIDE');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','ShopOrderOperTool','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/SHOP_ORDER_OPERATIONS/SHOP_ORDER_OPERATION/SHOP_ORDER_OPER_TOOLS/SHOP_ORDER_OPER_TOOL');
+   Report_Lu_Definition_API.Enable_Custom_Fields_for_Lu('EA_SHOP_ORDER_REP','MpccomPhraseText','EA_SHOP_ORDER_REP/SHOP_ORDER_HEADS/SHOP_ORDER_HEAD/DOC_PHRASES/DOC_PHRASE');
+END;
+/
+
+-----------------------------------------------------------------------------
+-------------------- PACKAGE IMPLEMENTATION ---------------------------------
+-----------------------------------------------------------------------------
+
+PROMPT Creating EA_SHOP_ORDER_RPI implementation
+
+CREATE OR REPLACE PACKAGE BODY EA_SHOP_ORDER_RPI IS
+
+   TYPE binds$ IS RECORD (
+      order_no                  VARCHAR2(32000),
+      release_no                VARCHAR2(32000),
+      sequence_no               VARCHAR2(32000),
+      line_item_no              VARCHAR2(32000),
+      part_no                   VARCHAR2(32000),
+      configuration_id          VARCHAR2(32000),
+      operation_no              VARCHAR2(32000),
+      op_line_item_no           VARCHAR2(32000),
+      contract                  VARCHAR2(32000));
+
+   CURSOR get_shop_order_head (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2) IS
+      SELECT   so.order_no,
+               so.release_no,
+               so.sequence_no,
+               so.contract,
+               so.part_no,
+               Inventory_Part_API.Get_Description(so.contract, so.part_no) part_description,
+               so.revised_due_date,
+               so.revised_qty_due,
+               so.revised_start_date,
+               NULL oe_order_no,
+               Document_Text_API.Get_All_Notes(note_id, '10') order_notes,
+               Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), '10') inv_part_notes,
+               Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), 'TRUE', Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), '10'), Document_Text_API.Get_All_Notes(NULL, '10')) part_catalog_notes,     
+               so.configuration_id,
+               so.note_id,
+               so.condition_code,
+               Condition_Code_API.Get_Description(so.condition_code) condition_code_description,            
+               Part_ownership_api.decode(so.part_ownership)  part_ownership,            
+               so.owning_customer_no part_owner_id,
+               null part_owner_name,
+               Shop_Ord_API.Get_Order_Code(so.order_no, so.release_no, so.sequence_no) order_code,
+               so.objkey rowkey
+        FROM  SHOP_ORD so
+        WHERE Report_SYS.Parse_Parameter(so.order_no, order_no_) = 'TRUE'
+        AND   Report_SYS.Parse_Parameter(so.release_no, release_no_) = 'TRUE'
+        AND   Report_SYS.Parse_Parameter(so.sequence_no, sequence_no_) = 'TRUE';
+
+   CURSOR get_shop_material_allocation (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2) IS
+      SELECT line_item_no,
+             part_no component_part,
+             contract,
+             Inventory_Part_API.Get_Description(contract, part_no) comp_part_desc,
+             SUBSTR(qty_required,0, 17) qty_required,
+             Inventory_Part_API.Get_Unit_Meas(contract, part_no) unit_meas, 
+             note_id,
+             Document_Text_API.Get_All_Notes(note_id, '10') mtrl_notes,
+             Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), '10') mtrl_part_notes,
+             Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), 'TRUE', Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), '10'), Document_Text_API.Get_All_Notes(NULL, '10')) mtrl_part_catalog_notes,
+             print_unit,
+             null print_qty_required,
+             condition_code component_condition_code,
+             Condition_Code_API.Get_Description(condition_code) component_condition_code_desc,
+             Part_Ownership_API.Decode(part_ownership) comp_part_ownership,
+             DECODE(owning_customer_no,null,owning_vendor_no,owning_customer_no) comp_part_owner_id,
+             null comp_part_owner_name,
+             draw_pos_no,
+             order_no,
+             release_no,
+             sequence_no,
+             procedure_step,
+             rowkey
+      FROM   SHOP_MATERIAL_ALLOC_TAB
+      WHERE  order_no = order_no_
+      AND    release_no = release_no_
+      AND    sequence_no = sequence_no_
+      AND    nvl(operation_no, 0) = 0
+      ORDER BY line_item_no;
+
+   CURSOR get_shop_material_alloc_guide (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2, line_item_no_ VARCHAR2) IS
+      SELECT guideline_seq,
+             x_coordinate,
+             y_coordinate,
+             z_coordinate,
+             reference_qty,
+             guideline_text,
+             objkey  rowkey
+      FROM   SHOP_MATERIAL_ALLOC_GUIDE
+      WHERE  order_no = order_no_
+      AND    release_no = release_no_
+      AND    sequence_no = sequence_no_
+      AND    line_item_no = line_item_no_
+      ORDER BY guideline_seq;
+
+$IF Component_CFGCHR_SYS.INSTALLED $THEN
+   CURSOR get_shop_order_configuration (part_no_ VARCHAR2, configuration_id_ VARCHAR2) IS
+      SELECT
+            Config_Characteristic_API.Get_Description_For_Language( csv.characteristic_id,
+                                                                     Language_SYS.Get_Language) characteristic_desc,   
+            DECODE( csv.config_value_type, 'DISCRETEOPTION', 
+                                           Config_Option_Value_API.Get_Description_For_Language( csv.characteristic_id,
+                                                                                                 csv.characteristic_value,
+                                                                                                 Language_SYS.Get_Language),
+                                           csv.characteristic_value)       characteristic_value,   
+            Config_Characteristic_API.Get_Unit_Code(csv.characteristic_id) characteristic_unit_code,   
+            csv.qty_characteristic qty_characteristic,   
+            to_number(NULL) characteristic_first,   
+            to_number(0) characteristic_last,
+            ccd.rowkey  config_rowkey,
+            csv.rowkey  spec_rowkey,
+            bpc.rowkey  base_rowkey
+      FROM  config_char_display_tab ccd,
+            config_spec_value_tab csv,
+            base_part_characteristic_tab bpc
+      WHERE ccd.display_characteristic = 'YES'
+      AND   ccd.config_display_type = 'SHOPWORKINSTRUCT'
+      AND   csv.characteristic_id = ccd.characteristic_id
+      AND   csv.configuration_id = configuration_id_
+      AND   csv.part_no = part_no_
+      AND   bpc.part_no = csv.part_no
+      AND   bpc.spec_revision_no = csv.spec_revision_no
+      AND   bpc.characteristic_id = csv.characteristic_id
+      ORDER BY bpc.characteristic_sequence;
+$END
+
+   CURSOR get_shop_order_operation (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2) IS
+      SELECT  operation_no,
+              operation_description,
+              contract,
+              work_center_no,
+              Work_Center_API.Get_Description(contract, work_center_no) work_center_desc,
+              Document_Text_API.Get_All_Notes(note_id, '10') mach_notes,
+              Shop_Order_Operation_API.Get_Remaining_Qty(order_no, release_no, sequence_no, operation_no) op_qty_remaining,
+              Shop_Order_Operation_API.Get_Remaining_Mach_Hours(order_no, release_no, sequence_no, operation_no) op_hours_remaining,  
+              op_start_date,
+              op_start_time,
+              op_finish_date,
+              op_finish_time,
+              machine_no,
+              note_id,
+              op_id,
+              oper_status_code,
+              order_no,
+              release_no,
+              sequence_no,
+              objkey  rowkey
+      FROM  SHOP_ORDER_OPERATION
+      WHERE order_no = order_no_
+      AND   release_no = release_no_
+      AND   sequence_no = sequence_no_
+      ORDER BY op_sequence_no, operation_no;
+
+   CURSOR get_shop_material_operation (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2, operation_no_ VARCHAR2) IS
+      SELECT line_item_no op_line_item_no,
+             part_no op_component_part,
+             contract,
+             qty_required op_qty_required,
+             note_id,
+             print_unit op_print_unit,
+             condition_code op_comp_condition_code,
+             Condition_Code_API.Get_Description(condition_code) op_comp_condition_code_desc,
+             Part_Ownership_API.Decode(part_ownership)  op_comp_part_ownership,
+             DECODE(owning_customer_no,null,owning_vendor_no,owning_customer_no) op_comp_part_owner_id,
+             draw_pos_no op_draw_pos_no,
+             null op_comp_part_owner_name,
+             Inventory_Part_API.Get_Description(contract, part_no) op_comp_part_desc,
+             Inventory_Part_API.Get_Unit_Meas(contract, part_no) op_unit_meas,
+             Document_Text_API.Get_All_Notes(note_id, '10') op_mtrl_notes,
+             Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), '10') op_mtrl_part_notes,
+             Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), 'TRUE', Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), '10'), Document_Text_API.Get_All_Notes(NULL, '10')) op_mtrl_part_catalog_notes,        
+             null op_print_qty_required,
+             order_no,
+             release_no,
+             sequence_no,
+             operation_no,
+             procedure_step,
+             rowkey
+      FROM  SHOP_MATERIAL_ALLOC_TAB
+      WHERE order_no = order_no_
+      AND   release_no = release_no_
+      AND   sequence_no = sequence_no_
+      AND   operation_no = operation_no_
+      ORDER BY line_item_no;
+
+   CURSOR get_shopmatopguide (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2, op_line_item_no_ VARCHAR2) IS
+      SELECT guideline_seq alloc_guideline_seq,
+             x_coordinate alloc_x_coordinate,
+             y_coordinate alloc_y_coordinate,
+             z_coordinate alloc_z_coordinate,
+             reference_qty alloc_reference_qty,
+             guideline_text mtrl_work_guidelines,
+             objkey        rowkey
+      FROM   SHOP_MATERIAL_ALLOC_GUIDE
+      WHERE  order_no = order_no_
+      AND    release_no = release_no_
+      AND    sequence_no = sequence_no_
+      AND    line_item_no = op_line_item_no_
+      ORDER BY guideline_seq;
+
+   CURSOR get_shop_order_oper_guide (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2, operation_no_ VARCHAR2) IS
+      SELECT guideline_seq op_work_guide_seq, 
+             guideline_text op_work_guidelines,
+             objkey    rowkey
+      FROM   SHOP_ORDER_OPER_GUIDE
+      WHERE  order_no = order_no_
+      AND    release_no = release_no_
+      AND    sequence_no = sequence_no_
+      AND    operation_no = operation_no_
+      ORDER BY guideline_seq;
+
+   CURSOR get_shop_order_oper_tool (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2, operation_no_ VARCHAR2) IS
+      SELECT tool_sequence,
+             tool_id,
+             contract,
+             Manuf_Tool_API.Get_Tool_Description(contract, tool_id) tool_description,
+             Manuf_Tool_API.Get_Last_Used(contract, tool_id) last_used,
+             rowkey        rowkey
+      FROM   SHOP_ORDER_OPER_TOOL_TAB
+      WHERE  order_no = order_no_
+      AND    release_no = release_no_
+      AND    sequence_no = sequence_no_
+      AND    operation_no = operation_no_
+      ORDER BY tool_sequence;
+
+   CURSOR get_doc_phrase (contract_ VARCHAR2) IS
+      SELECT   phrase_text,
+               rowkey
+        FROM   MPCCOM_PHRASE_TEXT_TAB
+       WHERE   language_code = Language_SYS.Get_Language()
+       AND     phrase_id IN ( SELECT DISTINCT phrase_id
+                                FROM ( SELECT   t.phrase_id phrase_id, t.document_code document_code
+                                         FROM   phrase_on_document_tab t
+                                        WHERE   t.valid_for_all_companies = 'TRUE'
+                                          AND   TRUNC(SYSDATE) BETWEEN TRUNC(valid_from) AND TRUNC(valid_until)
+                                        UNION
+                                       SELECT   c.phrase_id, c.document_code
+                                         FROM   document_phrase_company_tab c
+                                        WHERE   c.valid_for_all_sites = 'TRUE'
+                                          AND   c.company = Site_api.Get_Company( contract_ )
+                                          AND   TRUNC(SYSDATE) BETWEEN TRUNC(valid_from) AND TRUNC(valid_until)
+                                        UNION
+                                       SELECT  s.phrase_id, s.document_code
+                                         FROM  document_phrase_site_tab s
+                                        WHERE  s.contract = contract_
+                                          AND  TRUNC(site_api.Get_Site_Date(contract_)) BETWEEN TRUNC(valid_from) AND TRUNC(valid_until)
+                                       )
+                               WHERE   document_code IN (SELECT   document_code
+                                                           FROM   MPCCOM_DOCUMENT_TAB
+                                                          WHERE   output_code = 'SOINSTR')
+                               );
+
+   CURSOR get_shop_order_by_product (order_no_ VARCHAR2, release_no_ VARCHAR2, sequence_no_ VARCHAR2) IS
+      SELECT LINE_ITEM_NO BY_PRODUCT_LINE_ITEM_NO,
+             PART_NO BY_PRODUCT_PART_NO,
+             INVENTORY_PART_API.Get_Description(Contract,Part_No) BY_PRODUCT_PART_DESC,
+             CONTRACT,
+             QTY_PER_ASSEMBLY BY_PRODUCT_QTY_PER_UNIT,
+             Inventory_Part_API.Get_Unit_Meas(Contract, PART_NO) BY_PRODUCT_UNIT_MEAS,
+             REVISED_QTY_DUE BY_PRODUCT_LOT_SIZE,
+             CONDITION_CODE BY_PRODUCT_CONDITION_CODE,
+             CONDITION_CODE_API.Get_Description(CONDITION_CODE) BY_PROD_CONDITION_CODE_DESC, 
+             Part_ownership BY_PROD_OWNERSHIP,
+             DECODE(OWNING_CUSTOMER_NO,NULL,OWNING_VENDOR_NO,OWNING_CUSTOMER_NO) BY_PROD_OWNER,           
+             GEN_OH_COST_DISTRIBUTION BY_PROD_GEN_OH_FACTOR,
+             OPER_COST_DISTRIBUTION BY_PROD_OP_COST_FACTOR
+      FROM  MANUFACTURED_PART
+      WHERE ORDER_NO = order_no_
+      AND   RELEASE_NO = release_no_
+      AND   SEQUENCE_NO = sequence_no_
+      AND   nvl(OPERATION_NO, 0) = 0
+      AND   LINE_ITEM_NO != -1
+      ORDER BY LINE_ITEM_NO;
+
+-----------------------------------------------------------------------------
+-------------------- RESULT SET METHODS -------------------------------------
+-----------------------------------------------------------------------------
+
+--@IgnoreWrongParamOrder
+PROCEDURE Add_Result_Row___ (
+   result_key$_               IN NUMBER,
+   binds$_                    IN binds$,
+   rec_shop_order_head_       IN get_shop_order_head%ROWTYPE DEFAULT NULL,
+   rec_shop_material_allocation_ IN get_shop_material_allocation%ROWTYPE DEFAULT NULL,
+   rec_shop_material_alloc_guide_ IN get_shop_material_alloc_guide%ROWTYPE DEFAULT NULL,
+   $IF Component_CFGCHR_SYS.INSTALLED $THEN
+   rec_shop_order_configuration_ IN get_shop_order_configuration%ROWTYPE DEFAULT NULL,
+   $END
+   rec_shop_order_operation_  IN get_shop_order_operation%ROWTYPE DEFAULT NULL,
+   rec_shop_material_operation_ IN get_shop_material_operation%ROWTYPE DEFAULT NULL,
+   rec_shopmatopguide_        IN get_shopmatopguide%ROWTYPE DEFAULT NULL,
+   rec_shop_order_oper_guide_ IN get_shop_order_oper_guide%ROWTYPE DEFAULT NULL,
+   rec_shop_order_oper_tool_  IN get_shop_order_oper_tool%ROWTYPE DEFAULT NULL,
+   rec_doc_phrase_            IN get_doc_phrase%ROWTYPE DEFAULT NULL,
+   rec_shop_order_by_product_ IN get_shop_order_by_product%ROWTYPE DEFAULT NULL,
+   row_no$_                   IN OUT NUMBER)
+IS
+BEGIN
+   INSERT INTO EA_SHOP_ORDER_RPT (
+      result_key,
+      order_no,
+      release_no,
+      sequence_no,
+      contract,
+      part_no,
+      part_description,
+      revised_due_date,
+      revised_qty_due,
+      revised_start_date,
+      oe_order_no,
+      order_notes,
+      inv_part_notes,
+      part_catalog_notes,
+      configuration_id,
+      note_id,
+      condition_code,
+      condition_code_description,
+      part_ownership,
+      part_owner_id,
+      part_owner_name,
+      order_code,
+      qty_required,
+      unit_meas,
+      mtrl_notes,
+      mtrl_part_notes,
+      mtrl_part_catalog_notes,
+      print_unit,
+      print_qty_required,
+      component_condition_code,
+      component_condition_code_desc,
+      comp_part_ownership,
+      comp_part_owner_id,
+      comp_part_owner_name,
+      draw_pos_no,
+      line_item_no,
+      component_part,
+      comp_part_desc,
+      procedure_step,
+      guideline_seq,
+      x_coordinate,
+      y_coordinate,
+      z_coordinate,
+      reference_qty,
+      guideline_text,
+      characteristic_desc,
+      characteristic_value,
+      characteristic_unit_code,
+      qty_characteristic,
+      characteristic_first,
+      characteristic_last,
+      operation_no,
+      operation_description,
+      work_center_no,
+      work_center_desc,
+      mach_notes,
+      op_qty_remaining,
+      op_hours_remaining,
+      op_start_date,
+      op_start_time,
+      op_finish_date,
+      op_finish_time,
+      machine_no,
+      op_id,
+      oper_status_code,
+      op_line_item_no,
+      op_component_part,
+      op_qty_required,
+      op_print_unit,
+      op_comp_condition_code,
+      op_comp_condition_code_desc,
+      op_comp_part_ownership,
+      op_comp_part_owner_id,
+      op_draw_pos_no,
+      op_comp_part_owner_name,
+      op_comp_part_desc,
+      op_unit_meas,
+      op_mtrl_notes,
+      op_mtrl_part_notes,
+      op_mtrl_part_catalog_notes,
+      op_print_qty_required,
+      op_procedure_step,
+      alloc_guideline_seq,
+      alloc_x_coordinate,
+      alloc_y_coordinate,
+      alloc_z_coordinate,
+      alloc_reference_qty,
+      mtrl_work_guidelines,
+      op_work_guide_seq,
+      op_work_guidelines,
+      tool_sequence,
+      tool_id,
+      tool_description,
+      last_used,
+      phrase_text,
+      by_product_line_item_no,
+      by_product_part_no,
+      by_product_part_desc,
+      by_product_qty_per_unit,
+      by_product_unit_meas,
+      by_product_lot_size,
+      by_product_condition_code,
+      by_prod_condition_code_desc,
+      by_prod_ownership,
+      by_prod_owner,
+      by_prod_gen_oh_factor,
+      by_prod_op_cost_factor,
+      row_no, parent_row_no)
+   VALUES (
+      result_key$_,
+      nvl(rec_shop_material_operation_.order_no,
+      nvl(rec_shop_order_operation_.order_no,
+      nvl(rec_shop_material_allocation_.order_no,
+      nvl(rec_shop_order_head_.order_no,
+      nvl(binds$_.order_no,
+      binds$_.order_no))))),
+      nvl(rec_shop_material_operation_.release_no,
+      nvl(rec_shop_order_operation_.release_no,
+      nvl(rec_shop_material_allocation_.release_no,
+      nvl(rec_shop_order_head_.release_no,
+      nvl(binds$_.release_no,
+      binds$_.release_no))))),
+      nvl(rec_shop_material_operation_.sequence_no,
+      nvl(rec_shop_order_operation_.sequence_no,
+      nvl(rec_shop_material_allocation_.sequence_no,
+      nvl(rec_shop_order_head_.sequence_no,
+      nvl(binds$_.sequence_no,
+      binds$_.sequence_no))))),
+      nvl(rec_shop_order_by_product_.contract,
+      nvl(rec_shop_order_oper_tool_.contract,
+      nvl(rec_shop_material_operation_.contract,
+      nvl(rec_shop_order_operation_.contract,
+      rec_shop_order_head_.contract)))),
+      rec_shop_order_head_.part_no,
+      rec_shop_order_head_.part_description,
+      rec_shop_order_head_.revised_due_date,
+      rec_shop_order_head_.revised_qty_due,
+      rec_shop_order_head_.revised_start_date,
+      rec_shop_order_head_.oe_order_no,
+      rec_shop_order_head_.order_notes,
+      rec_shop_order_head_.inv_part_notes,
+      rec_shop_order_head_.part_catalog_notes,
+      rec_shop_order_head_.configuration_id,
+      nvl(rec_shop_material_operation_.note_id,
+      nvl(rec_shop_order_operation_.note_id,
+      nvl(rec_shop_material_allocation_.note_id,
+      rec_shop_order_head_.note_id))),
+      rec_shop_order_head_.condition_code,
+      rec_shop_order_head_.condition_code_description,
+      rec_shop_order_head_.part_ownership,
+      rec_shop_order_head_.part_owner_id,
+      rec_shop_order_head_.part_owner_name,
+      rec_shop_order_head_.order_code,
+      rec_shop_material_allocation_.qty_required,
+      rec_shop_material_allocation_.unit_meas,
+      rec_shop_material_allocation_.mtrl_notes,
+      rec_shop_material_allocation_.mtrl_part_notes,
+      rec_shop_material_allocation_.mtrl_part_catalog_notes,
+      rec_shop_material_allocation_.print_unit,
+      rec_shop_material_allocation_.print_qty_required,
+      rec_shop_material_allocation_.component_condition_code,
+      rec_shop_material_allocation_.component_condition_code_desc,
+      rec_shop_material_allocation_.comp_part_ownership,
+      rec_shop_material_allocation_.comp_part_owner_id,
+      rec_shop_material_allocation_.comp_part_owner_name,
+      rec_shop_material_allocation_.draw_pos_no,
+      rec_shop_material_allocation_.line_item_no,
+      rec_shop_material_allocation_.component_part,
+      rec_shop_material_allocation_.comp_part_desc,
+      rec_shop_material_allocation_.procedure_step,
+      rec_shop_material_alloc_guide_.guideline_seq,
+      rec_shop_material_alloc_guide_.x_coordinate,
+      rec_shop_material_alloc_guide_.y_coordinate,
+      rec_shop_material_alloc_guide_.z_coordinate,
+      rec_shop_material_alloc_guide_.reference_qty,
+      rec_shop_material_alloc_guide_.guideline_text,
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN rec_shop_order_configuration_.characteristic_desc, $ELSE NULL, $END
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN rec_shop_order_configuration_.characteristic_value, $ELSE NULL, $END
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN rec_shop_order_configuration_.characteristic_unit_code, $ELSE NULL, $END
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN rec_shop_order_configuration_.qty_characteristic, $ELSE NULL, $END
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN rec_shop_order_configuration_.characteristic_first, $ELSE NULL, $END
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN rec_shop_order_configuration_.characteristic_last, $ELSE NULL, $END
+      nvl(rec_shop_material_operation_.operation_no,
+      rec_shop_order_operation_.operation_no),
+      rec_shop_order_operation_.operation_description,
+      rec_shop_order_operation_.work_center_no,
+      rec_shop_order_operation_.work_center_desc,
+      rec_shop_order_operation_.mach_notes,
+      rec_shop_order_operation_.op_qty_remaining,
+      rec_shop_order_operation_.op_hours_remaining,
+      rec_shop_order_operation_.op_start_date,
+      rec_shop_order_operation_.op_start_time,
+      rec_shop_order_operation_.op_finish_date,
+      rec_shop_order_operation_.op_finish_time,
+      rec_shop_order_operation_.machine_no,
+      rec_shop_order_operation_.op_id,
+      rec_shop_order_operation_.oper_status_code,
+      rec_shop_material_operation_.op_line_item_no,
+      rec_shop_material_operation_.op_component_part,
+      rec_shop_material_operation_.op_qty_required,
+      rec_shop_material_operation_.op_print_unit,
+      rec_shop_material_operation_.op_comp_condition_code,
+      rec_shop_material_operation_.op_comp_condition_code_desc,
+      rec_shop_material_operation_.op_comp_part_ownership,
+      rec_shop_material_operation_.op_comp_part_owner_id,
+      rec_shop_material_operation_.op_draw_pos_no,
+      rec_shop_material_operation_.op_comp_part_owner_name,
+      rec_shop_material_operation_.op_comp_part_desc,
+      rec_shop_material_operation_.op_unit_meas,
+      rec_shop_material_operation_.op_mtrl_notes,
+      rec_shop_material_operation_.op_mtrl_part_notes,
+      rec_shop_material_operation_.op_mtrl_part_catalog_notes,
+      rec_shop_material_operation_.op_print_qty_required,
+      rec_shop_material_operation_.procedure_step,
+      rec_shopmatopguide_.alloc_guideline_seq,
+      rec_shopmatopguide_.alloc_x_coordinate,
+      rec_shopmatopguide_.alloc_y_coordinate,
+      rec_shopmatopguide_.alloc_z_coordinate,
+      rec_shopmatopguide_.alloc_reference_qty,
+      rec_shopmatopguide_.mtrl_work_guidelines,
+      rec_shop_order_oper_guide_.op_work_guide_seq,
+      rec_shop_order_oper_guide_.op_work_guidelines,
+      rec_shop_order_oper_tool_.tool_sequence,
+      rec_shop_order_oper_tool_.tool_id,
+      rec_shop_order_oper_tool_.tool_description,
+      rec_shop_order_oper_tool_.last_used,
+      rec_doc_phrase_.phrase_text,
+      rec_shop_order_by_product_.by_product_line_item_no,
+      rec_shop_order_by_product_.by_product_part_no,
+      rec_shop_order_by_product_.by_product_part_desc,
+      rec_shop_order_by_product_.by_product_qty_per_unit,
+      rec_shop_order_by_product_.by_product_unit_meas,
+      rec_shop_order_by_product_.by_product_lot_size,
+      rec_shop_order_by_product_.by_product_condition_code,
+      rec_shop_order_by_product_.by_prod_condition_code_desc,
+      rec_shop_order_by_product_.by_prod_ownership,
+      rec_shop_order_by_product_.by_prod_owner,
+      rec_shop_order_by_product_.by_prod_gen_oh_factor,
+      rec_shop_order_by_product_.by_prod_op_cost_factor,
+      row_no$_, 0);
+   row_no$_ := row_no$_+1;
+END Add_Result_Row___;
+
+-----------------------------------------------------------------------------
+-------------------- REPORT EXECUTION ---------------------------------------
+-----------------------------------------------------------------------------
+
+PROCEDURE Execute_Report (
+   report_attr_    IN VARCHAR2,
+   parameter_attr_ IN VARCHAR2 )
+IS
+   result_key$_              NUMBER;
+   row_no$_                  NUMBER := 1;
+   binds$_                   binds$;
+   configured_part_          BOOLEAN := FALSE;
+   config_manager_installed_ BOOLEAN := FALSE;
+   config_id_                BOOLEAN := FALSE;
+   characteristics_exist_    BOOLEAN := FALSE;
+   xml$_                     CLOB;
+   outer_filter_attr$_       VARCHAR2(32000);
+   outer_filter_where$_      VARCHAR2(32000);
+   inner_filter_attr$_       VARCHAR2(32000);
+   inner_filter_where$_      VARCHAR2(32000);
+   has_shop_order_head_ BOOLEAN;
+   rec_shop_order_head_ get_shop_order_head%ROWTYPE;
+   TYPE cur_shop_order_head IS REF CURSOR;
+   cur_shop_order_head_ cur_shop_order_head;
+   txt_shop_order_head_ VARCHAR2(32000) :=
+     'SELECT   so.order_no,
+               so.release_no,
+               so.sequence_no,
+               so.contract,
+               so.part_no,
+               Inventory_Part_API.Get_Description(so.contract, so.part_no) part_description,
+               so.revised_due_date,
+               so.revised_qty_due,
+               so.revised_start_date,
+               NULL oe_order_no,
+               Document_Text_API.Get_All_Notes(note_id, ''10'') order_notes,
+               Document_Text_API.Get_All_Notes(Inventory_Part_API.Get_Note_Id(contract, part_no), ''10'') inv_part_notes,
+               Decode(Site_Invent_Info_API.Get_Use_Partca_Desc_Invent_Db(contract), ''TRUE'', Document_Text_API.Get_All_Notes(Part_Catalog_Language_API.Get_Note_Id(part_no, Language_SYS.Get_Language()), ''10''), Document_Text_API.Get_All_Notes(NULL, ''10'')) part_catalog_notes,     
+               so.configuration_id,
+               so.note_id,
+               so.condition_code,
+               Condition_Code_API.Get_Description(so.condition_code) condition_code_description,            
+               Part_ownership_api.decode(so.part_ownership)  part_ownership,            
+               so.owning_customer_no part_owner_id,
+               null part_owner_name,
+               Shop_Ord_API.Get_Order_Code(so.order_no, so.release_no, so.sequence_no) order_code,
+               so.objkey rowkey
+        FROM  SHOP_ORD so
+        WHERE Report_SYS.Parse_Parameter(so.order_no, :OrderNo) = ''TRUE''
+        AND   Report_SYS.Parse_Parameter(so.release_no, :ReleaseNo) = ''TRUE''
+        AND   Report_SYS.Parse_Parameter(so.sequence_no, :SequenceNo) = ''TRUE''';
+   par_shop_order_head_ binds$;
+   has_shop_material_allocation_ BOOLEAN;
+   rec_shop_material_allocation_ get_shop_material_allocation%ROWTYPE;
+   par_shop_material_allocation_ binds$;
+   has_shop_material_alloc_guide_ BOOLEAN;
+   rec_shop_material_alloc_guide_ get_shop_material_alloc_guide%ROWTYPE;
+   par_shop_material_alloc_guide_ binds$;
+   has_shop_order_configuration_ BOOLEAN;
+$IF Component_CFGCHR_SYS.INSTALLED $THEN
+   rec_shop_order_configuration_ get_shop_order_configuration%ROWTYPE;
+$END
+   par_shop_order_configuration_ binds$;
+   has_shop_order_operation_ BOOLEAN;
+   rec_shop_order_operation_ get_shop_order_operation%ROWTYPE;
+   par_shop_order_operation_ binds$;
+   has_shop_material_operation_ BOOLEAN;
+   rec_shop_material_operation_ get_shop_material_operation%ROWTYPE;
+   par_shop_material_operation_ binds$;
+   has_shopmatopguide_ BOOLEAN;
+   rec_shopmatopguide_ get_shopmatopguide%ROWTYPE;
+   par_shopmatopguide_ binds$;
+   has_shop_order_oper_guide_ BOOLEAN;
+   rec_shop_order_oper_guide_ get_shop_order_oper_guide%ROWTYPE;
+   par_shop_order_oper_guide_ binds$;
+   has_shop_order_oper_tool_ BOOLEAN;
+   rec_shop_order_oper_tool_ get_shop_order_oper_tool%ROWTYPE;
+   par_shop_order_oper_tool_ binds$;
+   has_doc_phrase_ BOOLEAN;
+   rec_doc_phrase_ get_doc_phrase%ROWTYPE;
+   par_doc_phrase_ binds$;
+   has_shop_order_by_product_ BOOLEAN;
+   rec_shop_order_by_product_ get_shop_order_by_product%ROWTYPE;
+   par_shop_order_by_product_ binds$;
+   --20210725 CRIM-C0252 EntNadeeL (START) 
+    print_count_ NUMBER;
+    objkey_      VARCHAR2(2000);
+    objid_       VARCHAR2(2000);
+    attr_cf_     VARCHAR2(2000);
+    info_        VARCHAR2(2000);  
+    order_no_    VARCHAR2(200); 
+    
+    CURSOR get_order_details(order_no_ VARCHAR2,release_no_ VARCHAR2,seq_no_ VARCHAR2) IS
+    SELECT objkey, objid,cf$_print_count
+      FROM Shop_Ord_Cfv
+     WHERE order_no = order_no_
+     AND RELEASE_NO = release_no_
+     AND SEQUENCE_NO = seq_no_;
+    --20210725 CRIM-C0252 EntNadeeL (END)
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'EA_SHOP_ORDER_RPI', 'Execute_Report');
+   result_key$_                 := Client_SYS.Attr_Value_To_Number(Client_SYS.Get_Item_Value('RESULT_KEY', report_attr_));
+   binds$_.order_no             := Client_SYS.Get_Item_Value('ORDER_NO', parameter_attr_); 
+   binds$_.release_no           := Client_SYS.Get_Item_Value('RELEASE_NO', parameter_attr_); 
+   binds$_.sequence_no          := Client_SYS.Get_Item_Value('SEQUENCE_NO', parameter_attr_); 
+
+   Xml_Record_Writer_SYS.Create_Report_Header(xml$_, 'EA_SHOP_ORDER_REP', 'Ea Shop Order');
+   Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_NO', binds$_.order_no);
+   Xml_Record_Writer_SYS.Add_Element(xml$_, 'RELEASE_NO', binds$_.release_no);
+   Xml_Record_Writer_SYS.Add_Element(xml$_, 'SEQUENCE_NO', binds$_.sequence_no);
+
+   has_shop_order_head_ := FALSE;
+   par_shop_order_head_ := binds$_;
+   Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_HEADS');
+   Client_SYS.Clear_Attr(outer_filter_attr$_);
+   Client_SYS.Add_To_Attr('ORDER_NO', binds$_.order_no, outer_filter_attr$_);
+   Client_SYS.Add_To_Attr('RELEASE_NO', binds$_.release_no, outer_filter_attr$_);
+   Client_SYS.Add_To_Attr('SEQUENCE_NO', binds$_.sequence_no, outer_filter_attr$_);
+   outer_filter_where$_ := Report_SYS.Parse_Where_Expression(outer_filter_attr$_);
+   
+   --20210725 CRIM-C0252 EntNadeeL (START)                                     
+    
+    OPEN get_order_details(binds$_.order_no,binds$_.release_no,binds$_.sequence_no);
+    FETCH get_order_details
+      INTO objkey_, objid_,print_count_;
+    CLOSE get_order_details;     
+    IF (nvl(print_count_, 0) = 0) THEN
+     Client_Sys.Add_To_Attr('ROWKEY', objkey_, attr_cf_);
+      Client_Sys.Add_To_Attr('CF$_PRINT_COUNT', '1', attr_cf_);
+      SHOP_ORD_CFP.Cf_Modify__(info_, objid_, attr_cf_, ' ', 'DO');     
+    END IF;
+    --20210725 CRIM-C0252 EntNadeeL (END)
+   IF (outer_filter_where$_ IS NOT NULL) THEN
+      outer_filter_where$_ := 'WHERE '||outer_filter_where$_;
+   END IF;
+   OPEN cur_shop_order_head_ FOR 'SELECT * FROM ('||txt_shop_order_head_||') '||outer_filter_where$_ USING binds$_.order_no, binds$_.release_no, binds$_.sequence_no;
+   LOOP
+      FETCH cur_shop_order_head_ INTO rec_shop_order_head_;
+      has_shop_order_head_ := cur_shop_order_head_%FOUND OR cur_shop_order_head_%ROWCOUNT > 0;
+      EXIT WHEN cur_shop_order_head_%NOTFOUND;
+      DECLARE
+         archive_notes_             VARCHAR2(2000);
+         oe_rel_no_                 VARCHAR2(4);
+         oe_line_no_                VARCHAR2(4);
+         oe_line_item_no_           NUMBER;
+         company_rec_               Company_API.Public_Rec;
+      BEGIN
+            Shop_Ord_Util_API.Get_Original_Order(rec_shop_order_head_.oe_order_no, oe_rel_no_, oe_line_no_, oe_line_item_no_, binds$_.order_no, binds$_.release_no, binds$_.sequence_no);
+            archive_notes_ := Language_SYS.Translate_Constant(lu_name_, 'REPORTSHOPORDER: Shop Order') ;
+            archive_notes_ := archive_notes_|| ' : '||binds$_.order_no||'/'||binds$_.release_no||'/'||binds$_.sequence_no;
+            Archive_API.Set_Notes(archive_notes_);
+            company_rec_ := Company_API.Get(Site_API.Get_Company(Shop_Ord_API.Get_Contract(binds$_.order_no , binds$_.release_no, binds$_.sequence_no)));
+            IF (company_rec_.logotype IS NOT NULL) THEN
+               Archive_Variable_API.Set_Object(result_key$_, 'rhSysLogo', company_rec_.logotype);
+               Archive_Variable_API.Set_Variable(result_key$_, 'companyName', company_rec_.name);
+            END IF;
+            configured_part_ := (Part_Catalog_Api.Get_Configurable_Db(rec_shop_order_head_.part_no) = 'CONFIGURED');
+            config_id_ := rec_shop_order_head_.configuration_id !='*';
+      
+            IF part_ownership_API.encode(rec_shop_order_head_.part_ownership) ='COMPANY OWNED' THEN
+               rec_shop_order_head_.part_owner_name           := NULL;
+            ELSIF  part_ownership_API.encode(rec_shop_order_head_.part_ownership) ='CUSTOMER OWNED'  THEN
+               $IF Component_Order_SYS.INSTALLED $THEN
+                  rec_shop_order_head_.part_owner_name := Cust_Ord_Customer_API.Get_Name(rec_shop_order_head_.part_owner_id);
+               $ELSE
+                  NULL;
+               $END
+            ELSIF  part_ownership_API.encode(rec_shop_order_head_.part_ownership) ='SUPPLIER LOANED'  THEN
+               $IF Component_Purch_SYS.INSTALLED $THEN
+                  rec_shop_order_head_.part_owner_name  := SUPPLIER_API.Get_Vendor_Name(rec_shop_order_head_.part_owner_id);
+               $ELSE
+                  NULL;
+               $END
+            END IF;   
+      END;
+      BEGIN
+         Shop_Ord_API.Update_Printed_Flag( rec_shop_order_head_.order_no, rec_shop_order_head_.release_no, rec_shop_order_head_.sequence_no, 'SHOP_ORDER', NULL, NULL, NULL, result_key$_, result_key$_, NULL);
+      END;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_HEAD');
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_NO', rec_shop_order_head_.order_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'RELEASE_NO', rec_shop_order_head_.release_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'SEQUENCE_NO', rec_shop_order_head_.sequence_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_shop_order_head_.contract);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_NO', rec_shop_order_head_.part_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_DESCRIPTION', rec_shop_order_head_.part_description);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'REVISED_DUE_DATE', rec_shop_order_head_.revised_due_date);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'REVISED_QTY_DUE', rec_shop_order_head_.revised_qty_due);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'REVISED_START_DATE', rec_shop_order_head_.revised_start_date);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'OE_ORDER_NO', rec_shop_order_head_.oe_order_no);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_NOTES', rec_shop_order_head_.order_notes);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'INV_PART_NOTES', rec_shop_order_head_.inv_part_notes);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_CATALOG_NOTES', rec_shop_order_head_.part_catalog_notes);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONFIGURATION_ID', rec_shop_order_head_.configuration_id);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'NOTE_ID', rec_shop_order_head_.note_id);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONDITION_CODE', rec_shop_order_head_.condition_code);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONDITION_CODE_DESCRIPTION', rec_shop_order_head_.condition_code_description);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_OWNERSHIP', rec_shop_order_head_.part_ownership);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_OWNER_ID', rec_shop_order_head_.part_owner_id);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'PART_OWNER_NAME', rec_shop_order_head_.part_owner_name);
+      Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_CODE', rec_shop_order_head_.order_code);
+      Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopOrd', rec_shop_order_head_.rowkey, 'EA_SHOP_ORDER_REP');
+      has_shop_order_configuration_ := FALSE;
+   $IF Component_CFGCHR_SYS.INSTALLED $THEN
+      IF (configured_part_ AND config_id_) THEN
+      par_shop_order_configuration_ := binds$_;
+      binds$_.part_no := rec_shop_order_head_.part_no;
+      binds$_.configuration_id := rec_shop_order_head_.configuration_id;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_CONFIGURATIONS');
+      OPEN get_shop_order_configuration(rec_shop_order_head_.part_no, rec_shop_order_head_.configuration_id);
+      LOOP
+         FETCH get_shop_order_configuration INTO rec_shop_order_configuration_;
+         has_shop_order_configuration_ := get_shop_order_configuration%FOUND OR get_shop_order_configuration%ROWCOUNT > 0;
+         EXIT WHEN get_shop_order_configuration%NOTFOUND;
+         BEGIN 
+            IF (characteristics_exist_ = FALSE) THEN
+               rec_shop_order_configuration_.characteristic_first := 1;
+                characteristics_exist_ := TRUE;
+            ELSE
+               rec_shop_order_configuration_.characteristic_first := 0;
+            END IF;
+         END;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_CONFIGURATION');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CHARACTERISTIC_DESC', rec_shop_order_configuration_.characteristic_desc);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CHARACTERISTIC_VALUE', rec_shop_order_configuration_.characteristic_value);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CHARACTERISTIC_UNIT_CODE', rec_shop_order_configuration_.characteristic_unit_code);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'QTY_CHARACTERISTIC', rec_shop_order_configuration_.qty_characteristic);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CHARACTERISTIC_FIRST', rec_shop_order_configuration_.characteristic_first);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CHARACTERISTIC_LAST', rec_shop_order_configuration_.characteristic_last);
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ConfigCharDisplay', rec_shop_order_configuration_.config_rowkey, 'EA_SHOP_ORDER_REP');
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ConfigSpecValue', rec_shop_order_configuration_.spec_rowkey, 'EA_SHOP_ORDER_REP');
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'BasePartCharacteristic', rec_shop_order_configuration_.base_rowkey, 'EA_SHOP_ORDER_REP');
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_CONFIGURATION');
+         Add_Result_Row___(result_key$_,
+                           binds$_ => binds$_,
+                           rec_shop_order_head_ => rec_shop_order_head_,
+                           rec_shop_order_configuration_ => rec_shop_order_configuration_,
+                           row_no$_ => row_no$_);
+      END LOOP;
+      CLOSE get_shop_order_configuration;
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_CONFIGURATIONS');
+      binds$_ := par_shop_order_configuration_;
+      END IF;
+   $END
+
+      has_shop_material_allocation_ := FALSE;
+      par_shop_material_allocation_ := binds$_;
+      binds$_.order_no := rec_shop_order_head_.order_no;
+      binds$_.release_no := rec_shop_order_head_.release_no;
+      binds$_.sequence_no := rec_shop_order_head_.sequence_no;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_ALLOCATIONS');
+      OPEN get_shop_material_allocation(rec_shop_order_head_.order_no, rec_shop_order_head_.release_no, rec_shop_order_head_.sequence_no);
+      LOOP
+         FETCH get_shop_material_allocation INTO rec_shop_material_allocation_;
+         has_shop_material_allocation_ := get_shop_material_allocation%FOUND OR get_shop_material_allocation%ROWCOUNT > 0;
+         EXIT WHEN get_shop_material_allocation%NOTFOUND;
+         DECLARE
+            uom_ varchar2(10);
+         BEGIN
+            uom_ := Inventory_Part_API.Get_Unit_Meas(rec_shop_material_allocation_.contract,rec_shop_material_allocation_.component_part);
+            rec_shop_material_allocation_.print_qty_required := SUBSTR(Iso_Unit_API.Convert_Unit_Quantity(rec_shop_material_allocation_.qty_required,uom_,rec_shop_material_allocation_.print_unit),0,17);
+               
+            IF part_ownership_API.encode(rec_shop_material_allocation_.comp_part_ownership) ='COMPANY OWNED' THEN
+               rec_shop_material_allocation_.comp_part_owner_name           := NULL;
+            ELSIF  part_ownership_API.encode(rec_shop_material_allocation_.comp_part_ownership) ='CUSTOMER OWNED'  THEN
+               $IF Component_Order_SYS.INSTALLED $THEN
+                  rec_shop_material_allocation_.comp_part_owner_name := Cust_Ord_Customer_API.Get_Name(rec_shop_material_allocation_.comp_part_owner_id);
+               $ELSE
+                  NULL;
+               $END
+            ELSIF  part_ownership_API.encode(rec_shop_material_allocation_.comp_part_ownership) ='SUPPLIER LOANED'  THEN
+               $IF Component_Purch_SYS.INSTALLED $THEN
+                  rec_shop_material_allocation_.comp_part_owner_name  := SUPPLIER_API.Get_Vendor_Name(rec_shop_material_allocation_.comp_part_owner_id);
+               $ELSE
+                  NULL;
+               $END
+            END IF;
+         EXCEPTION
+         WHEN OTHERS THEN
+            rec_shop_material_allocation_.print_qty_required := -1;
+         END;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_ALLOCATION');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'QTY_REQUIRED', rec_shop_material_allocation_.qty_required);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'UNIT_MEAS', rec_shop_material_allocation_.unit_meas);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'NOTE_ID', rec_shop_material_allocation_.note_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'MTRL_NOTES', rec_shop_material_allocation_.mtrl_notes);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'MTRL_PART_NOTES', rec_shop_material_allocation_.mtrl_part_notes);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'MTRL_PART_CATALOG_NOTES', rec_shop_material_allocation_.mtrl_part_catalog_notes);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PRINT_UNIT', rec_shop_material_allocation_.print_unit);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PRINT_QTY_REQUIRED', rec_shop_material_allocation_.print_qty_required);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMPONENT_CONDITION_CODE', rec_shop_material_allocation_.component_condition_code);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMPONENT_CONDITION_CODE_DESC', rec_shop_material_allocation_.component_condition_code_desc);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMP_PART_OWNERSHIP', rec_shop_material_allocation_.comp_part_ownership);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMP_PART_OWNER_ID', rec_shop_material_allocation_.comp_part_owner_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMP_PART_OWNER_NAME', rec_shop_material_allocation_.comp_part_owner_name);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'DRAW_POS_NO', rec_shop_material_allocation_.draw_pos_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_NO', rec_shop_material_allocation_.order_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RELEASE_NO', rec_shop_material_allocation_.release_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'SEQUENCE_NO', rec_shop_material_allocation_.sequence_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'LINE_ITEM_NO', rec_shop_material_allocation_.line_item_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMPONENT_PART', rec_shop_material_allocation_.component_part);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'COMP_PART_DESC', rec_shop_material_allocation_.comp_part_desc);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PROCEDURE_STEP', rec_shop_material_allocation_.procedure_step);
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopMaterialAlloc', rec_shop_material_allocation_.rowkey, 'EA_SHOP_ORDER_REP');
+         has_shop_material_alloc_guide_ := FALSE;
+         par_shop_material_alloc_guide_ := binds$_;
+         binds$_.order_no := rec_shop_material_allocation_.order_no;
+         binds$_.release_no := rec_shop_material_allocation_.release_no;
+         binds$_.sequence_no := rec_shop_material_allocation_.sequence_no;
+         binds$_.line_item_no := rec_shop_material_allocation_.line_item_no;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_ALLOC_GUIDES');
+         OPEN get_shop_material_alloc_guide(rec_shop_material_allocation_.order_no, rec_shop_material_allocation_.release_no, rec_shop_material_allocation_.sequence_no, rec_shop_material_allocation_.line_item_no);
+         LOOP
+            FETCH get_shop_material_alloc_guide INTO rec_shop_material_alloc_guide_;
+            has_shop_material_alloc_guide_ := get_shop_material_alloc_guide%FOUND OR get_shop_material_alloc_guide%ROWCOUNT > 0;
+            EXIT WHEN get_shop_material_alloc_guide%NOTFOUND;
+            Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_ALLOC_GUIDE');
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'GUIDELINE_SEQ', rec_shop_material_alloc_guide_.guideline_seq);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'X_COORDINATE', rec_shop_material_alloc_guide_.x_coordinate);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'Y_COORDINATE', rec_shop_material_alloc_guide_.y_coordinate);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'Z_COORDINATE', rec_shop_material_alloc_guide_.z_coordinate);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'REFERENCE_QTY', rec_shop_material_alloc_guide_.reference_qty);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'GUIDELINE_TEXT', rec_shop_material_alloc_guide_.guideline_text);
+            Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopMaterialAllocGuide', rec_shop_material_alloc_guide_.rowkey, 'EA_SHOP_ORDER_REP');
+            Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_ALLOC_GUIDE');
+            Add_Result_Row___(result_key$_,
+                              binds$_ => binds$_,
+                              rec_shop_order_head_ => rec_shop_order_head_,
+                              rec_shop_material_allocation_ => rec_shop_material_allocation_,
+                              rec_shop_material_alloc_guide_ => rec_shop_material_alloc_guide_,
+                              row_no$_ => row_no$_);
+         END LOOP;
+         CLOSE get_shop_material_alloc_guide;
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_ALLOC_GUIDES');
+         binds$_ := par_shop_material_alloc_guide_;
+         IF NOT has_shop_material_alloc_guide_ THEN
+            Add_Result_Row___(result_key$_,
+                              binds$_ => binds$_,
+                              rec_shop_order_head_ => rec_shop_order_head_,
+                              rec_shop_material_allocation_ => rec_shop_material_allocation_,
+                              row_no$_ => row_no$_);
+         END IF;
+
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_ALLOCATION');
+      END LOOP;
+      CLOSE get_shop_material_allocation;
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_ALLOCATIONS');
+      binds$_ := par_shop_material_allocation_;
+
+      has_shop_order_operation_ := FALSE;
+      par_shop_order_operation_ := binds$_;
+      binds$_.order_no := rec_shop_order_head_.order_no;
+      binds$_.release_no := rec_shop_order_head_.release_no;
+      binds$_.sequence_no := rec_shop_order_head_.sequence_no;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_OPERATIONS');
+      OPEN get_shop_order_operation(rec_shop_order_head_.order_no, rec_shop_order_head_.release_no, rec_shop_order_head_.sequence_no);
+      LOOP
+         FETCH get_shop_order_operation INTO rec_shop_order_operation_;
+         has_shop_order_operation_ := get_shop_order_operation%FOUND OR get_shop_order_operation%ROWCOUNT > 0;
+         EXIT WHEN get_shop_order_operation%NOTFOUND;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_OPERATION');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OPERATION_NO', rec_shop_order_operation_.operation_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OPERATION_DESCRIPTION', rec_shop_order_operation_.operation_description);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_shop_order_operation_.contract);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'WORK_CENTER_NO', rec_shop_order_operation_.work_center_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'WORK_CENTER_DESC', rec_shop_order_operation_.work_center_desc);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'MACH_NOTES', rec_shop_order_operation_.mach_notes);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_QTY_REMAINING', rec_shop_order_operation_.op_qty_remaining);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_HOURS_REMAINING', rec_shop_order_operation_.op_hours_remaining);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_START_DATE', rec_shop_order_operation_.op_start_date);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_START_TIME', rec_shop_order_operation_.op_start_time);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_FINISH_DATE', rec_shop_order_operation_.op_finish_date);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_FINISH_TIME', rec_shop_order_operation_.op_finish_time);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'MACHINE_NO', rec_shop_order_operation_.machine_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'NOTE_ID', rec_shop_order_operation_.note_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_ID', rec_shop_order_operation_.op_id);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'OPER_STATUS_CODE', rec_shop_order_operation_.oper_status_code);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_NO', rec_shop_order_operation_.order_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'RELEASE_NO', rec_shop_order_operation_.release_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'SEQUENCE_NO', rec_shop_order_operation_.sequence_no);
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopOrderOperation', rec_shop_order_operation_.rowkey, 'EA_SHOP_ORDER_REP');
+         has_shop_material_operation_ := FALSE;
+         par_shop_material_operation_ := binds$_;
+         binds$_.order_no := rec_shop_order_operation_.order_no;
+         binds$_.release_no := rec_shop_order_operation_.release_no;
+         binds$_.sequence_no := rec_shop_order_operation_.sequence_no;
+         binds$_.operation_no := rec_shop_order_operation_.operation_no;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_OPERATIONS');
+         OPEN get_shop_material_operation(rec_shop_order_operation_.order_no, rec_shop_order_operation_.release_no, rec_shop_order_operation_.sequence_no, rec_shop_order_operation_.operation_no);
+         LOOP
+            FETCH get_shop_material_operation INTO rec_shop_material_operation_;
+            has_shop_material_operation_ := get_shop_material_operation%FOUND OR get_shop_material_operation%ROWCOUNT > 0;
+            EXIT WHEN get_shop_material_operation%NOTFOUND;
+            BEGIN         
+               rec_shop_material_operation_.op_print_qty_required := Iso_Unit_API.Convert_Unit_Quantity(rec_shop_material_operation_.op_qty_required,rec_shop_material_operation_.op_unit_meas,rec_shop_material_operation_.op_print_unit);
+               
+               IF part_ownership_API.encode(rec_shop_material_operation_.op_comp_part_ownership) ='COMPANY OWNED' THEN
+                  rec_shop_material_operation_.op_comp_part_owner_name           := NULL;
+               ELSIF  part_ownership_API.encode(rec_shop_material_operation_.op_comp_part_ownership) ='CUSTOMER OWNED'  THEN
+                  $IF Component_Order_SYS.INSTALLED $THEN
+                     rec_shop_material_operation_.op_comp_part_owner_name := Cust_Ord_Customer_API.Get_Name(rec_shop_material_operation_.op_comp_part_owner_id);
+                  $ELSE
+                     NULL;
+                  $END
+               ELSIF  part_ownership_API.encode(rec_shop_material_operation_.op_comp_part_ownership) ='SUPPLIER LOANED'  THEN
+                  $IF Component_Purch_SYS.INSTALLED $THEN
+                     rec_shop_material_operation_.op_comp_part_owner_name  := SUPPLIER_API.Get_Vendor_Name(rec_shop_material_operation_.op_comp_part_owner_id);
+                  $ELSE
+                     NULL;
+                  $END
+               END IF;
+               
+            EXCEPTION
+            WHEN OTHERS THEN
+               rec_shop_material_operation_.op_print_qty_required := -1;
+            END;
+            Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_OPERATION');
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_LINE_ITEM_NO', rec_shop_material_operation_.op_line_item_no);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMPONENT_PART', rec_shop_material_operation_.op_component_part);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_shop_material_operation_.contract);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_QTY_REQUIRED', rec_shop_material_operation_.op_qty_required);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'NOTE_ID', rec_shop_material_operation_.note_id);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_PRINT_UNIT', rec_shop_material_operation_.op_print_unit);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMP_CONDITION_CODE', rec_shop_material_operation_.op_comp_condition_code);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMP_CONDITION_CODE_DESC', rec_shop_material_operation_.op_comp_condition_code_desc);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMP_PART_OWNERSHIP', rec_shop_material_operation_.op_comp_part_ownership);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMP_PART_OWNER_ID', rec_shop_material_operation_.op_comp_part_owner_id);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_DRAW_POS_NO', rec_shop_material_operation_.op_draw_pos_no);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMP_PART_OWNER_NAME', rec_shop_material_operation_.op_comp_part_owner_name);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_COMP_PART_DESC', rec_shop_material_operation_.op_comp_part_desc);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_UNIT_MEAS', rec_shop_material_operation_.op_unit_meas);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_MTRL_NOTES', rec_shop_material_operation_.op_mtrl_notes);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_MTRL_PART_NOTES', rec_shop_material_operation_.op_mtrl_part_notes);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_MTRL_PART_CATALOG_NOTES', rec_shop_material_operation_.op_mtrl_part_catalog_notes);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_PRINT_QTY_REQUIRED', rec_shop_material_operation_.op_print_qty_required);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'ORDER_NO', rec_shop_material_operation_.order_no);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'RELEASE_NO', rec_shop_material_operation_.release_no);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'SEQUENCE_NO', rec_shop_material_operation_.sequence_no);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OPERATION_NO', rec_shop_material_operation_.operation_no);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_PROCEDURE_STEP', rec_shop_material_operation_.procedure_step);
+            Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopMaterialAlloc', rec_shop_material_operation_.rowkey, 'EA_SHOP_ORDER_REP');
+            has_shopmatopguide_ := FALSE;
+            par_shopmatopguide_ := binds$_;
+            binds$_.order_no := rec_shop_material_operation_.order_no;
+            binds$_.release_no := rec_shop_material_operation_.release_no;
+            binds$_.sequence_no := rec_shop_material_operation_.sequence_no;
+            binds$_.op_line_item_no := rec_shop_material_operation_.op_line_item_no;
+            Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_OPERATION_GUIDES');
+            OPEN get_shopmatopguide(rec_shop_material_operation_.order_no, rec_shop_material_operation_.release_no, rec_shop_material_operation_.sequence_no, rec_shop_material_operation_.op_line_item_no);
+            LOOP
+               FETCH get_shopmatopguide INTO rec_shopmatopguide_;
+               has_shopmatopguide_ := get_shopmatopguide%FOUND OR get_shopmatopguide%ROWCOUNT > 0;
+               EXIT WHEN get_shopmatopguide%NOTFOUND;
+               Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_MATERIAL_OPERATION_GUIDE');
+               Xml_Record_Writer_SYS.Add_Element(xml$_, 'ALLOC_GUIDELINE_SEQ', rec_shopmatopguide_.alloc_guideline_seq);
+               Xml_Record_Writer_SYS.Add_Element(xml$_, 'ALLOC_X_COORDINATE', rec_shopmatopguide_.alloc_x_coordinate);
+               Xml_Record_Writer_SYS.Add_Element(xml$_, 'ALLOC_Y_COORDINATE', rec_shopmatopguide_.alloc_y_coordinate);
+               Xml_Record_Writer_SYS.Add_Element(xml$_, 'ALLOC_Z_COORDINATE', rec_shopmatopguide_.alloc_z_coordinate);
+               Xml_Record_Writer_SYS.Add_Element(xml$_, 'ALLOC_REFERENCE_QTY', rec_shopmatopguide_.alloc_reference_qty);
+               Xml_Record_Writer_SYS.Add_Element(xml$_, 'MTRL_WORK_GUIDELINES', rec_shopmatopguide_.mtrl_work_guidelines);
+               Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopMaterialAllocGuide', rec_shopmatopguide_.rowkey, 'EA_SHOP_ORDER_REP');
+               Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_OPERATION_GUIDE');
+               Add_Result_Row___(result_key$_,
+                                 binds$_ => binds$_,
+                                 rec_shop_order_head_ => rec_shop_order_head_,
+                                 rec_shop_order_operation_ => rec_shop_order_operation_,
+                                 rec_shop_material_operation_ => rec_shop_material_operation_,
+                                 rec_shopmatopguide_ => rec_shopmatopguide_,
+                                 row_no$_ => row_no$_);
+            END LOOP;
+            CLOSE get_shopmatopguide;
+            Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_OPERATION_GUIDES');
+            binds$_ := par_shopmatopguide_;
+            IF NOT has_shopmatopguide_ THEN
+               Add_Result_Row___(result_key$_,
+                                 binds$_ => binds$_,
+                                 rec_shop_order_head_ => rec_shop_order_head_,
+                                 rec_shop_order_operation_ => rec_shop_order_operation_,
+                                 rec_shop_material_operation_ => rec_shop_material_operation_,
+                                 row_no$_ => row_no$_);
+            END IF;
+
+            Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_OPERATION');
+         END LOOP;
+         CLOSE get_shop_material_operation;
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_MATERIAL_OPERATIONS');
+         binds$_ := par_shop_material_operation_;
+
+         has_shop_order_oper_guide_ := FALSE;
+         par_shop_order_oper_guide_ := binds$_;
+         binds$_.order_no := rec_shop_order_operation_.order_no;
+         binds$_.release_no := rec_shop_order_operation_.release_no;
+         binds$_.sequence_no := rec_shop_order_operation_.sequence_no;
+         binds$_.operation_no := rec_shop_order_operation_.operation_no;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_OPER_GUIDES');
+         OPEN get_shop_order_oper_guide(rec_shop_order_operation_.order_no, rec_shop_order_operation_.release_no, rec_shop_order_operation_.sequence_no, rec_shop_order_operation_.operation_no);
+         LOOP
+            FETCH get_shop_order_oper_guide INTO rec_shop_order_oper_guide_;
+            has_shop_order_oper_guide_ := get_shop_order_oper_guide%FOUND OR get_shop_order_oper_guide%ROWCOUNT > 0;
+            EXIT WHEN get_shop_order_oper_guide%NOTFOUND;
+            Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_OPER_GUIDE');
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_WORK_GUIDE_SEQ', rec_shop_order_oper_guide_.op_work_guide_seq);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'OP_WORK_GUIDELINES', rec_shop_order_oper_guide_.op_work_guidelines);
+            Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopOrderOperGuide', rec_shop_order_oper_guide_.rowkey, 'EA_SHOP_ORDER_REP');
+            Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_OPER_GUIDE');
+            Add_Result_Row___(result_key$_,
+                              binds$_ => binds$_,
+                              rec_shop_order_head_ => rec_shop_order_head_,
+                              rec_shop_order_operation_ => rec_shop_order_operation_,
+                              rec_shop_order_oper_guide_ => rec_shop_order_oper_guide_,
+                              row_no$_ => row_no$_);
+         END LOOP;
+         CLOSE get_shop_order_oper_guide;
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_OPER_GUIDES');
+         binds$_ := par_shop_order_oper_guide_;
+
+         has_shop_order_oper_tool_ := FALSE;
+         par_shop_order_oper_tool_ := binds$_;
+         binds$_.order_no := rec_shop_order_operation_.order_no;
+         binds$_.release_no := rec_shop_order_operation_.release_no;
+         binds$_.sequence_no := rec_shop_order_operation_.sequence_no;
+         binds$_.operation_no := rec_shop_order_operation_.operation_no;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_OPER_TOOLS');
+         OPEN get_shop_order_oper_tool(rec_shop_order_operation_.order_no, rec_shop_order_operation_.release_no, rec_shop_order_operation_.sequence_no, rec_shop_order_operation_.operation_no);
+         LOOP
+            FETCH get_shop_order_oper_tool INTO rec_shop_order_oper_tool_;
+            has_shop_order_oper_tool_ := get_shop_order_oper_tool%FOUND OR get_shop_order_oper_tool%ROWCOUNT > 0;
+            EXIT WHEN get_shop_order_oper_tool%NOTFOUND;
+            Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_OPER_TOOL');
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'TOOL_SEQUENCE', rec_shop_order_oper_tool_.tool_sequence);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'TOOL_ID', rec_shop_order_oper_tool_.tool_id);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_shop_order_oper_tool_.contract);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'TOOL_DESCRIPTION', rec_shop_order_oper_tool_.tool_description);
+            Xml_Record_Writer_SYS.Add_Element(xml$_, 'LAST_USED', rec_shop_order_oper_tool_.last_used);
+            Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'ShopOrderOperTool', rec_shop_order_oper_tool_.rowkey, 'EA_SHOP_ORDER_REP');
+            Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_OPER_TOOL');
+            Add_Result_Row___(result_key$_,
+                              binds$_ => binds$_,
+                              rec_shop_order_head_ => rec_shop_order_head_,
+                              rec_shop_order_operation_ => rec_shop_order_operation_,
+                              rec_shop_order_oper_tool_ => rec_shop_order_oper_tool_,
+                              row_no$_ => row_no$_);
+         END LOOP;
+         CLOSE get_shop_order_oper_tool;
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_OPER_TOOLS');
+         binds$_ := par_shop_order_oper_tool_;
+         IF NOT has_shop_material_operation_ AND NOT has_shop_order_oper_guide_ AND NOT has_shop_order_oper_tool_ THEN
+            Add_Result_Row___(result_key$_,
+                              binds$_ => binds$_,
+                              rec_shop_order_head_ => rec_shop_order_head_,
+                              rec_shop_order_operation_ => rec_shop_order_operation_,
+                              row_no$_ => row_no$_);
+         END IF;
+
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_OPERATION');
+      END LOOP;
+      CLOSE get_shop_order_operation;
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_OPERATIONS');
+      binds$_ := par_shop_order_operation_;
+
+      has_doc_phrase_ := FALSE;
+      par_doc_phrase_ := binds$_;
+      binds$_.contract := rec_shop_order_head_.contract;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'DOC_PHRASES');
+      OPEN get_doc_phrase(rec_shop_order_head_.contract);
+      LOOP
+         FETCH get_doc_phrase INTO rec_doc_phrase_;
+         has_doc_phrase_ := get_doc_phrase%FOUND OR get_doc_phrase%ROWCOUNT > 0;
+         EXIT WHEN get_doc_phrase%NOTFOUND;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'DOC_PHRASE');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'PHRASE_TEXT', rec_doc_phrase_.phrase_text);
+         Xml_Record_Writer_SYS.Add_Custom_Fields(xml$_, 'MpccomPhraseText', rec_doc_phrase_.rowkey, 'EA_SHOP_ORDER_REP');
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'DOC_PHRASE');
+         Add_Result_Row___(result_key$_,
+                           binds$_ => binds$_,
+                           rec_shop_order_head_ => rec_shop_order_head_,
+                           rec_doc_phrase_ => rec_doc_phrase_,
+                           row_no$_ => row_no$_);
+      END LOOP;
+      CLOSE get_doc_phrase;
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'DOC_PHRASES');
+      binds$_ := par_doc_phrase_;
+
+      has_shop_order_by_product_ := FALSE;
+      par_shop_order_by_product_ := binds$_;
+      binds$_.order_no := rec_shop_order_head_.order_no;
+      binds$_.release_no := rec_shop_order_head_.release_no;
+      binds$_.sequence_no := rec_shop_order_head_.sequence_no;
+      Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_BY_PRODUCT');
+      OPEN get_shop_order_by_product(rec_shop_order_head_.order_no, rec_shop_order_head_.release_no, rec_shop_order_head_.sequence_no);
+      LOOP
+         FETCH get_shop_order_by_product INTO rec_shop_order_by_product_;
+         has_shop_order_by_product_ := get_shop_order_by_product%FOUND OR get_shop_order_by_product%ROWCOUNT > 0;
+         EXIT WHEN get_shop_order_by_product%NOTFOUND;
+         Xml_Record_Writer_SYS.Start_Element(xml$_, 'SHOP_ORDER_BY_PRODUCT');
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_LINE_ITEM_NO', rec_shop_order_by_product_.by_product_line_item_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_PART_NO', rec_shop_order_by_product_.by_product_part_no);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_PART_DESC', rec_shop_order_by_product_.by_product_part_desc);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'CONTRACT', rec_shop_order_by_product_.contract);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_QTY_PER_UNIT', rec_shop_order_by_product_.by_product_qty_per_unit);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_UNIT_MEAS', rec_shop_order_by_product_.by_product_unit_meas);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_LOT_SIZE', rec_shop_order_by_product_.by_product_lot_size);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PRODUCT_CONDITION_CODE', rec_shop_order_by_product_.by_product_condition_code);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PROD_CONDITION_CODE_DESC', rec_shop_order_by_product_.by_prod_condition_code_desc);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PROD_OWNERSHIP', rec_shop_order_by_product_.by_prod_ownership);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PROD_OWNER', rec_shop_order_by_product_.by_prod_owner);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PROD_GEN_OH_FACTOR', rec_shop_order_by_product_.by_prod_gen_oh_factor);
+         Xml_Record_Writer_SYS.Add_Element(xml$_, 'BY_PROD_OP_COST_FACTOR', rec_shop_order_by_product_.by_prod_op_cost_factor);
+         Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_BY_PRODUCT');
+         Add_Result_Row___(result_key$_,
+                           binds$_ => binds$_,
+                           rec_shop_order_head_ => rec_shop_order_head_,
+                           rec_shop_order_by_product_ => rec_shop_order_by_product_,
+                           row_no$_ => row_no$_);
+      END LOOP;
+      CLOSE get_shop_order_by_product;
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_BY_PRODUCT');
+      binds$_ := par_shop_order_by_product_;
+      IF NOT has_shop_order_configuration_ AND NOT has_shop_material_allocation_ AND NOT has_shop_order_operation_ AND NOT has_doc_phrase_ AND NOT has_shop_order_by_product_ THEN
+         Add_Result_Row___(result_key$_,
+                           binds$_ => binds$_,
+                           rec_shop_order_head_ => rec_shop_order_head_,
+                           row_no$_ => row_no$_);
+      END IF;
+
+      Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_HEAD');
+   END LOOP;
+   CLOSE cur_shop_order_head_;
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'SHOP_ORDER_HEADS');
+   binds$_ := par_shop_order_head_;
+   IF NOT has_shop_order_head_ THEN
+      Add_Result_Row___(result_key$_,
+                        binds$_ => binds$_,
+                        row_no$_ => row_no$_);
+   END IF;
+
+   Xml_Record_Writer_SYS.End_Element(xml$_, 'EA_SHOP_ORDER_REP');
+   Report_SYS.Finish_Xml_Report('EA_SHOP_ORDER_REP', result_key$_, xml$_);
+   EXCEPTION
+      WHEN OTHERS THEN
+         IF get_shop_order_head%ISOPEN THEN
+            CLOSE get_shop_order_head;
+         END IF;
+         IF get_shop_material_allocation%ISOPEN THEN
+            CLOSE get_shop_material_allocation;
+         END IF;
+         IF get_shop_material_alloc_guide%ISOPEN THEN
+            CLOSE get_shop_material_alloc_guide;
+         END IF;
+      $IF Component_CFGCHR_SYS.INSTALLED $THEN
+         IF get_shop_order_configuration%ISOPEN THEN
+            CLOSE get_shop_order_configuration;
+         END IF;
+      $END
+         IF get_shop_order_operation%ISOPEN THEN
+            CLOSE get_shop_order_operation;
+         END IF;
+         IF get_shop_material_operation%ISOPEN THEN
+            CLOSE get_shop_material_operation;
+         END IF;
+         IF get_shopmatopguide%ISOPEN THEN
+            CLOSE get_shopmatopguide;
+         END IF;
+         IF get_shop_order_oper_guide%ISOPEN THEN
+            CLOSE get_shop_order_oper_guide;
+         END IF;
+         IF get_shop_order_oper_tool%ISOPEN THEN
+            CLOSE get_shop_order_oper_tool;
+         END IF;
+         IF get_doc_phrase%ISOPEN THEN
+            CLOSE get_doc_phrase;
+         END IF;
+         IF get_shop_order_by_product%ISOPEN THEN
+            CLOSE get_shop_order_by_product;
+         END IF;
+         RAISE;
+END Execute_Report;
+
+-----------------------------------------------------------------------------
+-------------------- FOUNDATION1 METHODS ------------------------------------
+-----------------------------------------------------------------------------
+-- Test
+--   Invokes the report method for testing purposes.
+-- Init
+--   Dummy procedure that can be called at database startup to ensure that
+--   this package is loaded into memory for performance reasons only.
+-----------------------------------------------------------------------------
+
+FUNCTION Test (
+   order_no_                 IN VARCHAR2,
+   release_no_               IN VARCHAR2,
+   sequence_no_              IN VARCHAR2)
+RETURN NUMBER
+IS
+   result_key_     NUMBER;
+   report_attr_    VARCHAR2(200);
+   parameter_attr_ VARCHAR2(32000);
+BEGIN
+   General_SYS.Init_Method(lu_name_, 'EA_SHOP_ORDER_RPI', 'Test');
+   Report_SYS.Get_Result_Key__(result_key_);
+   Client_SYS.Add_To_Attr('RESULT_KEY', result_key_, report_attr_);
+   IF (order_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('ORDER_NO', order_no_, parameter_attr_);
+   END IF;
+   IF (release_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('RELEASE_NO', release_no_, parameter_attr_);
+   END IF;
+   IF (sequence_no_ IS NOT NULL) THEN
+      Client_SYS.Add_To_Attr('SEQUENCE_NO', sequence_no_, parameter_attr_);
+   END IF;
+   Execute_Report(report_attr_, parameter_attr_);
+   RETURN result_key_;
+END Test;
+
+
+PROCEDURE Init
+IS
+BEGIN
+   NULL;
+END Init;
+
+END EA_SHOP_ORDER_RPI;
+/
+SHOW ERROR

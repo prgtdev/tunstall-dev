@@ -1,0 +1,1147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EA_SHOP_ORDER_REP_REQUEST
+   xmlns="urn:ifsworld-com:ea_shop_order_rep"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:ifsworld-com:ea_shop_order_rep ../schemas/EaShopOrderRep.xsd">
+   <PROCESSING_INFO>
+      <FORMATTING_OPTIONS>
+         <COPIES>1</COPIES>
+         <PAGE_FROM>1</PAGE_FROM>
+         <PAGE_TO>99</PAGE_TO>
+         <LANG_CODE>en</LANG_CODE>
+         <LAYOUT_NAME/>
+         <PRINT_DIRECTORY>.</PRINT_DIRECTORY>
+         <LAYOUT_FILE/>
+         <SELECTED_PRINTER/>
+         <LANGUAGE_LAYOUT_FILE/>
+         <PAPER_FORMAT/>
+      </FORMATTING_OPTIONS>
+      <PROCESSING_ATTRIBUTES>
+         <EXECUTION_TIME>2009-01-01T11:22:00</EXECUTION_TIME>
+         <ORDERED_BY/>
+         <JOB_ID>12345</JOB_ID>
+         <COMMENT/>
+         <ORDER_TIME>2009-01-01T11:22:00</ORDER_TIME>
+         <REPORT_TITLE>Ea Shop Order</REPORT_TITLE>
+         <PRINTED_BY/>
+         <CREATED/>
+      </PROCESSING_ATTRIBUTES>
+      <STANDARD_TRANSLATIONS>
+         <ATTRIBUTE_DISPLAY_TEXTS>
+            <EXECUTION_TIME>Execution Time:</EXECUTION_TIME>
+            <ORDERED_BY>Ordered By:</ORDERED_BY>
+            <JOB_ID>Job Id:</JOB_ID>
+            <COMMENT>Comment:</COMMENT>
+            <ORDER_TIME>Order Time:</ORDER_TIME>
+            <REPORT_TITLE>Report:</REPORT_TITLE>
+            <PRINTED_BY>Printed By:</PRINTED_BY>
+            <CURRENT_TIME>Current Time:</CURRENT_TIME>
+            <CURRENT_DATE>Current Date:</CURRENT_DATE>
+            <PAGE>Page</PAGE>
+            <END_OF_REPORT>-------- End of Report --------</END_OF_REPORT>
+            <REPORT_PARAMETERS>Rep. Params:</REPORT_PARAMETERS>
+            <APPLICATION_TEXT>IFS Applications</APPLICATION_TEXT>
+            <CREATED>Created:</CREATED>
+            <NONE>none</NONE>
+            <NOTES>Notes:</NOTES>
+            <NO_DATA_FOUND>No data found</NO_DATA_FOUND>
+         </ATTRIBUTE_DISPLAY_TEXTS>
+         <SITE_TEXTS>
+            <COMPANY_NAME/>
+            <SITE_TEXT_1/>
+            <SITE_TEXT_2/>
+            <SITE_TEXT_3/>
+            <SITE_TEXT_4/>
+            <SITE_TEXT_5/>
+            <SITE_TEXT_6/>
+            <SITE_TEXT_7/>
+            <SITE_TEXT_8/>
+            <SITE_TEXT_9/>
+            <SITE_TEXT_10/>
+         </SITE_TEXTS>
+      </STANDARD_TRANSLATIONS>
+   </PROCESSING_INFO>
+   <EA_SHOP_ORDER_REP_DATA_ASSEMBLY_PARAMETERS>
+      <ORDER_NO>
+         <DISPLAY_TEXT>Shop Order No:</DISPLAY_TEXT>
+         <VALUE/>
+      </ORDER_NO>
+      <RELEASE_NO>
+         <DISPLAY_TEXT>Release No:</DISPLAY_TEXT>
+         <VALUE/>
+      </RELEASE_NO>
+      <SEQUENCE_NO>
+         <DISPLAY_TEXT>Sequence No:</DISPLAY_TEXT>
+         <VALUE/>
+      </SEQUENCE_NO>
+   </EA_SHOP_ORDER_REP_DATA_ASSEMBLY_PARAMETERS>
+   <EA_SHOP_ORDER_REP_ARCHIVE_VARIABLES/>
+   <EA_SHOP_ORDER_REP_TRANSLATIONS>
+      <REPORT_TEXTS>
+         <CONFIGCHAR>Configuration Characteristics</CONFIGCHAR>
+         <OEORDERTEXT>Corresponding customer order:</OEORDERTEXT>
+         <MATALLOCTEXT>Material Allocations</MATALLOCTEXT>
+         <ALLOCGUIDE>Material Work Guideline</ALLOCGUIDE>
+         <OPMATTEXT>Operation Material Allocations</OPMATTEXT>
+         <OPERGUIDE>Operation Work Guideline</OPERGUIDE>
+         <QTYTEXT>Quantity to report</QTYTEXT>
+         <TIMETEXT>Time to report</TIMETEXT>
+         <TOOLOPTEXT>Tool Usage</TOOLOPTEXT>
+         <UNITERROR>Unit Error</UNITERROR>
+         <BYPRODINFO>By Product Information</BYPRODINFO>
+      </REPORT_TEXTS>
+      <ATTRIBUTE_DISPLAY_TEXTS>
+         <ORDER_NO>Order No:</ORDER_NO>
+         <RELEASE_NO>Release No:</RELEASE_NO>
+         <SEQUENCE_NO>Sequence No:</SEQUENCE_NO>
+         <SHOP_ORDER_HEADS>
+            <SHOP_ORDER_HEAD>
+               <ORDER_NO>Shop Order No:</ORDER_NO>
+               <RELEASE_NO>Release No:</RELEASE_NO>
+               <SEQUENCE_NO>Sequence No:</SEQUENCE_NO>
+               <CONTRACT>Site:</CONTRACT>
+               <PART_NO>Part No:</PART_NO>
+               <PART_DESCRIPTION>Part Description:</PART_DESCRIPTION>
+               <REVISED_DUE_DATE>Revised Due Date:</REVISED_DUE_DATE>
+               <REVISED_QTY_DUE>Lot Size:</REVISED_QTY_DUE>
+               <REVISED_START_DATE>Revised Start Date:</REVISED_START_DATE>
+               <OE_ORDER_NO>Corresponding Customer Order::</OE_ORDER_NO>
+               <ORDER_NOTES>Shop Order Text:</ORDER_NOTES>
+               <INV_PART_NOTES>Inv. Part Text:</INV_PART_NOTES>
+               <PART_CATALOG_NOTES>Part Catalog Text:</PART_CATALOG_NOTES>
+               <CONFIGURATION_ID>Configuration ID:</CONFIGURATION_ID>
+               <NOTE_ID>Note Id:</NOTE_ID>
+               <CONDITION_CODE>Condition Code:</CONDITION_CODE>
+               <CONDITION_CODE_DESCRIPTION>Condition Code Description:</CONDITION_CODE_DESCRIPTION>
+               <PART_OWNERSHIP>Ownership:</PART_OWNERSHIP>
+               <PART_OWNER_ID>Owner:</PART_OWNER_ID>
+               <PART_OWNER_NAME>Owner Name:</PART_OWNER_NAME>
+               <ORDER_CODE>Shop Order Type:</ORDER_CODE>
+               <SHOP_ORDER_CONFIGURATIONS>
+                  <SHOP_ORDER_CONFIGURATION>
+                     <CHARACTERISTIC_DESC>Characteristic:</CHARACTERISTIC_DESC>
+                     <CHARACTERISTIC_VALUE>Characteristic Value:</CHARACTERISTIC_VALUE>
+                     <CHARACTERISTIC_UNIT_CODE>Unit:</CHARACTERISTIC_UNIT_CODE>
+                     <QTY_CHARACTERISTIC>Quantity on option:</QTY_CHARACTERISTIC>
+                     <CHARACTERISTIC_FIRST>First Characteristic:</CHARACTERISTIC_FIRST>
+                     <CHARACTERISTIC_LAST>Last Characteristic:</CHARACTERISTIC_LAST>
+                  </SHOP_ORDER_CONFIGURATION>
+               </SHOP_ORDER_CONFIGURATIONS>
+               <SHOP_MATERIAL_ALLOCATIONS>
+                  <SHOP_MATERIAL_ALLOCATION>
+                     <QTY_REQUIRED>Qty Required:</QTY_REQUIRED>
+                     <UNIT_MEAS>Unit Meas:</UNIT_MEAS>
+                     <NOTE_ID>Note Id:</NOTE_ID>
+                     <MTRL_NOTES>MtrlNotes:</MTRL_NOTES>
+                     <MTRL_PART_NOTES>MtrlPartNotes:</MTRL_PART_NOTES>
+                     <MTRL_PART_CATALOG_NOTES>MtrlPartCatalogNotes:</MTRL_PART_CATALOG_NOTES>
+                     <PRINT_UNIT>Print Unit Meas:</PRINT_UNIT>
+                     <PRINT_QTY_REQUIRED>Print Qty Required:</PRINT_QTY_REQUIRED>
+                     <COMPONENT_CONDITION_CODE>Condition Code:</COMPONENT_CONDITION_CODE>
+                     <COMPONENT_CONDITION_CODE_DESC>Condition Code Description:</COMPONENT_CONDITION_CODE_DESC>
+                     <COMP_PART_OWNERSHIP>Ownership:</COMP_PART_OWNERSHIP>
+                     <COMP_PART_OWNER_ID>Owner:</COMP_PART_OWNER_ID>
+                     <COMP_PART_OWNER_NAME>Owner name:</COMP_PART_OWNER_NAME>
+                     <DRAW_POS_NO>Position:</DRAW_POS_NO>
+                     <ORDER_NO>Order No:</ORDER_NO>
+                     <RELEASE_NO>Release No:</RELEASE_NO>
+                     <SEQUENCE_NO>Sequence No:</SEQUENCE_NO>
+                     <LINE_ITEM_NO>Position:</LINE_ITEM_NO>
+                     <COMPONENT_PART>Part No:</COMPONENT_PART>
+                     <COMP_PART_DESC>Part:</COMP_PART_DESC>
+                     <PROCEDURE_STEP>Procedure Step:</PROCEDURE_STEP>
+                     <SHOP_MATERIAL_ALLOC_GUIDES>
+                        <SHOP_MATERIAL_ALLOC_GUIDE>
+                           <GUIDELINE_SEQ>Guideline Seq:</GUIDELINE_SEQ>
+                           <X_COORDINATE>X Coordinate:</X_COORDINATE>
+                           <Y_COORDINATE>Y Coordinate:</Y_COORDINATE>
+                           <Z_COORDINATE>Z Coordinate:</Z_COORDINATE>
+                           <REFERENCE_QTY>Reference Qty:</REFERENCE_QTY>
+                           <GUIDELINE_TEXT>Guideline Text:</GUIDELINE_TEXT>
+                        </SHOP_MATERIAL_ALLOC_GUIDE>
+                     </SHOP_MATERIAL_ALLOC_GUIDES>
+                  </SHOP_MATERIAL_ALLOCATION>
+               </SHOP_MATERIAL_ALLOCATIONS>
+               <SHOP_ORDER_OPERATIONS>
+                  <SHOP_ORDER_OPERATION>
+                     <OPERATION_NO>Operation No:</OPERATION_NO>
+                     <OPERATION_DESCRIPTION>Operation:</OPERATION_DESCRIPTION>
+                     <CONTRACT>Site:</CONTRACT>
+                     <WORK_CENTER_NO>Work Center No:</WORK_CENTER_NO>
+                     <WORK_CENTER_DESC>Work Center:</WORK_CENTER_DESC>
+                     <MACH_NOTES>MachNotes:</MACH_NOTES>
+                     <OP_QTY_REMAINING>Op Qty Remaining:</OP_QTY_REMAINING>
+                     <OP_HOURS_REMAINING>Op Hours Remaining:</OP_HOURS_REMAINING>
+                     <OP_START_DATE>Op Start Date:</OP_START_DATE>
+                     <OP_START_TIME>Op Start Time:</OP_START_TIME>
+                     <OP_FINISH_DATE>Op Finish Date:</OP_FINISH_DATE>
+                     <OP_FINISH_TIME>Op Finish Time:</OP_FINISH_TIME>
+                     <MACHINE_NO>Machine No:</MACHINE_NO>
+                     <NOTE_ID>Note Id:</NOTE_ID>
+                     <OP_ID>Operation Id:</OP_ID>
+                     <OPER_STATUS_CODE>Operation Status:</OPER_STATUS_CODE>
+                     <ORDER_NO>Order No:</ORDER_NO>
+                     <RELEASE_NO>Release No:</RELEASE_NO>
+                     <SEQUENCE_NO>Sequence No:</SEQUENCE_NO>
+                     <SHOP_MATERIAL_OPERATIONS>
+                        <SHOP_MATERIAL_OPERATION>
+                           <OP_LINE_ITEM_NO>Position:</OP_LINE_ITEM_NO>
+                           <OP_COMPONENT_PART>Part No:</OP_COMPONENT_PART>
+                           <CONTRACT>Contract:</CONTRACT>
+                           <OP_QTY_REQUIRED>Qty Required:</OP_QTY_REQUIRED>
+                           <NOTE_ID>Note Id:</NOTE_ID>
+                           <OP_PRINT_UNIT>Print Unit Meas:</OP_PRINT_UNIT>
+                           <OP_COMP_CONDITION_CODE>Condition Code:</OP_COMP_CONDITION_CODE>
+                           <OP_COMP_CONDITION_CODE_DESC>Condition Code Description:</OP_COMP_CONDITION_CODE_DESC>
+                           <OP_COMP_PART_OWNERSHIP>Ownership:</OP_COMP_PART_OWNERSHIP>
+                           <OP_COMP_PART_OWNER_ID>Owner:</OP_COMP_PART_OWNER_ID>
+                           <OP_DRAW_POS_NO>Position:</OP_DRAW_POS_NO>
+                           <OP_COMP_PART_OWNER_NAME>Owner Name:</OP_COMP_PART_OWNER_NAME>
+                           <OP_COMP_PART_DESC>Part:</OP_COMP_PART_DESC>
+                           <OP_UNIT_MEAS>Unit Meas:</OP_UNIT_MEAS>
+                           <OP_MTRL_NOTES>OpMtrlNotes:</OP_MTRL_NOTES>
+                           <OP_MTRL_PART_NOTES>OpMtrlPartNotes:</OP_MTRL_PART_NOTES>
+                           <OP_MTRL_PART_CATALOG_NOTES>OpMtrlPartCatalogNotes:</OP_MTRL_PART_CATALOG_NOTES>
+                           <OP_PRINT_QTY_REQUIRED>Print Qty Required:</OP_PRINT_QTY_REQUIRED>
+                           <ORDER_NO>Order No:</ORDER_NO>
+                           <RELEASE_NO>Release No:</RELEASE_NO>
+                           <SEQUENCE_NO>Sequence No:</SEQUENCE_NO>
+                           <OPERATION_NO>Operation No:</OPERATION_NO>
+                           <OP_PROCEDURE_STEP>Procedure Step:</OP_PROCEDURE_STEP>
+                           <SHOP_MATERIAL_OPERATION_GUIDES>
+                              <SHOP_MATERIAL_OPERATION_GUIDE>
+                                 <ALLOC_GUIDELINE_SEQ>Guideline No:</ALLOC_GUIDELINE_SEQ>
+                                 <ALLOC_X_COORDINATE>X Coordinate:</ALLOC_X_COORDINATE>
+                                 <ALLOC_Y_COORDINATE>Y Coordinate:</ALLOC_Y_COORDINATE>
+                                 <ALLOC_Z_COORDINATE>Z Coordinate:</ALLOC_Z_COORDINATE>
+                                 <ALLOC_REFERENCE_QTY>Reference Quantity:</ALLOC_REFERENCE_QTY>
+                                 <MTRL_WORK_GUIDELINES>Mtrl Work Guidelines:</MTRL_WORK_GUIDELINES>
+                              </SHOP_MATERIAL_OPERATION_GUIDE>
+                           </SHOP_MATERIAL_OPERATION_GUIDES>
+                        </SHOP_MATERIAL_OPERATION>
+                     </SHOP_MATERIAL_OPERATIONS>
+                     <SHOP_ORDER_OPER_GUIDES>
+                        <SHOP_ORDER_OPER_GUIDE>
+                           <OP_WORK_GUIDE_SEQ>Op Work Guidelines No:</OP_WORK_GUIDE_SEQ>
+                           <OP_WORK_GUIDELINES>Op Work Guidelines:</OP_WORK_GUIDELINES>
+                        </SHOP_ORDER_OPER_GUIDE>
+                     </SHOP_ORDER_OPER_GUIDES>
+                     <SHOP_ORDER_OPER_TOOLS>
+                        <SHOP_ORDER_OPER_TOOL>
+                           <TOOL_SEQUENCE>Tool Sequence:</TOOL_SEQUENCE>
+                           <TOOL_ID>Tool ID:</TOOL_ID>
+                           <CONTRACT>Contract:</CONTRACT>
+                           <TOOL_DESCRIPTION>Tool Description:</TOOL_DESCRIPTION>
+                           <LAST_USED>Last Used:</LAST_USED>
+                        </SHOP_ORDER_OPER_TOOL>
+                     </SHOP_ORDER_OPER_TOOLS>
+                  </SHOP_ORDER_OPERATION>
+               </SHOP_ORDER_OPERATIONS>
+               <DOC_PHRASES>
+                  <DOC_PHRASE>
+                     <PHRASE_TEXT>Phrase Text:</PHRASE_TEXT>
+                  </DOC_PHRASE>
+               </DOC_PHRASES>
+               <SHOP_ORDER_BY_PRODUCT>
+                  <SHOP_ORDER_BY_PRODUCT>
+                     <BY_PRODUCT_LINE_ITEM_NO>By Product Line Item No:</BY_PRODUCT_LINE_ITEM_NO>
+                     <BY_PRODUCT_PART_NO>Part No:</BY_PRODUCT_PART_NO>
+                     <BY_PRODUCT_PART_DESC>By Product Part Desc:</BY_PRODUCT_PART_DESC>
+                     <CONTRACT>Contract:</CONTRACT>
+                     <BY_PRODUCT_QTY_PER_UNIT>Qty Per Unit:</BY_PRODUCT_QTY_PER_UNIT>
+                     <BY_PRODUCT_UNIT_MEAS>Unit Meas:</BY_PRODUCT_UNIT_MEAS>
+                     <BY_PRODUCT_LOT_SIZE>Lot Size:</BY_PRODUCT_LOT_SIZE>
+                     <BY_PRODUCT_CONDITION_CODE>Condition Code:</BY_PRODUCT_CONDITION_CODE>
+                     <BY_PROD_CONDITION_CODE_DESC>By Prod Condition Code Desc:</BY_PROD_CONDITION_CODE_DESC>
+                     <BY_PROD_OWNERSHIP>Ownership:</BY_PROD_OWNERSHIP>
+                     <BY_PROD_OWNER>Owner:</BY_PROD_OWNER>
+                     <BY_PROD_GEN_OH_FACTOR>Gen OH Factor:</BY_PROD_GEN_OH_FACTOR>
+                     <BY_PROD_OP_COST_FACTOR>Op Cost Factor:</BY_PROD_OP_COST_FACTOR>
+                  </SHOP_ORDER_BY_PRODUCT>
+               </SHOP_ORDER_BY_PRODUCT>
+            </SHOP_ORDER_HEAD>
+         </SHOP_ORDER_HEADS>
+      </ATTRIBUTE_DISPLAY_TEXTS>
+   </EA_SHOP_ORDER_REP_TRANSLATIONS>
+   <EA_SHOP_ORDER_REP>
+      <ORDER_NO>ABC</ORDER_NO>
+      <RELEASE_NO>ABC</RELEASE_NO>
+      <SEQUENCE_NO>ABC</SEQUENCE_NO>
+      <SHOP_ORDER_HEADS>
+         <SHOP_ORDER_HEAD>
+            <ORDER_NO>ABC</ORDER_NO>
+            <RELEASE_NO>ABC</RELEASE_NO>
+            <SEQUENCE_NO>ABC</SEQUENCE_NO>
+            <CONTRACT>ABC</CONTRACT>
+            <PART_NO>ABC</PART_NO>
+            <PART_DESCRIPTION>ABC</PART_DESCRIPTION>
+            <REVISED_DUE_DATE>2009-01-01T11:22:00</REVISED_DUE_DATE>
+            <REVISED_QTY_DUE>123</REVISED_QTY_DUE>
+            <REVISED_START_DATE>2009-01-01T11:22:00</REVISED_START_DATE>
+            <OE_ORDER_NO>ABC</OE_ORDER_NO>
+            <ORDER_NOTES>ABC</ORDER_NOTES>
+            <INV_PART_NOTES>ABC</INV_PART_NOTES>
+            <PART_CATALOG_NOTES>ABC</PART_CATALOG_NOTES>
+            <CONFIGURATION_ID>ABC</CONFIGURATION_ID>
+            <NOTE_ID>123</NOTE_ID>
+            <CONDITION_CODE>ABC</CONDITION_CODE>
+            <CONDITION_CODE_DESCRIPTION>ABC</CONDITION_CODE_DESCRIPTION>
+            <PART_OWNERSHIP>ABC</PART_OWNERSHIP>
+            <PART_OWNER_ID>ABC</PART_OWNER_ID>
+            <PART_OWNER_NAME>ABC</PART_OWNER_NAME>
+            <ORDER_CODE>ABC</ORDER_CODE>
+            <SHOP_ORDER_CONFIGURATIONS>
+               <SHOP_ORDER_CONFIGURATION>
+                  <CHARACTERISTIC_DESC>ABC</CHARACTERISTIC_DESC>
+                  <CHARACTERISTIC_VALUE>ABC</CHARACTERISTIC_VALUE>
+                  <CHARACTERISTIC_UNIT_CODE>ABC</CHARACTERISTIC_UNIT_CODE>
+                  <QTY_CHARACTERISTIC>123</QTY_CHARACTERISTIC>
+                  <CHARACTERISTIC_FIRST>123</CHARACTERISTIC_FIRST>
+                  <CHARACTERISTIC_LAST>123</CHARACTERISTIC_LAST>
+               </SHOP_ORDER_CONFIGURATION>
+               <SHOP_ORDER_CONFIGURATION>
+                  <CHARACTERISTIC_DESC>ABC</CHARACTERISTIC_DESC>
+                  <CHARACTERISTIC_VALUE>ABC</CHARACTERISTIC_VALUE>
+                  <CHARACTERISTIC_UNIT_CODE>ABC</CHARACTERISTIC_UNIT_CODE>
+                  <QTY_CHARACTERISTIC>123</QTY_CHARACTERISTIC>
+                  <CHARACTERISTIC_FIRST>123</CHARACTERISTIC_FIRST>
+                  <CHARACTERISTIC_LAST>123</CHARACTERISTIC_LAST>
+               </SHOP_ORDER_CONFIGURATION>
+            </SHOP_ORDER_CONFIGURATIONS>
+            <SHOP_MATERIAL_ALLOCATIONS>
+               <SHOP_MATERIAL_ALLOCATION>
+                  <QTY_REQUIRED>ABC</QTY_REQUIRED>
+                  <UNIT_MEAS>ABC</UNIT_MEAS>
+                  <NOTE_ID>123</NOTE_ID>
+                  <MTRL_NOTES>ABC</MTRL_NOTES>
+                  <MTRL_PART_NOTES>ABC</MTRL_PART_NOTES>
+                  <MTRL_PART_CATALOG_NOTES>ABC</MTRL_PART_CATALOG_NOTES>
+                  <PRINT_UNIT>ABC</PRINT_UNIT>
+                  <PRINT_QTY_REQUIRED>ABC</PRINT_QTY_REQUIRED>
+                  <COMPONENT_CONDITION_CODE>ABC</COMPONENT_CONDITION_CODE>
+                  <COMPONENT_CONDITION_CODE_DESC>ABC</COMPONENT_CONDITION_CODE_DESC>
+                  <COMP_PART_OWNERSHIP>ABC</COMP_PART_OWNERSHIP>
+                  <COMP_PART_OWNER_ID>ABC</COMP_PART_OWNER_ID>
+                  <COMP_PART_OWNER_NAME>ABC</COMP_PART_OWNER_NAME>
+                  <DRAW_POS_NO>ABC</DRAW_POS_NO>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <LINE_ITEM_NO>123</LINE_ITEM_NO>
+                  <COMPONENT_PART>ABC</COMPONENT_PART>
+                  <COMP_PART_DESC>ABC</COMP_PART_DESC>
+                  <PROCEDURE_STEP>123</PROCEDURE_STEP>
+                  <SHOP_MATERIAL_ALLOC_GUIDES>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                  </SHOP_MATERIAL_ALLOC_GUIDES>
+               </SHOP_MATERIAL_ALLOCATION>
+               <SHOP_MATERIAL_ALLOCATION>
+                  <QTY_REQUIRED>ABC</QTY_REQUIRED>
+                  <UNIT_MEAS>ABC</UNIT_MEAS>
+                  <NOTE_ID>123</NOTE_ID>
+                  <MTRL_NOTES>ABC</MTRL_NOTES>
+                  <MTRL_PART_NOTES>ABC</MTRL_PART_NOTES>
+                  <MTRL_PART_CATALOG_NOTES>ABC</MTRL_PART_CATALOG_NOTES>
+                  <PRINT_UNIT>ABC</PRINT_UNIT>
+                  <PRINT_QTY_REQUIRED>ABC</PRINT_QTY_REQUIRED>
+                  <COMPONENT_CONDITION_CODE>ABC</COMPONENT_CONDITION_CODE>
+                  <COMPONENT_CONDITION_CODE_DESC>ABC</COMPONENT_CONDITION_CODE_DESC>
+                  <COMP_PART_OWNERSHIP>ABC</COMP_PART_OWNERSHIP>
+                  <COMP_PART_OWNER_ID>ABC</COMP_PART_OWNER_ID>
+                  <COMP_PART_OWNER_NAME>ABC</COMP_PART_OWNER_NAME>
+                  <DRAW_POS_NO>ABC</DRAW_POS_NO>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <LINE_ITEM_NO>123</LINE_ITEM_NO>
+                  <COMPONENT_PART>ABC</COMPONENT_PART>
+                  <COMP_PART_DESC>ABC</COMP_PART_DESC>
+                  <PROCEDURE_STEP>123</PROCEDURE_STEP>
+                  <SHOP_MATERIAL_ALLOC_GUIDES>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                  </SHOP_MATERIAL_ALLOC_GUIDES>
+               </SHOP_MATERIAL_ALLOCATION>
+            </SHOP_MATERIAL_ALLOCATIONS>
+            <SHOP_ORDER_OPERATIONS>
+               <SHOP_ORDER_OPERATION>
+                  <OPERATION_NO>123</OPERATION_NO>
+                  <OPERATION_DESCRIPTION>ABC</OPERATION_DESCRIPTION>
+                  <CONTRACT>ABC</CONTRACT>
+                  <WORK_CENTER_NO>ABC</WORK_CENTER_NO>
+                  <WORK_CENTER_DESC>ABC</WORK_CENTER_DESC>
+                  <MACH_NOTES>ABC</MACH_NOTES>
+                  <OP_QTY_REMAINING>123</OP_QTY_REMAINING>
+                  <OP_HOURS_REMAINING>123</OP_HOURS_REMAINING>
+                  <OP_START_DATE>2009-01-01T11:22:00</OP_START_DATE>
+                  <OP_START_TIME>123</OP_START_TIME>
+                  <OP_FINISH_DATE>2009-01-01T11:22:00</OP_FINISH_DATE>
+                  <OP_FINISH_TIME>123</OP_FINISH_TIME>
+                  <MACHINE_NO>ABC</MACHINE_NO>
+                  <NOTE_ID>123</NOTE_ID>
+                  <OP_ID>123</OP_ID>
+                  <OPER_STATUS_CODE>ABC</OPER_STATUS_CODE>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <SHOP_MATERIAL_OPERATIONS>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                  </SHOP_MATERIAL_OPERATIONS>
+                  <SHOP_ORDER_OPER_GUIDES>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                  </SHOP_ORDER_OPER_GUIDES>
+                  <SHOP_ORDER_OPER_TOOLS>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                  </SHOP_ORDER_OPER_TOOLS>
+               </SHOP_ORDER_OPERATION>
+               <SHOP_ORDER_OPERATION>
+                  <OPERATION_NO>123</OPERATION_NO>
+                  <OPERATION_DESCRIPTION>ABC</OPERATION_DESCRIPTION>
+                  <CONTRACT>ABC</CONTRACT>
+                  <WORK_CENTER_NO>ABC</WORK_CENTER_NO>
+                  <WORK_CENTER_DESC>ABC</WORK_CENTER_DESC>
+                  <MACH_NOTES>ABC</MACH_NOTES>
+                  <OP_QTY_REMAINING>123</OP_QTY_REMAINING>
+                  <OP_HOURS_REMAINING>123</OP_HOURS_REMAINING>
+                  <OP_START_DATE>2009-01-01T11:22:00</OP_START_DATE>
+                  <OP_START_TIME>123</OP_START_TIME>
+                  <OP_FINISH_DATE>2009-01-01T11:22:00</OP_FINISH_DATE>
+                  <OP_FINISH_TIME>123</OP_FINISH_TIME>
+                  <MACHINE_NO>ABC</MACHINE_NO>
+                  <NOTE_ID>123</NOTE_ID>
+                  <OP_ID>123</OP_ID>
+                  <OPER_STATUS_CODE>ABC</OPER_STATUS_CODE>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <SHOP_MATERIAL_OPERATIONS>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                  </SHOP_MATERIAL_OPERATIONS>
+                  <SHOP_ORDER_OPER_GUIDES>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                  </SHOP_ORDER_OPER_GUIDES>
+                  <SHOP_ORDER_OPER_TOOLS>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                  </SHOP_ORDER_OPER_TOOLS>
+               </SHOP_ORDER_OPERATION>
+            </SHOP_ORDER_OPERATIONS>
+            <DOC_PHRASES>
+               <DOC_PHRASE>
+                  <PHRASE_TEXT>ABC</PHRASE_TEXT>
+               </DOC_PHRASE>
+               <DOC_PHRASE>
+                  <PHRASE_TEXT>ABC</PHRASE_TEXT>
+               </DOC_PHRASE>
+            </DOC_PHRASES>
+            <SHOP_ORDER_BY_PRODUCT>
+               <SHOP_ORDER_BY_PRODUCT>
+                  <BY_PRODUCT_LINE_ITEM_NO>123</BY_PRODUCT_LINE_ITEM_NO>
+                  <BY_PRODUCT_PART_NO>ABC</BY_PRODUCT_PART_NO>
+                  <BY_PRODUCT_PART_DESC>ABC</BY_PRODUCT_PART_DESC>
+                  <CONTRACT>ABC</CONTRACT>
+                  <BY_PRODUCT_QTY_PER_UNIT>123</BY_PRODUCT_QTY_PER_UNIT>
+                  <BY_PRODUCT_UNIT_MEAS>ABC</BY_PRODUCT_UNIT_MEAS>
+                  <BY_PRODUCT_LOT_SIZE>123</BY_PRODUCT_LOT_SIZE>
+                  <BY_PRODUCT_CONDITION_CODE>ABC</BY_PRODUCT_CONDITION_CODE>
+                  <BY_PROD_CONDITION_CODE_DESC>ABC</BY_PROD_CONDITION_CODE_DESC>
+                  <BY_PROD_OWNERSHIP>ABC</BY_PROD_OWNERSHIP>
+                  <BY_PROD_OWNER>ABC</BY_PROD_OWNER>
+                  <BY_PROD_GEN_OH_FACTOR>123</BY_PROD_GEN_OH_FACTOR>
+                  <BY_PROD_OP_COST_FACTOR>123</BY_PROD_OP_COST_FACTOR>
+               </SHOP_ORDER_BY_PRODUCT>
+               <SHOP_ORDER_BY_PRODUCT>
+                  <BY_PRODUCT_LINE_ITEM_NO>123</BY_PRODUCT_LINE_ITEM_NO>
+                  <BY_PRODUCT_PART_NO>ABC</BY_PRODUCT_PART_NO>
+                  <BY_PRODUCT_PART_DESC>ABC</BY_PRODUCT_PART_DESC>
+                  <CONTRACT>ABC</CONTRACT>
+                  <BY_PRODUCT_QTY_PER_UNIT>123</BY_PRODUCT_QTY_PER_UNIT>
+                  <BY_PRODUCT_UNIT_MEAS>ABC</BY_PRODUCT_UNIT_MEAS>
+                  <BY_PRODUCT_LOT_SIZE>123</BY_PRODUCT_LOT_SIZE>
+                  <BY_PRODUCT_CONDITION_CODE>ABC</BY_PRODUCT_CONDITION_CODE>
+                  <BY_PROD_CONDITION_CODE_DESC>ABC</BY_PROD_CONDITION_CODE_DESC>
+                  <BY_PROD_OWNERSHIP>ABC</BY_PROD_OWNERSHIP>
+                  <BY_PROD_OWNER>ABC</BY_PROD_OWNER>
+                  <BY_PROD_GEN_OH_FACTOR>123</BY_PROD_GEN_OH_FACTOR>
+                  <BY_PROD_OP_COST_FACTOR>123</BY_PROD_OP_COST_FACTOR>
+               </SHOP_ORDER_BY_PRODUCT>
+            </SHOP_ORDER_BY_PRODUCT>
+         </SHOP_ORDER_HEAD>
+         <SHOP_ORDER_HEAD>
+            <ORDER_NO>ABC</ORDER_NO>
+            <RELEASE_NO>ABC</RELEASE_NO>
+            <SEQUENCE_NO>ABC</SEQUENCE_NO>
+            <CONTRACT>ABC</CONTRACT>
+            <PART_NO>ABC</PART_NO>
+            <PART_DESCRIPTION>ABC</PART_DESCRIPTION>
+            <REVISED_DUE_DATE>2009-01-01T11:22:00</REVISED_DUE_DATE>
+            <REVISED_QTY_DUE>123</REVISED_QTY_DUE>
+            <REVISED_START_DATE>2009-01-01T11:22:00</REVISED_START_DATE>
+            <OE_ORDER_NO>ABC</OE_ORDER_NO>
+            <ORDER_NOTES>ABC</ORDER_NOTES>
+            <INV_PART_NOTES>ABC</INV_PART_NOTES>
+            <PART_CATALOG_NOTES>ABC</PART_CATALOG_NOTES>
+            <CONFIGURATION_ID>ABC</CONFIGURATION_ID>
+            <NOTE_ID>123</NOTE_ID>
+            <CONDITION_CODE>ABC</CONDITION_CODE>
+            <CONDITION_CODE_DESCRIPTION>ABC</CONDITION_CODE_DESCRIPTION>
+            <PART_OWNERSHIP>ABC</PART_OWNERSHIP>
+            <PART_OWNER_ID>ABC</PART_OWNER_ID>
+            <PART_OWNER_NAME>ABC</PART_OWNER_NAME>
+            <ORDER_CODE>ABC</ORDER_CODE>
+            <SHOP_ORDER_CONFIGURATIONS>
+               <SHOP_ORDER_CONFIGURATION>
+                  <CHARACTERISTIC_DESC>ABC</CHARACTERISTIC_DESC>
+                  <CHARACTERISTIC_VALUE>ABC</CHARACTERISTIC_VALUE>
+                  <CHARACTERISTIC_UNIT_CODE>ABC</CHARACTERISTIC_UNIT_CODE>
+                  <QTY_CHARACTERISTIC>123</QTY_CHARACTERISTIC>
+                  <CHARACTERISTIC_FIRST>123</CHARACTERISTIC_FIRST>
+                  <CHARACTERISTIC_LAST>123</CHARACTERISTIC_LAST>
+               </SHOP_ORDER_CONFIGURATION>
+               <SHOP_ORDER_CONFIGURATION>
+                  <CHARACTERISTIC_DESC>ABC</CHARACTERISTIC_DESC>
+                  <CHARACTERISTIC_VALUE>ABC</CHARACTERISTIC_VALUE>
+                  <CHARACTERISTIC_UNIT_CODE>ABC</CHARACTERISTIC_UNIT_CODE>
+                  <QTY_CHARACTERISTIC>123</QTY_CHARACTERISTIC>
+                  <CHARACTERISTIC_FIRST>123</CHARACTERISTIC_FIRST>
+                  <CHARACTERISTIC_LAST>123</CHARACTERISTIC_LAST>
+               </SHOP_ORDER_CONFIGURATION>
+            </SHOP_ORDER_CONFIGURATIONS>
+            <SHOP_MATERIAL_ALLOCATIONS>
+               <SHOP_MATERIAL_ALLOCATION>
+                  <QTY_REQUIRED>ABC</QTY_REQUIRED>
+                  <UNIT_MEAS>ABC</UNIT_MEAS>
+                  <NOTE_ID>123</NOTE_ID>
+                  <MTRL_NOTES>ABC</MTRL_NOTES>
+                  <MTRL_PART_NOTES>ABC</MTRL_PART_NOTES>
+                  <MTRL_PART_CATALOG_NOTES>ABC</MTRL_PART_CATALOG_NOTES>
+                  <PRINT_UNIT>ABC</PRINT_UNIT>
+                  <PRINT_QTY_REQUIRED>ABC</PRINT_QTY_REQUIRED>
+                  <COMPONENT_CONDITION_CODE>ABC</COMPONENT_CONDITION_CODE>
+                  <COMPONENT_CONDITION_CODE_DESC>ABC</COMPONENT_CONDITION_CODE_DESC>
+                  <COMP_PART_OWNERSHIP>ABC</COMP_PART_OWNERSHIP>
+                  <COMP_PART_OWNER_ID>ABC</COMP_PART_OWNER_ID>
+                  <COMP_PART_OWNER_NAME>ABC</COMP_PART_OWNER_NAME>
+                  <DRAW_POS_NO>ABC</DRAW_POS_NO>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <LINE_ITEM_NO>123</LINE_ITEM_NO>
+                  <COMPONENT_PART>ABC</COMPONENT_PART>
+                  <COMP_PART_DESC>ABC</COMP_PART_DESC>
+                  <PROCEDURE_STEP>123</PROCEDURE_STEP>
+                  <SHOP_MATERIAL_ALLOC_GUIDES>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                  </SHOP_MATERIAL_ALLOC_GUIDES>
+               </SHOP_MATERIAL_ALLOCATION>
+               <SHOP_MATERIAL_ALLOCATION>
+                  <QTY_REQUIRED>ABC</QTY_REQUIRED>
+                  <UNIT_MEAS>ABC</UNIT_MEAS>
+                  <NOTE_ID>123</NOTE_ID>
+                  <MTRL_NOTES>ABC</MTRL_NOTES>
+                  <MTRL_PART_NOTES>ABC</MTRL_PART_NOTES>
+                  <MTRL_PART_CATALOG_NOTES>ABC</MTRL_PART_CATALOG_NOTES>
+                  <PRINT_UNIT>ABC</PRINT_UNIT>
+                  <PRINT_QTY_REQUIRED>ABC</PRINT_QTY_REQUIRED>
+                  <COMPONENT_CONDITION_CODE>ABC</COMPONENT_CONDITION_CODE>
+                  <COMPONENT_CONDITION_CODE_DESC>ABC</COMPONENT_CONDITION_CODE_DESC>
+                  <COMP_PART_OWNERSHIP>ABC</COMP_PART_OWNERSHIP>
+                  <COMP_PART_OWNER_ID>ABC</COMP_PART_OWNER_ID>
+                  <COMP_PART_OWNER_NAME>ABC</COMP_PART_OWNER_NAME>
+                  <DRAW_POS_NO>ABC</DRAW_POS_NO>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <LINE_ITEM_NO>123</LINE_ITEM_NO>
+                  <COMPONENT_PART>ABC</COMPONENT_PART>
+                  <COMP_PART_DESC>ABC</COMP_PART_DESC>
+                  <PROCEDURE_STEP>123</PROCEDURE_STEP>
+                  <SHOP_MATERIAL_ALLOC_GUIDES>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                     <SHOP_MATERIAL_ALLOC_GUIDE>
+                        <GUIDELINE_SEQ>123</GUIDELINE_SEQ>
+                        <X_COORDINATE>ABC</X_COORDINATE>
+                        <Y_COORDINATE>ABC</Y_COORDINATE>
+                        <Z_COORDINATE>ABC</Z_COORDINATE>
+                        <REFERENCE_QTY>123</REFERENCE_QTY>
+                        <GUIDELINE_TEXT>ABC</GUIDELINE_TEXT>
+                     </SHOP_MATERIAL_ALLOC_GUIDE>
+                  </SHOP_MATERIAL_ALLOC_GUIDES>
+               </SHOP_MATERIAL_ALLOCATION>
+            </SHOP_MATERIAL_ALLOCATIONS>
+            <SHOP_ORDER_OPERATIONS>
+               <SHOP_ORDER_OPERATION>
+                  <OPERATION_NO>123</OPERATION_NO>
+                  <OPERATION_DESCRIPTION>ABC</OPERATION_DESCRIPTION>
+                  <CONTRACT>ABC</CONTRACT>
+                  <WORK_CENTER_NO>ABC</WORK_CENTER_NO>
+                  <WORK_CENTER_DESC>ABC</WORK_CENTER_DESC>
+                  <MACH_NOTES>ABC</MACH_NOTES>
+                  <OP_QTY_REMAINING>123</OP_QTY_REMAINING>
+                  <OP_HOURS_REMAINING>123</OP_HOURS_REMAINING>
+                  <OP_START_DATE>2009-01-01T11:22:00</OP_START_DATE>
+                  <OP_START_TIME>123</OP_START_TIME>
+                  <OP_FINISH_DATE>2009-01-01T11:22:00</OP_FINISH_DATE>
+                  <OP_FINISH_TIME>123</OP_FINISH_TIME>
+                  <MACHINE_NO>ABC</MACHINE_NO>
+                  <NOTE_ID>123</NOTE_ID>
+                  <OP_ID>123</OP_ID>
+                  <OPER_STATUS_CODE>ABC</OPER_STATUS_CODE>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <SHOP_MATERIAL_OPERATIONS>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                  </SHOP_MATERIAL_OPERATIONS>
+                  <SHOP_ORDER_OPER_GUIDES>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                  </SHOP_ORDER_OPER_GUIDES>
+                  <SHOP_ORDER_OPER_TOOLS>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                  </SHOP_ORDER_OPER_TOOLS>
+               </SHOP_ORDER_OPERATION>
+               <SHOP_ORDER_OPERATION>
+                  <OPERATION_NO>123</OPERATION_NO>
+                  <OPERATION_DESCRIPTION>ABC</OPERATION_DESCRIPTION>
+                  <CONTRACT>ABC</CONTRACT>
+                  <WORK_CENTER_NO>ABC</WORK_CENTER_NO>
+                  <WORK_CENTER_DESC>ABC</WORK_CENTER_DESC>
+                  <MACH_NOTES>ABC</MACH_NOTES>
+                  <OP_QTY_REMAINING>123</OP_QTY_REMAINING>
+                  <OP_HOURS_REMAINING>123</OP_HOURS_REMAINING>
+                  <OP_START_DATE>2009-01-01T11:22:00</OP_START_DATE>
+                  <OP_START_TIME>123</OP_START_TIME>
+                  <OP_FINISH_DATE>2009-01-01T11:22:00</OP_FINISH_DATE>
+                  <OP_FINISH_TIME>123</OP_FINISH_TIME>
+                  <MACHINE_NO>ABC</MACHINE_NO>
+                  <NOTE_ID>123</NOTE_ID>
+                  <OP_ID>123</OP_ID>
+                  <OPER_STATUS_CODE>ABC</OPER_STATUS_CODE>
+                  <ORDER_NO>ABC</ORDER_NO>
+                  <RELEASE_NO>ABC</RELEASE_NO>
+                  <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                  <SHOP_MATERIAL_OPERATIONS>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                     <SHOP_MATERIAL_OPERATION>
+                        <OP_LINE_ITEM_NO>123</OP_LINE_ITEM_NO>
+                        <OP_COMPONENT_PART>ABC</OP_COMPONENT_PART>
+                        <CONTRACT>ABC</CONTRACT>
+                        <OP_QTY_REQUIRED>123</OP_QTY_REQUIRED>
+                        <NOTE_ID>123</NOTE_ID>
+                        <OP_PRINT_UNIT>ABC</OP_PRINT_UNIT>
+                        <OP_COMP_CONDITION_CODE>ABC</OP_COMP_CONDITION_CODE>
+                        <OP_COMP_CONDITION_CODE_DESC>ABC</OP_COMP_CONDITION_CODE_DESC>
+                        <OP_COMP_PART_OWNERSHIP>ABC</OP_COMP_PART_OWNERSHIP>
+                        <OP_COMP_PART_OWNER_ID>ABC</OP_COMP_PART_OWNER_ID>
+                        <OP_DRAW_POS_NO>ABC</OP_DRAW_POS_NO>
+                        <OP_COMP_PART_OWNER_NAME>ABC</OP_COMP_PART_OWNER_NAME>
+                        <OP_COMP_PART_DESC>ABC</OP_COMP_PART_DESC>
+                        <OP_UNIT_MEAS>ABC</OP_UNIT_MEAS>
+                        <OP_MTRL_NOTES>ABC</OP_MTRL_NOTES>
+                        <OP_MTRL_PART_NOTES>ABC</OP_MTRL_PART_NOTES>
+                        <OP_MTRL_PART_CATALOG_NOTES>ABC</OP_MTRL_PART_CATALOG_NOTES>
+                        <OP_PRINT_QTY_REQUIRED>123</OP_PRINT_QTY_REQUIRED>
+                        <ORDER_NO>ABC</ORDER_NO>
+                        <RELEASE_NO>ABC</RELEASE_NO>
+                        <SEQUENCE_NO>ABC</SEQUENCE_NO>
+                        <OPERATION_NO>123</OPERATION_NO>
+                        <OP_PROCEDURE_STEP>123</OP_PROCEDURE_STEP>
+                        <SHOP_MATERIAL_OPERATION_GUIDES>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                           <SHOP_MATERIAL_OPERATION_GUIDE>
+                              <ALLOC_GUIDELINE_SEQ>123</ALLOC_GUIDELINE_SEQ>
+                              <ALLOC_X_COORDINATE>ABC</ALLOC_X_COORDINATE>
+                              <ALLOC_Y_COORDINATE>ABC</ALLOC_Y_COORDINATE>
+                              <ALLOC_Z_COORDINATE>ABC</ALLOC_Z_COORDINATE>
+                              <ALLOC_REFERENCE_QTY>123</ALLOC_REFERENCE_QTY>
+                              <MTRL_WORK_GUIDELINES>ABC</MTRL_WORK_GUIDELINES>
+                           </SHOP_MATERIAL_OPERATION_GUIDE>
+                        </SHOP_MATERIAL_OPERATION_GUIDES>
+                     </SHOP_MATERIAL_OPERATION>
+                  </SHOP_MATERIAL_OPERATIONS>
+                  <SHOP_ORDER_OPER_GUIDES>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                     <SHOP_ORDER_OPER_GUIDE>
+                        <OP_WORK_GUIDE_SEQ>123</OP_WORK_GUIDE_SEQ>
+                        <OP_WORK_GUIDELINES>ABC</OP_WORK_GUIDELINES>
+                     </SHOP_ORDER_OPER_GUIDE>
+                  </SHOP_ORDER_OPER_GUIDES>
+                  <SHOP_ORDER_OPER_TOOLS>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                     <SHOP_ORDER_OPER_TOOL>
+                        <TOOL_SEQUENCE>123</TOOL_SEQUENCE>
+                        <TOOL_ID>ABC</TOOL_ID>
+                        <CONTRACT>ABC</CONTRACT>
+                        <TOOL_DESCRIPTION>ABC</TOOL_DESCRIPTION>
+                        <LAST_USED>2009-01-01T11:22:00</LAST_USED>
+                     </SHOP_ORDER_OPER_TOOL>
+                  </SHOP_ORDER_OPER_TOOLS>
+               </SHOP_ORDER_OPERATION>
+            </SHOP_ORDER_OPERATIONS>
+            <DOC_PHRASES>
+               <DOC_PHRASE>
+                  <PHRASE_TEXT>ABC</PHRASE_TEXT>
+               </DOC_PHRASE>
+               <DOC_PHRASE>
+                  <PHRASE_TEXT>ABC</PHRASE_TEXT>
+               </DOC_PHRASE>
+            </DOC_PHRASES>
+            <SHOP_ORDER_BY_PRODUCT>
+               <SHOP_ORDER_BY_PRODUCT>
+                  <BY_PRODUCT_LINE_ITEM_NO>123</BY_PRODUCT_LINE_ITEM_NO>
+                  <BY_PRODUCT_PART_NO>ABC</BY_PRODUCT_PART_NO>
+                  <BY_PRODUCT_PART_DESC>ABC</BY_PRODUCT_PART_DESC>
+                  <CONTRACT>ABC</CONTRACT>
+                  <BY_PRODUCT_QTY_PER_UNIT>123</BY_PRODUCT_QTY_PER_UNIT>
+                  <BY_PRODUCT_UNIT_MEAS>ABC</BY_PRODUCT_UNIT_MEAS>
+                  <BY_PRODUCT_LOT_SIZE>123</BY_PRODUCT_LOT_SIZE>
+                  <BY_PRODUCT_CONDITION_CODE>ABC</BY_PRODUCT_CONDITION_CODE>
+                  <BY_PROD_CONDITION_CODE_DESC>ABC</BY_PROD_CONDITION_CODE_DESC>
+                  <BY_PROD_OWNERSHIP>ABC</BY_PROD_OWNERSHIP>
+                  <BY_PROD_OWNER>ABC</BY_PROD_OWNER>
+                  <BY_PROD_GEN_OH_FACTOR>123</BY_PROD_GEN_OH_FACTOR>
+                  <BY_PROD_OP_COST_FACTOR>123</BY_PROD_OP_COST_FACTOR>
+               </SHOP_ORDER_BY_PRODUCT>
+               <SHOP_ORDER_BY_PRODUCT>
+                  <BY_PRODUCT_LINE_ITEM_NO>123</BY_PRODUCT_LINE_ITEM_NO>
+                  <BY_PRODUCT_PART_NO>ABC</BY_PRODUCT_PART_NO>
+                  <BY_PRODUCT_PART_DESC>ABC</BY_PRODUCT_PART_DESC>
+                  <CONTRACT>ABC</CONTRACT>
+                  <BY_PRODUCT_QTY_PER_UNIT>123</BY_PRODUCT_QTY_PER_UNIT>
+                  <BY_PRODUCT_UNIT_MEAS>ABC</BY_PRODUCT_UNIT_MEAS>
+                  <BY_PRODUCT_LOT_SIZE>123</BY_PRODUCT_LOT_SIZE>
+                  <BY_PRODUCT_CONDITION_CODE>ABC</BY_PRODUCT_CONDITION_CODE>
+                  <BY_PROD_CONDITION_CODE_DESC>ABC</BY_PROD_CONDITION_CODE_DESC>
+                  <BY_PROD_OWNERSHIP>ABC</BY_PROD_OWNERSHIP>
+                  <BY_PROD_OWNER>ABC</BY_PROD_OWNER>
+                  <BY_PROD_GEN_OH_FACTOR>123</BY_PROD_GEN_OH_FACTOR>
+                  <BY_PROD_OP_COST_FACTOR>123</BY_PROD_OP_COST_FACTOR>
+               </SHOP_ORDER_BY_PRODUCT>
+            </SHOP_ORDER_BY_PRODUCT>
+         </SHOP_ORDER_HEAD>
+      </SHOP_ORDER_HEADS>
+   </EA_SHOP_ORDER_REP>
+</EA_SHOP_ORDER_REP_REQUEST>
