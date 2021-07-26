@@ -4250,6 +4250,41 @@ BEGIN
    
 END Get_Value_Added_Work; 
 
+FUNCTION Get_Total_Non_Wo_Mileage___ (  
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   total_non_work_order_time_ NUMBER := 0; 
+   question_2_answer_ DATE;
+   question_3_answer_ DATE;
+   
+   CURSOR get_non_wo_time IS
+      SELECT sq.question_no, jtsa.answer
+      FROM jt_task_survey_answers jtsa, survey_question sq
+      WHERE jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no IN (2, 3)
+      AND jtsa.survey_id = 'NON WO TIME'
+      AND jtsa.emp_no = emp_no_
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_
+      order by jtsa.answer_id;
+BEGIN
+   FOR rec_ IN get_non_wo_time LOOP
+      IF (rec_.question_no = 2) THEN  
+         question_2_answer_ :=  TO_DATE(rec_.answer, 'YYYY-MM-DD-HH24.MI.SS');  
+      ELSIF (rec_.question_no = 3) THEN   
+         question_3_answer_ :=  TO_DATE(rec_.answer, 'YYYY-MM-DD-HH24.MI.SS');
+         total_non_work_order_time_ := total_non_work_order_time_ + (question_3_answer_ - question_2_answer_);
+         question_2_answer_ := NULL;
+         question_3_answer_ := NULL;
+      END IF;   
+   END LOOP; 
+   -- return value in hours
+   RETURN (total_non_work_order_time_ * 24);
+END Get_Total_Non_Wo_Mileage___; 
+
 FUNCTION Get_Non_Value_Added_Work(
    emp_no_     VARCHAR2,
    company_    VARCHAR2,
@@ -4259,6 +4294,8 @@ IS
    total_daily_vec_chk_q5_ NUMBER;
    total_mon_vec_chk_q14_ NUMBER;
    total_non_work_order_travel_ NUMBER;
+   total_non_work_order_time_ NUMBER;
+   total_shift_time_ NUMBER := 0;
    
    -- return value in hours
    CURSOR get_daily_vec_chk_q5_total IS
@@ -4302,6 +4339,27 @@ IS
       AND question_2.q2_emp_no = jtsa.emp_no
       AND jtsa.emp_no = emp_no_;
 
+   -- return value in hours    
+   CURSOR get_total_shift_time IS 
+      WITH shift_begin AS (SELECT TRUNC(jtsa.date_created) trunc_date_created,MIN(jtsa.date_created) shift_begin_time , jtsa.emp_no emp_no
+                           FROM jt_task_survey_answers jtsa, survey_question sq
+                           WHERE jtsa.survey_id = sq.survey_id
+                           AND jtsa.question_id = sq.question_id
+                           AND sq.question_no = 1
+                           AND jtsa.survey_id IN  ('DAILY_VEC_CHECK','MON_VEC_CHECK')
+                           AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_
+                           GROUP BY TRUNC(jtsa.date_created), jtsa.emp_no)
+      SELECT SUM(((jtsa.date_created - shift_begin.shift_begin_time) * 24)) sum_shift_time
+      FROM jt_task_survey_answers jtsa, survey_question sq, shift_begin
+      WHERE jtsa.survey_id = sq.survey_id
+      AND jtsa.question_id = sq.question_id
+      AND sq.question_no = 1
+      AND jtsa.emp_no = emp_no_
+      AND jtsa.survey_id = 'END_MILEAGE'
+      AND jtsa.company_id = company_
+      AND TRUNC(jtsa.date_created) BETWEEN start_date_ AND end_date_
+      AND shift_begin.trunc_date_created = TRUNC(jtsa.date_created)
+      AND shift_begin.emp_no = jtsa.emp_no;
 BEGIN
    OPEN get_daily_vec_chk_q5_total;
    FETCH get_daily_vec_chk_q5_total INTO total_daily_vec_chk_q5_;
@@ -4316,8 +4374,18 @@ BEGIN
    FETCH get_non_work_order_travel_tot INTO total_non_work_order_travel_;
    CLOSE get_non_work_order_travel_tot;
    
-   RETURN total_non_work_order_travel_;
-   -- To do complete this
+   total_non_work_order_time_ := Get_Total_Non_Wo_Mileage___(emp_no_, company_, start_date_, end_date_);
+   
+   OPEN get_total_shift_time;
+   FETCH get_total_shift_time INTO total_shift_time_;
+   CLOSE get_total_shift_time;
+   
+   IF (total_shift_time_ = 0 ) THEN
+      RETURN 0;
+   ELSE    
+      RETURN ROUND((NVL(total_daily_vec_chk_q5_, 0) + NVL(total_mon_vec_chk_q14_, 0) + NVL(total_non_work_order_travel_, 0) + NVL(total_non_work_order_time_, 0))/total_shift_time_*100);
+   END IF;
+   
 END Get_Non_Value_Added_Work;
 
 -- C458 EntMahesR (END)
