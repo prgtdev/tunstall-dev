@@ -4203,7 +4203,7 @@ IS
       AND TRUNC(jtc.stop_time) BETWEEN start_date_ AND end_date_;
    
    -- return value in hours    
-   CURSOR get_total_shift_time(emp_no_ VARCHAR2) IS 
+   CURSOR get_total_shift_time IS 
       WITH shift_begin AS (SELECT TRUNC(jtsa.date_created) trunc_date_created,MIN(jtsa.date_created) shift_begin_time , jtsa.emp_no emp_no
                            FROM jt_task_survey_answers jtsa, survey_question sq
                            WHERE jtsa.survey_id = sq.survey_id
@@ -4228,7 +4228,7 @@ BEGIN
    FETCH get_work_order_and_travel_time INTO total_wo_and_travel_time_;
    CLOSE get_work_order_and_travel_time;
    
-   OPEN get_total_shift_time(emp_no_);
+   OPEN get_total_shift_time;
    FETCH get_total_shift_time INTO total_shift_time_;
    CLOSE get_total_shift_time;
    
