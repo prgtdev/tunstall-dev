@@ -1244,336 +1244,356 @@ END Get_Allowed_Tax_Codes__;
 
 --C0380 EntPrageG (END)
 
---C0177 EntPrageG (START)
-   
+--C0177 EntPrageG (START)   
 PROCEDURE Create_Functional_Object__ (
    project_id_      IN VARCHAR2,
    sub_project_id_  IN VARCHAR2)
 IS
-   company_ VARCHAR2(20);
-   object_id_              VARCHAR2(20);
-   --sub_proj_inst_site_     VARCHAR2(20);
-   sales_contract_no_      VARCHAR2(20);
-   project_default_site_   VARCHAR2(20);
-   installation_site_      VARCHAR2(10);
-   warranty_period_        VARCHAR2(10);
-   warranty_period_objkey_ VARCHAR2(50);
+   stmt_ VARCHAR2(32000);
+BEGIN   
+   stmt_ := '
+   DECLARE
+      project_id_ VARCHAR2(20);
+      sub_project_id_ VARCHAR2(20);
+      
+      company_ VARCHAR2(20);
+      object_id_              VARCHAR2(20);
+      --sub_proj_inst_site_     VARCHAR2(20);
+      sales_contract_no_      VARCHAR2(20);
+      project_default_site_   VARCHAR2(20);
+      installation_site_      VARCHAR2(10);
+      warranty_period_        VARCHAR2(10);
+      warranty_period_objkey_ VARCHAR2(50);
 
-   hand_over_date_          DATE;
-   sales_contract_site_rec_ Sales_Contract_Site_CLP.Public_Rec;
-   object_count_ NUMBER := 0;
-   eligible_parts_exist_ BOOLEAN := FALSE;  
-   object_list_ VARCHAR2(32000);
+      hand_over_date_          DATE;
+      sales_contract_site_rec_ Sales_Contract_Site_CLP.Public_Rec;
+      object_count_ NUMBER := 0;
+      eligible_parts_exist_ BOOLEAN := FALSE;  
+      object_list_ VARCHAR2(32000);
 
-   CURSOR get_activity_misc_parts IS
-      SELECT part_no, part_desc, SUM(require_qty) quantity
-        FROM (SELECT t.part_no,
-                     Project_Misc_Procurement_API.
-                        Get_Selected_Description(supply_option,site,t.part_no,matr_seq_no) part_desc,
-                     require_qty
-                FROM project_misc_procurement t,
-                     (SELECT part_no, contract, cf$_serviceable_Db
-                        FROM sales_part_cfv t
-                       WHERE t.cf$_serviceable_db = 'TRUE') a
-               WHERE  t.site = a.contract
-                 AND t.part_no = a.part_no
-                 AND company = company_
-                 AND t.activity_seq IN
-                     (SELECT activity_seq
-                        FROM activity1 t
-                       WHERE t.sub_project_id = sub_project_id_
-                         AND t.project_id = project_id_)
-                 AND t.part_no IS NOT NULL)
-    GROUP BY part_no, part_desc;
+      CURSOR get_activity_misc_parts IS
+         SELECT part_no, part_desc, SUM(require_qty) quantity
+           FROM (SELECT t.part_no,
+                        Project_Misc_Procurement_API.
+                           Get_Selected_Description(supply_option,site,t.part_no,matr_seq_no) part_desc,
+                        require_qty
+                   FROM project_misc_procurement t,
+                        (SELECT part_no, contract, cf$_serviceable_Db
+                           FROM sales_part_cfv t
+                          WHERE t.cf$_serviceable_db = ''TRUE'') a
+                  WHERE  t.site = a.contract
+                    AND t.part_no = a.part_no
+                    AND company = company_
+                    AND t.activity_seq IN
+                        (SELECT activity_seq
+                           FROM activity1 t
+                          WHERE t.sub_project_id = sub_project_id_
+                            AND t.project_id = project_id_)
+                    AND t.part_no IS NOT NULL)
+       GROUP BY part_no, part_desc;
 
-   PROCEDURE Add_To_Object_List___(
-      object_id_ IN VARCHAR2)
-   IS
-   BEGIN
-      object_list_ := object_list_ ||CHR(10)||CHR(13)||object_id_;
-   END Add_To_Object_List___;
+      PROCEDURE Add_To_Object_List___(
+         object_id_ IN VARCHAR2)
+      IS
+      BEGIN
+         object_list_ := object_list_ ||CHR(10)||CHR(13)||object_id_;
+      END Add_To_Object_List___;
 
-   FUNCTION Get_Object_Id___(
-     project_id_     IN VARCHAR2,
-     sub_project_id_ IN VARCHAR2) RETURN VARCHAR2 
-   IS
-     object_id_ VARCHAR2(50);
-     rec_       Equipment_Object_api.Public_Rec;
-   BEGIN
-      SELECT cf$_object_id_db
-        INTO object_id_
-        FROM sub_project_cfv
-       WHERE project_id = project_id_
-         AND sub_project_id = sub_project_id_;
-      rec_ := Equipment_Object_API.Get_By_Rowkey(object_id_);
-      RETURN rec_.mch_code;
-   EXCEPTION
-      WHEN OTHERS THEN
-         RETURN NULL;
-   END Get_Object_Id___;
+      FUNCTION Get_Object_Id___(
+        project_id_     IN VARCHAR2,
+        sub_project_id_ IN VARCHAR2) RETURN VARCHAR2 
+      IS
+        object_id_ VARCHAR2(50);
+        rec_       Equipment_Object_api.Public_Rec;
+      BEGIN
+         SELECT cf$_object_id_db
+           INTO object_id_
+           FROM sub_project_cfv
+          WHERE project_id = project_id_
+            AND sub_project_id = sub_project_id_;
+         rec_ := Equipment_Object_API.Get_By_Rowkey(object_id_);
+         RETURN rec_.mch_code;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RETURN NULL;
+      END Get_Object_Id___;
 
-   FUNCTION Get_Sales_Contract_No___(
-      project_id_ IN VARCHAR2,
-      company_    IN VARCHAR2) RETURN VARCHAR2 
-   IS
-      sales_contract_no_ VARCHAR2(50);
-   BEGIN
-      SELECT cf$_sales_contract_no
-        INTO sales_contract_no_
-        FROM project_cfv
-       WHERE project_id = project_id_
-         AND company = company_;
-      RETURN sales_contract_no_;
-   EXCEPTION
-      WHEN OTHERS THEN
-        RETURN NULL;
-   END Get_Sales_Contract_No___;
+      FUNCTION Get_Sales_Contract_No___(
+         project_id_ IN VARCHAR2,
+         company_    IN VARCHAR2) RETURN VARCHAR2 
+      IS
+         sales_contract_no_ VARCHAR2(50);
+      BEGIN
+         SELECT cf$_sales_contract_no
+           INTO sales_contract_no_
+           FROM project_cfv
+          WHERE project_id = project_id_
+            AND company = company_;
+         RETURN sales_contract_no_;
+      EXCEPTION
+         WHEN OTHERS THEN
+           RETURN NULL;
+      END Get_Sales_Contract_No___;
 
-   FUNCTION Get_Installation_Site___(
-      project_id_     IN VARCHAR2,
-      sub_project_id_ IN VARCHAR2) RETURN VARCHAR2 
-   IS
-      installation_site_ VARCHAR2(50);
-   BEGIN
-      SELECT cf$_installation_site_no
-        INTO installation_site_
-        FROM sub_project_cfv
-       WHERE project_id = project_id_
-         AND sub_project_id = sub_project_id_;
-      RETURN installation_site_;
-   EXCEPTION
-      WHEN OTHERS THEN
-         RETURN NULL;
-   END Get_Installation_Site___;
+      FUNCTION Get_Installation_Site___(
+         project_id_     IN VARCHAR2,
+         sub_project_id_ IN VARCHAR2) RETURN VARCHAR2 
+      IS
+         installation_site_ VARCHAR2(50);
+      BEGIN
+         SELECT cf$_installation_site_no
+           INTO installation_site_
+           FROM sub_project_cfv
+          WHERE project_id = project_id_
+            AND sub_project_id = sub_project_id_;
+         RETURN installation_site_;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RETURN NULL;
+      END Get_Installation_Site___;
 
-   FUNCTION Get_Sales_Contract_Site_Rec___(
-      contract_no_ IN VARCHAR2,
-      site_no_     IN VARCHAR2) RETURN Sales_Contract_Site_CLP.Public_Rec 
-   IS
-      objkey_ VARCHAR2(50);
-      rec_    Sales_Contract_Site_CLP.Public_Rec;
-   BEGIN
-      SELECT a.objkey
-        INTO objkey_
-        FROM sales_contract_site_clv a, contract_revision b
-       WHERE a.cf$_contract_no = b.contract_no
-         AND a.cf$_rev_seq = b.rev_seq
-         AND b.objstate = 'Active'
-         AND a.cf$_contract_no = contract_no_
-         AND a.cf$_site_no = site_no_;
-      IF objkey_ IS NOT NULL THEN
-        rec_ := Sales_Contract_Site_CLP.Get(objkey_);
-      END IF;
-      RETURN rec_;
-   EXCEPTION
-      WHEN OTHERS THEN
-         RETURN NULL;
-   END Get_Sales_Contract_Site_Rec___;
+      FUNCTION Get_Sales_Contract_Site_Rec___(
+         contract_no_ IN VARCHAR2,
+         site_no_     IN VARCHAR2) RETURN Sales_Contract_Site_CLP.Public_Rec 
+      IS
+         objkey_ VARCHAR2(50);
+         rec_    Sales_Contract_Site_CLP.Public_Rec;
+      BEGIN
+         SELECT a.objkey
+           INTO objkey_
+           FROM sales_contract_site_clv a, contract_revision b
+          WHERE a.cf$_contract_no = b.contract_no
+            AND a.cf$_rev_seq = b.rev_seq
+            AND b.objstate = ''Active''
+            AND a.cf$_contract_no = contract_no_
+            AND a.cf$_site_no = site_no_;
+         IF objkey_ IS NOT NULL THEN
+           rec_ := Sales_Contract_Site_CLP.Get(objkey_);
+         END IF;
+         RETURN rec_;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RETURN NULL;
+      END Get_Sales_Contract_Site_Rec___;
 
-   FUNCTION Get_Service_warranty_Objkey___(
-      warranty_period_ IN VARCHAR2) RETURN VARCHAR2 
-   IS
-      objkey_ VARCHAR2(50);
-   BEGIN
-      SELECT objkey
-        INTO objkey_
-        FROM warranty_clv
-       WHERE cf$_warranty_period = warranty_period_;
-      RETURN objkey_;
-   EXCEPTION
-      WHEN OTHERS THEN
-         RETURN NULL;
-   END Get_Service_warranty_Objkey___;
+      FUNCTION Get_Service_warranty_Objkey___(
+         warranty_period_ IN VARCHAR2) RETURN VARCHAR2 
+      IS
+         objkey_ VARCHAR2(50);
+      BEGIN
+         SELECT objkey
+           INTO objkey_
+           FROM warranty_clv
+          WHERE cf$_warranty_period = warranty_period_;
+         RETURN objkey_;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RETURN NULL;
+      END Get_Service_warranty_Objkey___;
 
-   FUNCTION Get_Default_Project_Site___(
-      company_    IN VARCHAR2,
-      project_id_ IN VARCHAR2) RETURN VARCHAR2 
-   IS
-      site_ VARCHAR2(20);
-   BEGIN
-      SELECT site
-        INTO site_
-        FROM project_site_ext
-       WHERE company = company_
-         AND project_id = project_id_
-         AND project_site_type_db = 'DEFAULTSITE';
-      RETURN site_;
-   EXCEPTION
-      WHEN OTHERS THEN
-         RETURN NULL;
-   END Get_Default_Project_Site___;
+      FUNCTION Get_Default_Project_Site___(
+         company_    IN VARCHAR2,
+         project_id_ IN VARCHAR2) RETURN VARCHAR2 
+      IS
+         site_ VARCHAR2(20);
+      BEGIN
+         SELECT site
+           INTO site_
+           FROM project_site_ext
+          WHERE company = company_
+            AND project_id = project_id_
+            AND project_site_type_db = ''DEFAULTSITE'';
+         RETURN site_;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RETURN NULL;
+      END Get_Default_Project_Site___;
 
-   FUNCTION Get_Attr___(
-      part_no_         IN VARCHAR2,
-      part_desc_       IN VARCHAR2,
-      project_id_      IN VARCHAR2,
-      sub_project_id_  IN VARCHAR2,
-      sup_mch_code_    IN VARCHAR2,
-      production_date_ IN DATE,
-      mode_            IN VARCHAR2 DEFAULT 'NEW') RETURN VARCHAR2 
-   IS
-      attr_               VARCHAR2(32000);
-      site_               VARCHAR2(20) := '2013';
-      object_level_       VARCHAR2(100) := '900_FUNCTIONAL_EQUIPMENT';
-      operational_status_ VARCHAR2(20) := 'IN_OPERATION';
-   BEGIN
-      Client_SYS.Clear_Attr(attr_);
-      IF mode_ = 'NEW' THEN
-         Client_SYS.Add_To_Attr('PART_NO', part_no_, attr_);
-         Client_SYS.Add_To_Attr('MCH_CODE',part_no_ || project_id_ || sub_project_id_,attr_);
-         Client_SYS.Add_To_Attr('MCH_NAME', part_desc_, attr_);
-         Client_SYS.Add_To_Attr('CONTRACT', site_, attr_);
-         Client_SYS.Add_To_Attr('PRODUCTION_DATE', production_date_, attr_);
-         Client_SYS.Add_To_Attr('SUP_CONTRACT', site_, attr_); -- TO BE REMOVED
-         Client_SYS.Add_To_Attr('OBJ_LEVEL', object_level_, attr_);
-         Client_SYS.Add_To_Attr('OPERATIONAL_STATUS_DB',operational_status_,attr_);
-         Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
-      ELSE
-         Client_SYS.Add_To_Attr('SUP_MCH_CODE', sup_mch_code_, attr_);
-      END IF;
-      RETURN attr_;
-   END Get_Attr___;
+      FUNCTION Get_Attr___(
+         part_no_         IN VARCHAR2,
+         part_desc_       IN VARCHAR2,
+         project_id_      IN VARCHAR2,
+         sub_project_id_  IN VARCHAR2,
+         sup_mch_code_    IN VARCHAR2,
+         production_date_ IN DATE,
+         mode_            IN VARCHAR2 DEFAULT ''NEW'') RETURN VARCHAR2 
+      IS
+         attr_               VARCHAR2(32000);
+         site_               VARCHAR2(20) := ''2013'';
+         object_level_       VARCHAR2(100) := ''900_FUNCTIONAL_EQUIPMENT'';
+         operational_status_ VARCHAR2(20) := ''IN_OPERATION'';
+      BEGIN
+         Client_SYS.Clear_Attr(attr_);
+         IF mode_ = ''NEW'' THEN
+            Client_SYS.Add_To_Attr(''PART_NO'', part_no_, attr_);
+            Client_SYS.Add_To_Attr(''MCH_CODE'',part_no_ || project_id_ || sub_project_id_,attr_);
+            Client_SYS.Add_To_Attr(''MCH_NAME'', part_desc_, attr_);
+            Client_SYS.Add_To_Attr(''CONTRACT'', site_, attr_);
+            Client_SYS.Add_To_Attr(''PRODUCTION_DATE'', production_date_, attr_);
+            Client_SYS.Add_To_Attr(''SUP_CONTRACT'', site_, attr_); -- TO BE REMOVED
+            Client_SYS.Add_To_Attr(''OBJ_LEVEL'', object_level_, attr_);
+            Client_SYS.Add_To_Attr(''OPERATIONAL_STATUS_DB'',operational_status_,attr_);
+            Client_SYS.Add_To_Attr(''SUP_MCH_CODE'', sup_mch_code_, attr_);
+         ELSE
+            Client_SYS.Add_To_Attr(''SUP_MCH_CODE'', sup_mch_code_, attr_);
+         END IF;
+         RETURN attr_;
+      END Get_Attr___;
 
-   FUNCTION Get_Cf_Attr___(
-      project_id_       IN VARCHAR2,
-      sub_project_id_   IN VARCHAR2,
-      equipment_qty_    IN NUMBER,
-      service_warranty_ IN VARCHAR2) RETURN VARCHAR2 
-   IS
-      attr_ VARCHAR2(32000);
-   BEGIN
-      Client_SYS.Clear_Attr(attr_);
-      Client_SYS.Add_To_Attr('CF$_EQUIPMENT_QUANTITY', equipment_qty_, attr_);
-      Client_SYS.Add_To_Attr('CF$_SUB_PROJECT_ID', sub_project_id_, attr_);
-      Client_SYS.Add_To_Attr('CF$_PROJ_ID', project_id_, attr_);
-      Client_SYS.Add_To_Attr('CF$_SERVICE_WARRANTY_DB', service_warranty_, attr_);
-      RETURN attr_;
-   END Get_Cf_Attr___;
+      FUNCTION Get_Cf_Attr___(
+         project_id_       IN VARCHAR2,
+         sub_project_id_   IN VARCHAR2,
+         equipment_qty_    IN NUMBER,
+         service_warranty_ IN VARCHAR2) RETURN VARCHAR2 
+      IS
+         attr_ VARCHAR2(32000);
+      BEGIN
+         Client_SYS.Clear_Attr(attr_);
+         Client_SYS.Add_To_Attr(''CF$_EQUIPMENT_QUANTITY'', equipment_qty_, attr_);
+         Client_SYS.Add_To_Attr(''CF$_SUB_PROJECT_ID'', sub_project_id_, attr_);
+         Client_SYS.Add_To_Attr(''CF$_PROJ_ID'', project_id_, attr_);
+         Client_SYS.Add_To_Attr(''CF$_SERVICE_WARRANTY_DB'', service_warranty_, attr_);
+         RETURN attr_;
+      END Get_Cf_Attr___;
 
-   PROCEDURE Create_Funct_Equip_Obj___(
-      part_no_          IN VARCHAR2,
-      part_desc_        IN VARCHAR2,
-      project_id_       IN VARCHAR2,
-      sub_project_id_   IN VARCHAR2,
-      sup_mch_code_     IN VARCHAR2,
-      production_date_  IN DATE,
-      equipment_qty_    IN NUMBER,
-      service_warranty_ IN VARCHAR2) 
-   IS
-      info_       VARCHAR2(32000);
-      objid_      VARCHAR2(50);
-      objversion_ VARCHAR2(50);
-      attr_       VARCHAR2(32000);
-      attr_cf_    VARCHAR2(32000);
-      site_       VARCHAR2(20) := '2013';
-      current_sup_mch_code_ VARCHAR2(100);
-      mch_code_ VARCHAR2(50);
-      equip_func_obj_rec_ Equipment_Functional_API.Public_Rec;
-   BEGIN
-      mch_code_ := part_no_ || project_id_ || sub_project_id_;
-      IF NOT Equipment_Functional_API.Exists(site_,mch_code_) THEN            
-         attr_ := Get_Attr___(part_no_,
-                              part_desc_,
-                              project_id_,
-                              sub_project_id_,
-                              sup_mch_code_,
-                              production_date_);
-         Equipment_Functional_API.New__(info_,objid_,objversion_,attr_,'DO');            
-         IF objid_ IS NOT NULL THEN             
-            attr_cf_ := Get_Cf_Attr___(project_id_,sub_project_id_,equipment_qty_,service_warranty_);
-            Equipment_Functional_CFP.Cf_New__(info_,objid_,attr_cf_,'','DO');
-         END IF;           
-         Add_To_Object_List___(mch_code_);            
-      ELSE
-         current_sup_mch_code_:= Equipment_Functional_API.Get_Sup_Mch_Code(site_,mch_code_);
-         IF sup_mch_code_ != current_sup_mch_code_ THEN
+      PROCEDURE Create_Funct_Equip_Obj___(
+         part_no_          IN VARCHAR2,
+         part_desc_        IN VARCHAR2,
+         project_id_       IN VARCHAR2,
+         sub_project_id_   IN VARCHAR2,
+         sup_mch_code_     IN VARCHAR2,
+         production_date_  IN DATE,
+         equipment_qty_    IN NUMBER,
+         service_warranty_ IN VARCHAR2) 
+      IS
+         info_       VARCHAR2(32000);
+         objid_      VARCHAR2(50);
+         objversion_ VARCHAR2(50);
+         attr_       VARCHAR2(32000);
+         attr_cf_    VARCHAR2(32000);
+         site_       VARCHAR2(20) := ''2013'';
+         current_sup_mch_code_ VARCHAR2(100);
+         mch_code_ VARCHAR2(50);
+         equip_func_obj_rec_ Equipment_Functional_API.Public_Rec;
+      BEGIN
+         mch_code_ := part_no_ || project_id_ || sub_project_id_;
+         IF NOT Equipment_Functional_API.Exists(site_,mch_code_) THEN            
             attr_ := Get_Attr___(part_no_,
                                  part_desc_,
                                  project_id_,
                                  sub_project_id_,
                                  sup_mch_code_,
-                                 production_date_,
-                                 'MODIFY');
-            equip_func_obj_rec_ := Equipment_Functional_API.Get(site_,mch_code_);
-            Equipment_Functional_API.Modify__(info_,equip_func_obj_rec_."rowid",equip_func_obj_rec_.rowversion,attr_,'DO');
-            Add_To_Object_List___(mch_code_);               
+                                 production_date_);
+            Equipment_Functional_API.New__(info_,objid_,objversion_,attr_,''DO'');            
+            IF objid_ IS NOT NULL THEN             
+               attr_cf_ := Get_Cf_Attr___(project_id_,sub_project_id_,equipment_qty_,service_warranty_);
+               Equipment_Functional_CFP.Cf_New__(info_,objid_,attr_cf_,'''',''DO'');
+            END IF;           
+            Add_To_Object_List___(mch_code_);            
+         ELSE
+            current_sup_mch_code_:= Equipment_Functional_API.Get_Sup_Mch_Code(site_,mch_code_);
+            IF sup_mch_code_ != current_sup_mch_code_ THEN
+               attr_ := Get_Attr___(part_no_,
+                                    part_desc_,
+                                    project_id_,
+                                    sub_project_id_,
+                                    sup_mch_code_,
+                                    production_date_,
+                                    ''MODIFY'');
+               equip_func_obj_rec_ := Equipment_Functional_API.Get(site_,mch_code_);
+               Equipment_Functional_API.Modify__(info_,equip_func_obj_rec_."rowid",equip_func_obj_rec_.rowversion,attr_,''DO'');
+               Add_To_Object_List___(mch_code_);               
+            END IF;
          END IF;
-      END IF;
-      NULL;
-   END Create_Funct_Equip_Obj___;
+         NULL;
+      END Create_Funct_Equip_Obj___;
 
-   PROCEDURE Validate_Prerequisites___(
-      istallation_site_ IN VARCHAR2,
-      contract_no_      IN VARCHAR2,
-      hand_over_date_   IN DATE,
-      warranty_period_  IN NUMBER)             
-   IS
+      PROCEDURE Validate_Prerequisites___(
+         istallation_site_ IN VARCHAR2,
+         contract_no_      IN VARCHAR2,
+         hand_over_date_   IN DATE,
+         warranty_period_  IN NUMBER)             
+      IS
+      BEGIN
+         IF installation_site_ IS NULL THEN
+            Error_SYS.Appl_General(''Custom'',''ERROR_NO_INSTALLATION_SITE: Sub project installation site is not set'');
+         END IF;
+
+         IF sales_contract_site_rec_.cf$_contract_no IS NULL THEN
+            Error_SYS.Appl_General(''Custom'',
+                                   ''ERROR_NO_INSTALLATION_SITE: Installation site :P1 is not found in installation sites of sales contract'',
+                                   installation_site_);
+         END IF;
+
+         IF hand_over_date_ IS NULL THEN
+            Error_SYS.Appl_General(''Custom'',
+                                   ''ERROR_COMPLETE_DATE: Completion/Handover date of installation site of the sales contract is not set'');
+         END IF;
+
+         IF warranty_period_ IS NULL THEN
+            Error_SYS.Appl_General(''Custom'',
+                                   ''ERROR_WARRANTY_PERIOD: Warranty Period of installation site of the sales contract is not set'');
+         END IF;   
+      END Validate_Prerequisites___;
    BEGIN
-      IF installation_site_ IS NULL THEN
-         Error_SYS.Appl_General('Custom','ERROR_NO_INSTALLATION_SITE: Sub project installation site is not set');
+      project_id_:= :project_id_;
+      sub_project_id_ := :sub_project_id_;
+      
+      company_ := Project_API.Get_Company(project_id_);
+      object_id_ := Get_Object_Id___(project_id_, sub_project_id_);
+
+      IF object_id_ IS NULL THEN
+         Error_SYS.Appl_General(''custom'',
+                                ''ERROR_OBJ_ID: This operation is only possible for sub projects with Object ID'');
       END IF;
+      --sub_proj_inst_site_ := Get_Installation_Site___(project_id_, sub_project_id_);    
+      sales_contract_no_ := Get_Sales_Contract_No___(project_id_, company_);    
+      project_default_site_ := Get_Default_Project_Site___(company_, project_id_);   
+      installation_site_ := Get_Installation_Site___(project_id_,sub_project_id_);   
+      sales_contract_site_rec_ := Get_Sales_Contract_Site_Rec___(sales_contract_no_, installation_site_);
 
-      IF sales_contract_site_rec_.cf$_contract_no IS NULL THEN
-         Error_SYS.Appl_General('Custom',
-                                'ERROR_NO_INSTALLATION_SITE: Installation site :P1 is not found in installation sites of sales contract',
-                                installation_site_);
+      hand_over_date_  := sales_contract_site_rec_.cf$_delivered_on;
+      warranty_period_ := sales_contract_site_rec_.cf$_warranty_period;
+
+      Validate_Prerequisites___(installation_site_,sales_contract_site_rec_.cf$_contract_no,hand_over_date_,warranty_period_);
+
+      warranty_period_objkey_ := Get_Service_warranty_Objkey___(warranty_period_);
+
+      FOR rec_ IN get_activity_misc_parts LOOP
+         IF rec_.quantity > 0 THEN 
+            eligible_parts_exist_ := TRUE;
+            Create_Funct_Equip_Obj___(rec_.part_no,
+                                      rec_.part_desc,
+                                      project_id_,
+                                      sub_project_id_,
+                                      object_id_,
+                                      hand_over_date_,
+                                      rec_.quantity,
+                                      warranty_period_objkey_);
+         END IF;
+      END LOOP;
+      IF object_list_ IS NOT NULL THEN
+         Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
+                                                    Fnd_Session_API.Get_Fnd_User,
+                                                    ''Functional Objects Created'',''Following Functional Objects were created/modified for Sub Project ''
+                                                    || project_id_ ||'' - ''||sub_project_id_ || CHR(13)||CHR(10)||object_list_,'''');
+      ELSIF eligible_parts_exist_ THEN
+         Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
+                                                    Fnd_Session_API.Get_Fnd_User,
+                                                    ''No Functional Objects Created'',''Functional Objects are already created for Sub Project '' || project_id_ ||'' - ''||sub_project_id_,'''');
       END IF;
-
-      IF hand_over_date_ IS NULL THEN
-         Error_SYS.Appl_General('Custom',
-                                'ERROR_COMPLETE_DATE: Completion/Handover date of installation site of the sales contract is not set');
-      END IF;
-
-      IF warranty_period_ IS NULL THEN
-         Error_SYS.Appl_General('Custom',
-                                'ERROR_WARRANTY_PERIOD: Warranty Period of installation site of the sales contract is not set');
-      END IF;   
-   END Validate_Prerequisites___;
-BEGIN
-   company_ := Project_API.Get_Company(project_id_);
-   object_id_ := Get_Object_Id___(project_id_, sub_project_id_);
-
-   IF object_id_ IS NULL THEN
-      Error_SYS.Appl_General('custom',
-                             'ERROR_OBJ_ID: This operation is only possible for sub projects with Object ID');
+   END;';
+   
+   IF (Database_SYS.View_Exist('WARRANTY_CLV') 
+          AND Database_SYS.View_Exist('SALES_CONTRACT_SITE_CLV')
+             AND Database_SYS.View_Exist('PROJECT_CFV')) THEN
+      @ApproveDynamicStatement('2021-06-07',EntPrageG);
+      EXECUTE IMMEDIATE stmt_
+      USING IN project_id_,
+            IN sub_project_id_;
+   ELSE
+     Error_Sys.Appl_General(lu_name_,'Custom Objects are not published!');
    END IF;
-   --sub_proj_inst_site_ := Get_Installation_Site___(project_id_, sub_project_id_);    
-   sales_contract_no_ := Get_Sales_Contract_No___(project_id_, company_);    
-   project_default_site_ := Get_Default_Project_Site___(company_, project_id_);   
-   installation_site_ := Get_Installation_Site___(project_id_,sub_project_id_);   
-   sales_contract_site_rec_ := Get_Sales_Contract_Site_Rec___(sales_contract_no_, installation_site_);
-
-   hand_over_date_  := sales_contract_site_rec_.cf$_delivered_on;
-   warranty_period_ := sales_contract_site_rec_.cf$_warranty_period;
-
-   Validate_Prerequisites___(installation_site_,sales_contract_site_rec_.cf$_contract_no,hand_over_date_,warranty_period_);
-
-   warranty_period_objkey_ := Get_Service_warranty_Objkey___(warranty_period_);
-
-   FOR rec_ IN get_activity_misc_parts LOOP
-      IF rec_.quantity > 0 THEN 
-         eligible_parts_exist_ := TRUE;
-         Create_Funct_Equip_Obj___(rec_.part_no,
-                                   rec_.part_desc,
-                                   project_id_,
-                                   sub_project_id_,
-                                   object_id_,
-                                   hand_over_date_,
-                                   rec_.quantity,
-                                   warranty_period_objkey_);
-      END IF;
-   END LOOP;
-   IF object_list_ IS NOT NULL THEN
-      Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
-                                                 Fnd_Session_API.Get_Fnd_User,
-                                                 'Functional Objects Created','Following Functional Objects were created/modified for Sub Project '
-                                                 || project_id_ ||' - '||sub_project_id_ || CHR(13)||CHR(10)||object_list_,'');
-   ELSIF eligible_parts_exist_ THEN
-      Fnd_Stream_API.Create_Event_Action_Streams(Fnd_Session_API.Get_Fnd_User,
-                                                 Fnd_Session_API.Get_Fnd_User,
-                                                 'No Functional Objects Created','Functional Objects are already created for Sub Project ' || project_id_ ||' - '||sub_project_id_,'');
-   END IF;
-
 END Create_Functional_Object__;
 --C0177 EntPrageG (END)
 
