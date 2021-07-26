@@ -2257,7 +2257,7 @@ IS
                  AND identity = identity_
                  AND party_type = 'Customer'
                  AND invoice_id = invoice_id_
-               ORDER BY follow_up_date DESC, note_id DESC)
+               ORDER BY  note_id DESC)
        WHERE rownum = 1;
   
 BEGIN
@@ -2447,7 +2447,7 @@ BEGIN
                     AND identity = identity_
                     AND party_type = 'Customer'
                     AND invoice_id = invoice_id_
-                  ORDER BY follow_up_date DESC, note_id DESC)
+                  ORDER BY  note_id DESC)
           WHERE rownum = 1;
           
       BEGIN
