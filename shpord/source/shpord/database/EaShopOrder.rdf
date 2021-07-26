@@ -1110,7 +1110,11 @@ BEGIN
     IF (nvl(print_count_, 0) = 0) THEN
      Client_Sys.Add_To_Attr('ROWKEY', objkey_, attr_cf_);
       Client_Sys.Add_To_Attr('CF$_PRINT_COUNT', '1', attr_cf_);
-      SHOP_ORD_CFP.Cf_Modify__(info_, objid_, attr_cf_, ' ', 'DO');     
+      SHOP_ORD_CFP.Cf_Modify__(info_, objid_, attr_cf_, ' ', 'DO');  
+    ELSE
+      Client_Sys.Add_To_Attr('ROWKEY', objkey_, attr_cf_);
+      Client_Sys.Add_To_Attr('CF$_PRINT_COUNT', '2', attr_cf_);
+      SHOP_ORD_CFP.Cf_Modify__(info_, objid_, attr_cf_, ' ', 'DO');   
     END IF;
     --20210725 CRIM-C0252 EntNadeeL (END)
    IF (outer_filter_where$_ IS NOT NULL) THEN

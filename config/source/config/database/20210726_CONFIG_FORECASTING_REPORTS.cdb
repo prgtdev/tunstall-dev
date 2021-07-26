@@ -1,0 +1,39 @@
+-----------------------------------------------------------------------------
+--  Module : CONFIG
+--
+--  File   : 20210726_CONFIG_FORECASTING_REPORTS.cdb
+--
+--  IFS Developer Studio Template Version 2.6
+--
+--  Date     Sign       History
+--  ------   --------   --------------------------------------------------------------------------------------------
+--  210726   EntNadeeL	Added two new views DEMAND_FORECAST_TEMP_QRY and SUPPLIER_FORECAST_TEMP_QRY
+--  ------   --------   --------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------
+SET SERVEROUTPUT ON
+
+PROMPT Creating DEMAND_FORECAST_TEMP_QRY view
+
+-- [IFS COMPLETE BLOCK VIEW DEMAND_FORECAST_TEMP_QRY]
+CREATE OR REPLACE VIEW DEMAND_FORECAST_TEMP_QRY AS
+SELECT * FROM dual
+WITH   READ ONLY;
+-- [END IFS COMPLETE BLOCK]
+
+COMMENT ON TABLE DEMAND_FORECAST_TEMP_QRY
+   IS 'LU=CEACustomizationUtil^PROMPT=Demand Forecast Temp Qry^MODULE=CONFIG^';
+
+
+
+PROMPT Creating SUPPLIER_FORECAST_TEMP_QRY view
+
+-- [IFS COMPLETE BLOCK VIEW SUPPLIER_FORECAST_TEMP_QRY]
+CREATE OR REPLACE VIEW SUPPLIER_FORECAST_TEMP_QRY AS
+SELECT * FROM dual
+WITH   READ ONLY;
+-- [END IFS COMPLETE BLOCK]
+
+COMMENT ON TABLE SUPPLIER_FORECAST_TEMP_QRY
+   IS 'LU=CEACustomizationUtil^PROMPT=Supplier Forecast Temp Qry^MODULE=CONFIG^';
+
+SET SERVEROUTPUT OFF
