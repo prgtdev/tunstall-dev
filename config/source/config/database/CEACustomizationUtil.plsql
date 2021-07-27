@@ -4250,7 +4250,7 @@ BEGIN
    
 END Get_Value_Added_Work; 
 
-FUNCTION Get_Total_Non_Wo_Mileage___ (  
+FUNCTION Get_Total_Non_Wo_Time___ (  
    emp_no_     VARCHAR2,
    company_    VARCHAR2,
    start_date_ IN DATE,
@@ -4283,7 +4283,7 @@ BEGIN
    END LOOP; 
    -- return value in hours
    RETURN (total_non_work_order_time_ * 24);
-END Get_Total_Non_Wo_Mileage___; 
+END Get_Total_Non_Wo_Time___; 
 
 FUNCTION Get_Non_Value_Added_Work(
    emp_no_     VARCHAR2,
@@ -4374,7 +4374,7 @@ BEGIN
    FETCH get_non_work_order_travel_tot INTO total_non_work_order_travel_;
    CLOSE get_non_work_order_travel_tot;
    
-   total_non_work_order_time_ := Get_Total_Non_Wo_Mileage___(emp_no_, company_, start_date_, end_date_);
+   total_non_work_order_time_ := Get_Total_Non_Wo_Time___(emp_no_, company_, start_date_, end_date_);
    
    OPEN get_total_shift_time;
    FETCH get_total_shift_time INTO total_shift_time_;
