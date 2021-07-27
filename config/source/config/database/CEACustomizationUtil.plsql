@@ -4647,15 +4647,21 @@ PROCEDURE Create_Demand_Forecast_ IS
    pivot_clause      CLOB;
    pivot_clause_date CLOB;
 BEGIN
-   SELECT LISTAGG('''' || replace(to_char(ms_date, 'Month') || '-' || to_char(ms_date, 'YY'),' ','') || '''',',') WITHIN GROUP(ORDER BY ms_date ASC)
+   SELECT LISTAGG('''' || replace(monthname||'-'||year,' ','') || '''',',') WITHIN GROUP(ORDER BY year,month ASC)
      INTO pivot_clause
-     FROM (SELECT to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY') AS ms_date
+     FROM (SELECT DISTINCT to_char(to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY'), 'YY') AS year,
+                to_char(to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY'), 'MM') AS month , 
+                to_char(to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),'DD/MM/YYYY'), 'Month') AS monthname     
              FROM PERIOD_TEMPLATE_DETAIL t
             WHERE t.template_id = '14'
-              AND t.period_begin_counter >= 0
               AND to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter), 'DD/MM/YYYY') BETWEEN
                   to_date(SYSDATE, 'DD/MM/YYYY') AND
-                  add_months(to_date(SYSDATE, 'DD/MM/YYYY'), 14));
+                  add_months(to_date(SYSDATE, 'DD/MM/YYYY'), 14)
+                  AND t.contract = '2011'
+                  ORDER BY year,month);
+                  
+    Transaction_Sys.Set_Status_Info(pivot_clause,'INFO');       
+                  
  
    sql_stmt := 'CREATE OR REPLACE VIEW DEMAND_FORECAST_TEMP_QRY AS
             SELECT  *
@@ -4672,9 +4678,8 @@ BEGIN
          ORDER BY "Comm Group" ASC)                  
    PIVOT (SUM(forecast_lev0) AS forecast0,
    SUM(forecast_lev1) AS forecast1 FOR month IN (' ||pivot_clause|| '))';  
-   
+   Transaction_Sys.Set_Status_Info( sql_stmt,'INFO');
    EXECUTE IMMEDIATE sql_stmt;
-   
 END Create_Demand_Forecast_; 
 --C0457 EntNadeeL (END)
 
