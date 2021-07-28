@@ -4229,7 +4229,7 @@ BEGIN
    FETCH get_total_shift_time INTO total_shift_time_;
    CLOSE get_total_shift_time;
    
-   IF (total_shift_time_ = 0 ) THEN
+   IF (NVL(total_shift_time_, 0) = 0 ) THEN
       RETURN 0;
    ELSE    
       RETURN ROUND(total_wo_and_travel_time_/total_shift_time_*100);
@@ -4380,7 +4380,7 @@ BEGIN
    FETCH get_total_shift_time INTO total_shift_time_;
    CLOSE get_total_shift_time;
    
-   IF (total_shift_time_ = 0 ) THEN
+   IF (NVL(total_shift_time_, 0) = 0 ) THEN
       RETURN 0;
    ELSE    
       RETURN ROUND((NVL(total_daily_vec_chk_q5_, 0) + NVL(total_mon_vec_chk_q14_, 0) + NVL(total_non_work_order_travel_, 0) + NVL(total_non_work_order_time_, 0))/total_shift_time_*100);
