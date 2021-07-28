@@ -4710,4 +4710,94 @@ EXCEPTION
        RETURN next_object_;
 END Get_Next_Id_Equip;
 -- 210727 EntDinusK C706 (END)
+
+
+--210728 EntNadeeL C0567 (START) 
+PROCEDURE Create_Weekly_Loading_ IS
+ sql_stmt          VARCHAR2(32000);
+   pivot_clause      CLOB;
+   pivot_clause_date CLOB;
+BEGIN
+   SELECT LISTAGG('''' || ms_date || '''',',') WITHIN GROUP(ORDER BY ms_date ASC)
+   INTO pivot_clause
+   FROM (SELECT to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),'DD/MM/YYYY') AS ms_date
+          FROM PERIOD_TEMPLATE_DETAIL t
+         WHERE t.template_id = '4'
+           AND t.period_begin_counter >= 0
+           AND to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),'DD/MM/YYYY') BETWEEN to_date(SYSDATE, 'DD/MM/YYYY') AND
+               to_date(SYSDATE, 'DD/MM/YYYY') + (18 * 7));
+ Transaction_Sys.Set_Status_Info(pivot_clause,'INFO');
+   sql_stmt := 'CREATE OR REPLACE VIEW WEEKLY_LOADING_TEMP_QRY AS
+            SELECT *
+  FROM (SELECT 
+       to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YY'') AS ms_date,
+       CASE
+                  WHEN to_date(SYSDATE, ''DD/MM/YYYY'') BETWEEN
+                       to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),''DD/MM/YYYY'') AND
+                       to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') THEN
+                   ROUND(((to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') -
+                         to_date(SYSDATE, ''DD/MM/YYYY'') - 1) * 7.75 + 4.25),2)
+                  ELSE
+                   ROUND(((to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') -
+                         to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter), ''DD/MM/YYYY'')) * 7.75 + 4.25) ,2)
+               END left_days,
+               '''' AS "Contract",
+               '''' AS "Product Family",
+               '''' AS "Part No",
+               '''' AS "Description",
+               '''' AS "Product Code"
+          FROM PERIOD_TEMPLATE_DETAIL t
+         WHERE t.template_id = ''4''
+           AND t.period_begin_counter >= 0
+           AND to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') BETWEEN to_date(SYSDATE, ''DD/MM/YYYY'') AND
+               to_date(SYSDATE, ''DD/MM/YYYY'') + (18 * 7)) 
+               PIVOT(SUM(left_days) FOR ms_date IN(' ||pivot_clause|| '))
+               
+               UNION ALL
+
+SELECT *
+  FROM (SELECT 
+       to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YY'') AS ms_date,
+       CASE
+                  WHEN to_date(SYSDATE, ''DD/MM/YYYY'') BETWEEN
+                       to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter),''DD/MM/YYYY'') AND
+                       to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') THEN
+                   ROUND(((to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') -
+                         to_date(SYSDATE, ''DD/MM/YYYY'') - 1) * 7.75 + 4.25) / 7.75,2)
+                  ELSE
+                   ROUND(((to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') -
+                         to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_begin_counter), ''DD/MM/YYYY'')) * 7.75 + 4.25) / 7.75,2)
+               END left_days,
+               '''' AS "Contract",
+               '''' AS "Product Family",
+               '''' AS "Part No",
+               '''' AS "Description",
+               '''' AS "Product Code"
+          FROM PERIOD_TEMPLATE_DETAIL t
+         WHERE t.template_id = ''4''
+           AND t.period_begin_counter >= 0
+           AND to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YYYY'') BETWEEN to_date(SYSDATE, ''DD/MM/YYYY'') AND
+               to_date(SYSDATE, ''DD/MM/YYYY'') + (18 * 7)) 
+               PIVOT(SUM(left_days) FOR ms_date IN(' ||pivot_clause|| '))
+               
+            UNION ALL
+
+         SELECT  *
+         FROM (SELECT   t.contract,
+         ifsapp.Inventory_Product_Family_API.Get_Description(ifsapp.Inventory_Part_Api.Get_Part_Product_Family(t.contract,t.part_no)) "Product Family",
+            t.part_no AS "Part No",
+            Inventory_Part_Api.Get_Description(t.contract,t.part_no) AS "Description",
+            ifsapp.Inventory_Part_Api.Get_Part_Product_Code(t.contract,t.part_no) "Product Code",
+            to_date(t.ms_date,''DD/MM/YY'') AS ms_date,                
+            t.supply
+         FROM level_1_forecast t
+         WHERE t.ms_set = 1
+         AND to_date(t.ms_date, ''DD/MM/YY'') >= to_date(SYSDATE, ''DD/MM/YY'')
+         ORDER BY "Product Family" ASC)                  
+         PIVOT ( SUM(supply) FOR ms_date IN (' ||pivot_clause|| '))';  
+
+   EXECUTE IMMEDIATE sql_stmt;     
+END Create_Weekly_Loading_;
+--210728 EntNadeeL C0567 (END) 
+
 -------------------- LU  NEW METHODS -------------------------------------
