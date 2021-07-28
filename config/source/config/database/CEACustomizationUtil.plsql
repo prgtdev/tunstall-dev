@@ -2397,47 +2397,34 @@ BEGIN
       RETURN NVL(cash_collected_, 0);
    END Get_Cash_Collected;
    
-   FUNCTION Check_Inv_Courtesy_Call(company_        IN VARCHAR2,
-                                   identity_       IN VARCHAR2)  RETURN VARCHAR2 IS
+   FUNCTION Check_Inv_Courtesy_Call(company_       IN VARCHAR2,
+                                   identity_       IN VARCHAR2,
+                                   invoice_id_     IN NUMBER)  RETURN VARCHAR2 IS
    
-      status_ VARCHAR2(100);
-      inv_state_ VARCHAR2(100);
-      open_amount_ NUMBER;
+      larg_call_ NUMBER;
       temp_   VARCHAR2(5) := 'FALSE';
-      
-      CURSOR get_inv_headers(identity_       VARCHAR2,
-                             company_        VARCHAR2) IS
-         SELECT invoice_id
-           FROM OUTGOING_INVOICE_QRY
-          WHERE identity = identity_
-            AND company LIKE NVL(company_,'%');
-   
+        
       CURSOR get_inv_header_notes(in_company_    VARCHAR2, in_identity_ VARCHAR2, in_invoice_id_ NUMBER) is
-         SELECT *
-           FROM (SELECT Credit_Note_Status_API.Get_Note_Status_Description(COMPANY, NOTE_STATUS_ID)
+         SELECT  1 
                    FROM invoice_header_notes 
                   WHERE company = in_company_
                     AND identity = in_identity_
                     AND party_type = 'Customer'
                     AND invoice_id = in_invoice_id_
-                  ORDER BY note_date DESC, note_id DESC)
-          WHERE ROWNUM = 1;
+                    AND Credit_Note_Status_API.Get_Note_Status_Description(company, note_status_id) ='Large Invoice Call' ;
    
    BEGIN
-   
-      FOR rec_ in get_inv_headers(identity_, company_) LOOP
-         OPEN get_inv_header_notes(company_,identity_,rec_.invoice_id);
+
+         OPEN get_inv_header_notes(company_,identity_,invoice_id_);
          FETCH get_inv_header_notes
-          INTO status_;
+          INTO larg_call_;
          CLOSE get_inv_header_notes;
 
-         IF (status_ IN ('Large Invoice Call') ) THEN
-            temp_ := 'TRUE';
-            EXIT;
-         END IF;
-      END LOOP;
+      IF(larg_call_ IS NOT NULL AND larg_call_ =1)THEN 
+         temp_ := 'TRUE';
+      END IF;
       RETURN temp_;
-   END Check_Inv_Courtesy_Call; 
+   END Check_Inv_Courtesy_Call;
    
    FUNCTION Check_Note_Latest(company_        IN VARCHAR2,
                               identity_       IN VARCHAR2,
