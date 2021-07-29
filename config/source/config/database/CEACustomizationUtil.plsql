@@ -16,6 +16,27 @@ layer Core;
 
 -------------------- PRIVATE DECLARATIONS -----------------------------------
 
+-- C0411 EntPrageG (START)
+CURSOR get_parts_msl_location (transaction_code_ IN VARCHAR2,from_location_ IN VARCHAR2) IS
+   SELECT DISTINCT
+          a.contract,
+          a.part_no,
+          a.lot_batch_no,
+          a.serial_no,
+          a.handling_unit_id,
+          a.eng_chg_level,
+          a.waiv_dev_rej_no,
+          a.activity_seq,
+          a.quantity
+     FROM inventory_transaction_hist2 a,inventory_part_in_stock_uiv b
+    WHERE a.contract = b.contract
+      AND a.part_no = b.part_no
+      AND a.location_no = b.location_no
+      AND a.lot_batch_no = b.lot_batch_no
+      AND a.location_no = from_location_
+      AND a.transaction_code = transaction_code_
+      AND b.qty_onhand > 0; 
+-- C0411 EntPrageG (END)
 
 -------------------- LU SPECIFIC IMPLEMENTATION METHODS ---------------------
 
@@ -48,6 +69,206 @@ BEGIN
 RETURN resp_per_;
 END Get_Doc_Resp_Person___;
 -- C0436 EntPrageG (END)
+
+-- C0411 EntPrageG (START)
+FUNCTION Get_Msl_Objkey___(
+   part_no_ IN VARCHAR2) RETURN VARCHAR2
+IS
+   objkey_ VARCHAR2(50);
+BEGIN
+   SELECT cf$_msl_level_db
+     INTO objkey_
+     FROM part_catalog_cfv
+    WHERE part_no = part_no_;
+   RETURN objkey_;
+END Get_Msl_Objkey___;
+
+FUNCTION Get_After_Days___(
+   objkey_ IN VARCHAR2) RETURN NUMBER
+IS
+   after_days_ NUMBER;
+BEGIN
+   SELECT cf$_after_days
+     INTO after_days_
+     FROM m_s_l_type_maintenance_clv
+    WHERE objkey = objkey_;
+   RETURN after_days_;            
+END Get_After_Days___;
+   
+FUNCTION Get_Start_Date___(
+   part_no_          IN VARCHAR2,
+   contract_         IN VARCHAR2,
+   hu_id_            IN VARCHAR2,
+   lot_batch_no_     IN VARCHAR2,
+   serial_no_        IN VARCHAR2,
+   eng_chg_level_    IN VARCHAR2,
+   wdr_no_           IN VARCHAR2,
+   activity_seq_     IN VARCHAR2,
+   transaction_code_ IN VARCHAR2,
+   from_location_    IN VARCHAR2)RETURN DATE
+IS
+   star_date_ DATE;
+BEGIN 
+   SELECT MAX(a.date_time_created)
+     INTO star_date_
+     FROM inventory_transaction_hist2 a,inventory_part_in_stock_uiv b
+    WHERE a.contract = b.contract
+      AND a.part_no = b.part_no
+      AND a.location_no = b.location_no
+      AND a.lot_batch_no = b.lot_batch_no
+      AND a.contract = contract_
+      AND a.part_no = part_no_
+      AND a.lot_batch_no = lot_batch_no_
+      AND a.serial_no = serial_no_
+      AND a.handling_unit_id = hu_id_
+      AND a.eng_chg_level = eng_chg_level_
+      AND a.waiv_dev_rej_no = wdr_no_
+      AND a.activity_seq = activity_seq_
+      AND transaction_code = transaction_code_
+      AND a.location_no = from_location_
+      AND b.qty_onhand > 0;
+   RETURN star_date_;
+END Get_Start_Date___;
+
+FUNCTION Transport_Task_Exists___( 
+   part_no_       IN VARCHAR2,
+   contract_      IN VARCHAR2,
+   hu_id_         IN VARCHAR2,
+   lot_batch_no_  IN VARCHAR2,
+   serial_no_     IN VARCHAR2,
+   eng_chg_level_ IN VARCHAR2,
+   wdr_no_        IN VARCHAR2,
+   activity_seq_  IN VARCHAR2,
+   from_location_ IN VARCHAR2,
+   to_location_   IN VARCHAR2)RETURN BOOLEAN
+IS
+   task_id_ NUMBER;
+BEGIN
+   SELECT transport_task_id
+     INTO task_id_ 
+     FROM transport_task_line a
+    WHERE part_no = part_no_
+      AND from_contract = contract_
+      AND from_location_no = from_location_
+      AND to_contract = contract_
+      AND to_location_no = to_location_
+      AND handling_unit_id = hu_id_
+      AND lot_batch_no = lot_batch_no_
+      AND serial_no = serial_no_
+      AND eng_chg_level = eng_chg_level_
+      AND waiv_dev_rej_no = wdr_no_
+      AND activity_seq = activity_seq_
+      AND Transport_Task_API.Has_Line_In_Status_Created(transport_task_id) = 'TRUE';
+      RETURN TRUE;
+EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+      RETURN FALSE;      
+END Transport_Task_Exists___;
+
+PROCEDURE Create_Transport_Task_Header___(
+   task_id_ OUT NUMBER)
+IS
+   objid_ VARCHAR2(30);
+   objversion_ VARCHAR2(30);
+   info_ VARCHAR2(2000);
+   attr_ VARCHAR2(1000);
+
+   FUNCTION Get_Attr___ RETURN VARCHAR2
+   IS
+      attr_ VARCHAR2(2000);
+   BEGIN
+      Client_Sys.Clear_Attr(attr_);
+      Client_Sys.Add_To_Attr('TRANSPORT_TASK_ID',task_id_, attr_);
+      Client_Sys.Add_To_Attr('CREATE_DATE',SYSDATE, attr_);
+      RETURN attr_;
+   END Get_Attr___;
+BEGIN
+   Transport_Task_API.NEW__(info_,objid_,objversion_,attr_,'PREPARE');
+   task_id_ := Client_Sys.Get_Item_Value_To_Number('TRANSPORT_TASK_ID',attr_,'TransportTask');
+
+   attr_:= Get_Attr___;
+   Transport_Task_API.New__(info_,objid_,objversion_,attr_,'DO');  
+END Create_Transport_Task_Header___;
+
+PROCEDURE Create_Transport_Task_Line___(
+   task_id_       IN NUMBER,
+   part_no_       IN VARCHAR2,
+   contract_      IN VARCHAR2,
+   from_location_ IN VARCHAR2,
+   to_location_   IN VARCHAR2,
+   hu_id_         IN VARCHAR2,
+   lot_batch_no_  IN VARCHAR2,
+   serial_no_     IN VARCHAR2,
+   eng_chg_level_ IN VARCHAR2,
+   wdr_no_        IN VARCHAR2,
+   activity_seq_  IN VARCHAR2,
+   quantity_      IN NUMBER)
+IS
+   objid_ VARCHAR2(30);
+   objversion_ VARCHAR2(30);
+   info_ VARCHAR2(2000);
+   attr_ VARCHAR2(1000);
+
+   FUNCTION Get_Attr___ RETURN VARCHAR2
+   IS
+      attr_ VARCHAR2(2000);
+   BEGIN
+      Client_Sys.Clear_Attr(attr_);
+      Client_Sys.Add_To_Attr('TRANSPORT_TASK_ID',task_id_, attr_);
+      Client_Sys.Add_To_Attr('PART_NO',part_no_, attr_);
+      Client_Sys.Add_To_Attr('CONFIGURATION_ID','*', attr_);
+      Client_Sys.Add_To_Attr('FROM_CONTRACT',contract_, attr_);
+      Client_Sys.Add_To_Attr('FROM_LOCATION_NO',from_location_, attr_);
+      Client_Sys.Add_To_Attr('TO_CONTRACT',contract_, attr_);
+      Client_Sys.Add_To_Attr('TO_LOCATION_NO',to_location_, attr_);
+      Client_Sys.Add_To_Attr('HANDLING_UNIT_ID',hu_id_, attr_);
+      Client_Sys.Add_To_Attr('LOT_BATCH_NO',lot_batch_no_, attr_);
+      Client_Sys.Add_To_Attr('SERIAL_NO',serial_no_, attr_);
+      Client_Sys.Add_To_Attr('ENG_CHG_LEVEL',eng_chg_level_, attr_);
+      Client_Sys.Add_To_Attr('WAIV_DEV_REJ_NO',wdr_no_, attr_);
+      Client_Sys.Add_To_Attr('QUANTITY',quantity_, attr_);
+      Client_Sys.Add_To_Attr('DESTINATION','Move to inventory', attr_);
+      Client_Sys.Add_To_Attr('ACTIVITY_SEQ',activity_seq_, attr_);
+      Client_Sys.Add_To_Attr('ALLOW_DEVIATING_AVAIL_CTRL_DB','TRUE', attr_);
+      RETURN attr_;
+   END Get_Attr___;
+BEGIN
+   attr_:= Get_Attr___;
+   Transport_Task_Line_API.New__(info_,objid_,objversion_,attr_,'DO'); 
+   dbms_output.put_line(task_id_);        
+END Create_Transport_Task_Line___;
+
+PROCEDURE Create_Transport_Task___(
+   part_no_       IN VARCHAR2,
+   contract_      IN VARCHAR2,
+   from_location_ IN VARCHAR2,
+   to_location_   IN VARCHAR2,
+   hu_id_         IN VARCHAR2,
+   lot_batch_no_  IN VARCHAR2,
+   serial_no_     IN VARCHAR2,
+   eng_chg_level_ IN VARCHAR2,
+   wdr_no_        IN VARCHAR2,
+   activity_seq_  IN VARCHAR2,
+   quantity_      IN NUMBER)
+IS
+   task_id_ NUMBER;
+BEGIN
+   Create_Transport_Task_Header___(task_id_);
+
+   Create_Transport_Task_Line___(task_id_,
+                                 part_no_,
+                                 contract_,
+                                 from_location_,
+                                 to_location_,
+                                 hu_id_,
+                                 lot_batch_no_,
+                                 serial_no_,
+                                 eng_chg_level_,
+                                 wdr_no_,
+                                 activity_seq_,
+                                 quantity_);
+END Create_Transport_Task___;
+-- C0411 EntPrageG (END)
 
 -------------------- LU SPECIFIC PRIVATE METHODS ----------------------------
 
@@ -4800,4 +5021,187 @@ SELECT *
 END Create_Weekly_Loading_;
 --210728 EntNadeeL C0567 (END) 
 
+
+-- C0411 EntPrageG (START)
+FUNCTION Get_Available_Date_ (
+   part_no_     IN VARCHAR2,
+   starte_date_ IN DATE) RETURN DATE
+IS   
+   available_date_ DATE;   
+   msl_level_objkey_ VARCHAR2(50);
+   after_days_ NUMBER;   
+BEGIN
+   msl_level_objkey_ := Get_Msl_Objkey___(part_no_);
+   after_days_ := Get_After_Days___(msl_level_objkey_);
+   available_date_ := starte_date_ + after_days_;
+   RETURN available_date_;
+EXCEPTION
+   WHEN OTHERS THEN
+     NULL;
+END Get_Available_Date_;
+     
+PROCEDURE Create_MSL_Drycab_Trans_Task
+IS
+   msl_level_objkey_ VARCHAR2(50);
+   after_days_ NUMBER;
+   after_date_exceeded_ BOOLEAN;
+   task_exists_ BOOLEAN := FALSE;
+   start_date_ DATE;
+
+   from_location_ VARCHAR2(20) := 'SM-MSL-DRYCAB';
+   to_location_ VARCHAR2(20) := 'SM-MSL';
+   transaction_code_ VARCHAR2(10) := 'INVM-IN';
+   
+   FUNCTION After_Date_Exceeded___(
+      start_date_  IN DATE, 
+      after_days_ IN NUMBER) RETURN BOOLEAN
+   IS
+      after_date_ DATE:= start_date_ + after_days_;
+   BEGIN
+      IF sysdate >= after_date_ THEN
+         RETURN TRUE;   
+      END IF;
+      RETURN FALSE;
+   END After_Date_Exceeded___;
+BEGIN
+   FOR rec_ IN get_parts_msl_location(transaction_code_,from_location_) LOOP
+      BEGIN
+         task_exists_ := Transport_Task_Exists___(rec_.part_no,
+                                                  rec_.contract,
+                                                  rec_.handling_unit_id,
+                                                  rec_.lot_batch_no,
+                                                  rec_.serial_no,         
+                                                  rec_.eng_chg_level,
+                                                  rec_.WAIV_DEV_REJ_NO,
+                                                  rec_.activity_seq,
+                                                  from_location_,
+                                                  to_location_);
+         IF NOT task_exists_ THEN                                         
+            msl_level_objkey_ := Get_Msl_Objkey___(rec_.part_no);
+            after_days_ := Get_After_Days___(msl_level_objkey_);
+            
+            start_date_ := Get_Start_Date___(rec_.part_no,
+                                             rec_.contract,
+                                             rec_.handling_unit_id,
+                                             rec_.lot_batch_no,
+                                             rec_.serial_no,
+                                             rec_.eng_chg_level,
+                                             rec_.waiv_dev_rej_no,
+                                             rec_.activity_seq,
+                                             transaction_code_,
+                                             from_location_);
+
+            after_date_exceeded_ := After_Date_Exceeded___(start_date_,after_days_);
+                     
+            IF after_date_exceeded_ THEN
+            
+               Create_Transport_Task___(rec_.part_no,
+                                        rec_.contract,
+                                        from_location_,
+                                        to_location_,
+                                        rec_.handling_unit_id,
+                                        rec_.lot_batch_no,
+                                        rec_.serial_no,
+                                        rec_.eng_chg_level,
+                                        rec_.WAIV_DEV_REJ_NO,
+                                        rec_.activity_seq,
+                                        rec_.quantity);   
+            END IF;
+         END IF;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RAISE;
+      END;
+   END LOOP;
+END Create_MSL_Drycab_Trans_Task;
+  	
+PROCEDURE Create_MSL_In_Use_Trans_Task
+IS
+   msl_level_objkey_ VARCHAR2(50);
+   before_days_ NUMBER;
+   before_date_exceeded_ BOOLEAN;   
+   task_exists_ BOOLEAN := FALSE;
+   
+   start_date_ DATE;
+   
+   from_location_ VARCHAR2(20) := 'SM-MSL';
+   to_location_ VARCHAR2(20) := 'SM-MSL-DRYCAB';
+   transaction_code_ VARCHAR2(10) := 'INVM-IN';
+   
+   FUNCTION Get_Before_Days___(
+      objkey_ IN VARCHAR2) RETURN NUMBER
+   IS
+      before_days_ NUMBER;
+   BEGIN
+      SELECT cf$_before_days
+        INTO before_days_
+        FROM m_s_l_type_maintenance_clv
+       WHERE objkey = objkey_;
+      RETURN before_days_;            
+   END Get_Before_Days___;
+   
+   FUNCTION Before_Date_Exceeded___(
+      start_date_  IN DATE, 
+      before_days_ IN NUMBER) RETURN BOOLEAN
+   IS
+      before_date_ DATE:= start_date_ + before_days_;
+   BEGIN
+      IF sysdate >= before_date_ THEN
+         RETURN TRUE;   
+      END IF;
+      RETURN FALSE;
+   END Before_Date_Exceeded___;
+      
+BEGIN
+   FOR rec_ IN get_parts_msl_location(transaction_code_,from_location_) LOOP
+      BEGIN
+         task_exists_ := Transport_Task_Exists___(rec_.part_no,
+                                                  rec_.contract,
+                                                  rec_.handling_unit_id,
+                                                  rec_.lot_batch_no,
+                                                  rec_.serial_no,
+                                                  rec_.eng_chg_level,
+                                                  rec_.waiv_dev_rej_no,
+                                                  rec_.activity_seq,
+                                                  from_location_,
+                                                  to_location_);
+         IF NOT task_exists_ THEN                               
+            msl_level_objkey_ := Get_Msl_Objkey___(rec_.part_no);
+            before_days_ := Get_Before_Days___(msl_level_objkey_);
+            
+            start_date_ := Get_Start_Date___(rec_.part_no,
+                                             rec_.contract,
+                                             rec_.handling_unit_id,
+                                             rec_.lot_batch_no,
+                                             rec_.serial_no,
+                                             rec_.eng_chg_level,
+                                             rec_.waiv_dev_rej_no,
+                                             rec_.activity_seq,
+                                             transaction_code_,
+                                             from_location_);
+                                              
+            before_date_exceeded_ := Before_Date_Exceeded___(start_date_,before_days_);
+                     
+            IF before_date_exceeded_ THEN
+            
+               Create_Transport_Task___(rec_.part_no,
+                                        rec_.contract,
+                                        from_location_,
+                                        to_location_,
+                                        rec_.handling_unit_id,
+                                        rec_.lot_batch_no,
+                                        rec_.serial_no,
+                                        rec_.eng_chg_level,
+                                        rec_.waiv_dev_rej_no,
+                                        rec_.activity_seq,
+                                        rec_.quantity);   
+            END IF;
+         END IF;
+      EXCEPTION
+         WHEN OTHERS THEN
+            RAISE;
+      END;
+   END LOOP;
+END Create_MSL_In_Use_Trans_Task;
+-- C0411 EntPrageG (END)
 -------------------- LU  NEW METHODS -------------------------------------
