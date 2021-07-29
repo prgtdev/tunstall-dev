@@ -4188,11 +4188,11 @@ IS
    total_wo_and_travel_time_ NUMBER := 0;
    total_shift_time_ NUMBER := 0;
    
-   CURSOR get_work_order_and_travel_time(employee_id_ VARCHAR2) IS      
+   CURSOR get_work_order_and_travel_time IS      
       SELECT SUM(jtc.work_hours)
       FROM jt_task_clocking_uiv jtc, jt_task_uiv_cfv jt
       WHERE jtc.task_seq = jt.task_seq
-      AND jtc.employee_id = employee_id_
+      AND jtc.employee_id = emp_no_
       AND jtc.clocking_category_db IN ('WORK', 'TRAVEL')
       AND jt.actual_finish IS NOT NULL
       AND jt.company = company_
@@ -4221,7 +4221,7 @@ IS
       AND shift_begin.trunc_date_created = TRUNC(jtsa.date_created)
       AND shift_begin.emp_no = jtsa.emp_no;
 BEGIN
-   OPEN get_work_order_and_travel_time(emp_no_);
+   OPEN get_work_order_and_travel_time;
    FETCH get_work_order_and_travel_time INTO total_wo_and_travel_time_;
    CLOSE get_work_order_and_travel_time;
    
