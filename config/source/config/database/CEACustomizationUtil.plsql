@@ -4940,32 +4940,32 @@ BEGIN
 END Create_Demand_Forecast_; 
 --C0457 EntNadeeL (END)
 
--- 210727 EntDinusK C706 (START)
+-- 210730 EntDinusK C706 (START)
 FUNCTION Get_Next_Id_Equip (
-   sup_mch_code_ equipment_object_tab.sup_mch_code%TYPE,
+   mch_code_     equipment_object_tab.mch_code%TYPE,
    obj_level_    equipment_object_tab.obj_level%TYPE
    ) RETURN VARCHAR2
 IS
    next_object_ equipment_object_tab.mch_code%TYPE;
    CURSOR get_max_object IS
       SELECT CASE
-         WHEN sup_mch_code_ IN (SELECT eo.mch_code FROM equipment_object eo WHERE eo.obj_level IN ('210_MS_CONTRACT', '200_CONTRACT')) AND obj_level_ IN ('355_DWELLING', '340_SCHEME') THEN
-          (SELECT sup_mch_code_ || '_' || to_char(max(to_number(substr(ef.mch_code,instr(ef.mch_code, '_', -1) + 1))) + 1) FROM equipment_functional_uiv ef WHERE ef.obj_level = obj_level_ AND ef.sup_mch_code = sup_mch_code_)
+         WHEN obj_level_ IN ('210_MS_CONTRACT', '200_CONTRACT') THEN 
+          (SELECT mch_code_ || '_' || to_char(max(to_number(substr(ef.mch_code,instr(ef.mch_code, '_', -1) + 1))) + 1) FROM equipment_functional_uiv ef WHERE ef.obj_level IN ('355_DWELLING', '340_SCHEME') AND ef.sup_mch_code = mch_code_)
          ELSE
           ''
          END next_object
       FROM dual;
 BEGIN
-    OPEN get_max_object;
+	OPEN get_max_object;
    FETCH get_max_object INTO next_object_;
    CLOSE get_max_object;
    RETURN next_object_;
-EXCEPTION
+EXCEPTION 
    WHEN OTHERS THEN
       next_object_ := '';
-       RETURN next_object_;
+	   RETURN next_object_;
 END Get_Next_Id_Equip;
--- 210727 EntDinusK C706 (END)
+-- 210730 EntDinusK C706 (END)
 
 
 --210728 EntNadeeL C0567 (START) 
