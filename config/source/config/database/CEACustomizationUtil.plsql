@@ -4648,6 +4648,178 @@ BEGIN
   
 END Get_Non_Value_Added_Work;
 
+FUNCTION Get_Current_Rank(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS   
+   PRAGMA  AUTONOMOUS_TRANSACTION;    
+       
+   sla_ NUMBER;
+   first_fix_ NUMBER;
+   nps_ NUMBER;
+   no_access_ NUMBER;
+   value_added_work_ NUMBER;
+   non_value_added_work_ NUMBER;
+   score_ NUMBER;  
+   rank_ NUMBER := 0;
+
+   CURSOR get_employees IS
+      SELECT me.emp_no, me.name
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code IN ('M1','M2','M3','M4','M5')
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+      
+   CURSOR get_employees_sorted IS
+      SELECT emp_no, RANK() OVER (ORDER BY score DESC) rank
+      FROM emp_current_score_tmp
+      ORDER BY score DESC;      
+      
+BEGIN 
+   FOR rec_ IN get_employees LOOP      
+      nps_ := Get_NPS(rec_.emp_no, company_, start_date_, end_date_); 
+      -- if there are no surveys satisfying the requirement(ie value gets 999) no need to consider for overall score calculation
+      IF (nps_ != 999) THEN
+         sla_ := Get_SLA(rec_.emp_no, company_, start_date_, end_date_);
+         first_fix_ := Get_First_Fix(rec_.emp_no, company_, start_date_, end_date_); 
+         no_access_ := Get_No_Access(rec_.emp_no, company_, start_date_, end_date_); 
+         value_added_work_ := Get_Value_Added_Work(rec_.emp_no, company_, start_date_, end_date_); 
+         non_value_added_work_ := Get_Non_Value_Added_Work(rec_.emp_no, company_, start_date_, end_date_); 
+         score_ := (sla_ + first_fix_ + nps_ + (100 - no_access_) + value_added_work_ + (100 - non_value_added_work_))/6;  
+      ELSE
+         score_ := 0;
+      END IF;  
+      
+      -- inserting records to the temporary table in order to sort later
+      IF (score_ != 0) THEN 
+         INSERT INTO emp_current_score_tmp(emp_no, score)  
+         VALUES (rec_.emp_no, score_); 
+         DBMS_OUTPUT.put_line('emp > '||rec_.emp_no ||' , score >' ||score_);
+      END IF;
+   END LOOP;
+  
+   FOR rec_ IN get_employees_sorted LOOP
+      IF (rec_.emp_no = emp_no_) THEN
+         rank_ := rec_.rank;
+         EXIT;
+      END IF;
+   END LOOP; 
+   @ApproveTransactionStatement(2021-07-30, EntMahesR)   
+   COMMIT;   
+   RETURN rank_;
+   
+END Get_Current_Rank;
+
+FUNCTION Get_Previous_Score(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   no_of_days_ NUMBER;
+   previous_start_date_ DATE;
+   previous_end_date_ DATE;
+   previous_sla_ NUMBER;
+   previous_first_fix_ NUMBER;
+   previous_nps_ NUMBER;
+   previous_no_access_ NUMBER;
+   previous_value_added_work_ NUMBER;
+   previous_non_value_added_work_ NUMBER;
+   previous_score_ NUMBER; 
+BEGIN
+   no_of_days_ := end_date_ - start_date_;  
+   previous_start_date_ := start_date_ - no_of_days_;
+   previous_end_date_ := end_date_ - no_of_days_;
+   
+   previous_nps_ := Get_NPS(emp_no_, company_, previous_start_date_, previous_end_date_); 
+   -- if there are no surveys satisfying the requirement(ie value gets 999) no need to consider for overall score calculation
+   IF (previous_nps_ != 999) THEN
+      previous_sla_ := Get_SLA(emp_no_, company_, previous_start_date_, previous_end_date_);
+      previous_first_fix_ := Get_First_Fix(emp_no_, company_, previous_start_date_, previous_end_date_); 
+      previous_no_access_ := Get_No_Access(emp_no_, company_, previous_start_date_, previous_end_date_); 
+      previous_value_added_work_ := Get_Value_Added_Work(emp_no_, company_, previous_start_date_, previous_end_date_); 
+      previous_non_value_added_work_ := Get_Non_Value_Added_Work(emp_no_, company_, previous_start_date_, previous_end_date_); 
+      previous_score_ := (previous_sla_ + previous_first_fix_ + previous_nps_ + (100 - previous_no_access_) + previous_value_added_work_ + (100 - previous_non_value_added_work_))/6;  
+   ELSE
+      previous_score_ := 0;
+   END IF;   
+   
+   RETURN previous_score_;
+   
+END Get_Previous_Score;  
+
+FUNCTION Get_Previous_Rank(
+   emp_no_     VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS   
+   PRAGMA  AUTONOMOUS_TRANSACTION; 
+   
+   no_of_days_ NUMBER;    
+   previous_start_date_ DATE;
+   previous_end_date_ DATE;
+   previous_sla_ NUMBER;
+   previous_first_fix_ NUMBER;
+   previous_nps_ NUMBER;
+   previous_no_access_ NUMBER;
+   previous_value_added_work_ NUMBER;
+   previous_non_value_added_work_ NUMBER;
+   previous_score_ NUMBER;  
+   rank_ NUMBER := 0;
+
+   CURSOR get_employees IS
+      SELECT me.emp_no, me.name
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code IN ('M1','M2','M3','M4','M5')
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+      
+   CURSOR get_employees_sorted IS
+      SELECT emp_no, RANK() OVER (ORDER BY score DESC) rank
+      FROM emp_previous_score_tmp
+      ORDER BY score DESC;      
+      
+BEGIN
+   no_of_days_ := end_date_ - start_date_;  
+   previous_start_date_ := start_date_ - no_of_days_;
+   previous_end_date_ := end_date_ - no_of_days_; 
+   
+   FOR rec_ IN get_employees LOOP      
+      previous_nps_ := Get_NPS(rec_.emp_no, company_, previous_start_date_, previous_end_date_); 
+      -- if there are no surveys satisfying the requirement(ie value gets 999) no need to consider for overall score calculation
+      IF (previous_nps_ != 999) THEN
+         previous_sla_ := Get_SLA(rec_.emp_no, company_, previous_start_date_, previous_end_date_);
+         previous_first_fix_ := Get_First_Fix(rec_.emp_no, company_, previous_start_date_, previous_end_date_); 
+         previous_no_access_ := Get_No_Access(rec_.emp_no, company_, previous_start_date_, previous_end_date_); 
+         previous_value_added_work_ := Get_Value_Added_Work(rec_.emp_no, company_, previous_start_date_, previous_end_date_); 
+         previous_non_value_added_work_ := Get_Non_Value_Added_Work(rec_.emp_no, company_, previous_start_date_, previous_end_date_); 
+         previous_score_ := (previous_sla_ + previous_first_fix_ + previous_nps_ + (100 - previous_no_access_) + previous_value_added_work_ + (100 - previous_non_value_added_work_))/6;  
+      ELSE
+         previous_score_ := 0;
+      END IF;  
+      
+      -- inserting records to the temporary table in order to sort later
+      IF (previous_score_ != 0) THEN 
+         INSERT INTO emp_previous_score_tmp(emp_no, score)  
+         VALUES (rec_.emp_no, previous_score_); 
+         DBMS_OUTPUT.put_line('emp > '||rec_.emp_no ||' , previous score >' ||previous_score_);
+      END IF;
+   END LOOP;   
+   
+   FOR rec_ IN get_employees_sorted LOOP
+      IF (rec_.emp_no = emp_no_) THEN
+         rank_ := rec_.rank;
+         EXIT;
+      END IF;
+   END LOOP; 
+   @ApproveTransactionStatement(2021-07-30, EntMahesR)   
+   COMMIT;   
+   RETURN rank_;
+   
+END Get_Previous_Rank;
 -- C458 EntMahesR (END)
 
 -- C364 EntNadeeL (START)
