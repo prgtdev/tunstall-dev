@@ -40,6 +40,45 @@ CURSOR get_parts_msl_location (transaction_code_ IN VARCHAR2,from_location_ IN V
 
 -------------------- LU SPECIFIC IMPLEMENTATION METHODS ---------------------
 
+-- EntPrageG (START)
+PROCEDURE Log_Info___(
+   message_ IN VARCHAR2)
+IS
+BEGIN
+   dbms_output.Put_Line(message_);
+   Transaction_SYS.Log_Status_Info(message_,'INFO');
+END Log_Info___;
+
+PROCEDURE Log_Progress___(
+   message_ IN VARCHAR2)
+IS
+BEGIN
+   dbms_output.Put_Line(message_);
+   Transaction_SYS.Log_Progress_Info(message_);
+END Log_Progress___;   
+   
+PROCEDURE Log_Warning___(
+   message_ IN VARCHAR2)
+IS
+BEGIN
+   dbms_output.Put_Line(message_);
+   Transaction_SYS.Log_Status_Info(message_);
+END Log_Warning___;
+
+PROCEDURE Log_error___(
+   message_ IN VARCHAR2)
+IS
+   appl_error_ EXCEPTION;
+BEGIN
+   dbms_output.Put_Line(message_);
+   Transaction_sys.Log_Error__(Dbms_Random.Random,message_);
+   RAISE appl_error_;
+EXCEPTION
+   WHEN appl_error_ THEN
+      raise_application_error(-20001,message_); 
+END Log_error___;
+-- EntPrageG (END)
+
 -- C0436 EntPrageG (START)
 PROCEDURE Get_Document_Keys_From_Key_Ref___(
    doc_class_ OUT VARCHAR2,
@@ -5016,8 +5055,6 @@ SELECT *
    EXECUTE IMMEDIATE sql_stmt;     
 END Create_Weekly_Loading_;
 --210728 EntNadeeL C0567 (END) 
-
-
 -- C0411 EntPrageG (START)
 FUNCTION Get_Available_Date_ (
    part_no_     IN VARCHAR2,
@@ -5036,7 +5073,7 @@ EXCEPTION
      NULL;
 END Get_Available_Date_;
      
-PROCEDURE Create_MSL_Drycab_Trans_Task
+PROCEDURE Create_MSL_In_Use_Trans_Task
 IS
    msl_level_objkey_ VARCHAR2(50);
    after_days_ NUMBER;
@@ -5054,13 +5091,15 @@ IS
    IS
       after_date_ DATE:= start_date_ + after_days_;
    BEGIN
-      IF sysdate >= after_date_ THEN
+      Log_Info___('-- MSL Available After Date ' || after_date_);
+      IF SYSDATE >= after_date_ THEN
          RETURN TRUE;   
       END IF;
       RETURN FALSE;
    END After_Date_Exceeded___;
 BEGIN
    FOR rec_ IN get_parts_msl_location(transaction_code_,from_location_) LOOP
+      Log_Info___('Processing Part No '|| rec_.part_no ||' Serial No '||rec_.serial_no|| ' - Started');
       BEGIN
          task_exists_ := Transport_Task_Exists___(rec_.part_no,
                                                   rec_.contract,
@@ -5068,10 +5107,10 @@ BEGIN
                                                   rec_.lot_batch_no,
                                                   rec_.serial_no,         
                                                   rec_.eng_chg_level,
-                                                  rec_.WAIV_DEV_REJ_NO,
+                                                  rec_.waiv_dev_rej_no,
                                                   rec_.activity_seq,
                                                   from_location_,
-                                                  to_location_);
+                                                  to_location_);                                        
          IF NOT task_exists_ THEN                                         
             msl_level_objkey_ := Get_Msl_Objkey___(rec_.part_no);
             after_days_ := Get_After_Days___(msl_level_objkey_);
@@ -5086,11 +5125,13 @@ BEGIN
                                              rec_.activity_seq,
                                              transaction_code_,
                                              from_location_);
-
+            Log_Info___('-- Part Moved Date ' || start_date_);   
+            Log_Info___('-- MSL After Days ' || after_days_);
+            
             after_date_exceeded_ := After_Date_Exceeded___(start_date_,after_days_);
                      
             IF after_date_exceeded_ THEN
-            
+               Log_Info___('-- Creating Transport Task..');
                Create_Transport_Task___(rec_.part_no,
                                         rec_.contract,
                                         from_location_,
@@ -5099,19 +5140,24 @@ BEGIN
                                         rec_.lot_batch_no,
                                         rec_.serial_no,
                                         rec_.eng_chg_level,
-                                        rec_.WAIV_DEV_REJ_NO,
+                                        rec_.waiv_dev_rej_no,
                                         rec_.activity_seq,
                                         rec_.quantity);   
+            ELSE
+               Log_Info___('Used after date has not passed. No transport task was created!');
             END IF;
+         ELSE
+            Log_Info___('-- Transport Task Exists!');
          END IF;
       EXCEPTION
          WHEN OTHERS THEN
-            RAISE;
+            Log_Warning___('-- An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
       END;
+      Log_Info___('Processing Part No '|| rec_.part_no ||' Serial No '||rec_.serial_no || ' - Completed');
    END LOOP;
-END Create_MSL_Drycab_Trans_Task;
+END Create_MSL_In_Use_Trans_Task;
   	
-PROCEDURE Create_MSL_In_Use_Trans_Task
+PROCEDURE Create_MSL_Drycab_Trans_Task
 IS
    msl_level_objkey_ VARCHAR2(50);
    before_days_ NUMBER;
@@ -5142,14 +5188,15 @@ IS
    IS
       before_date_ DATE:= start_date_ + before_days_;
    BEGIN
-      IF sysdate >= before_date_ THEN
+      Log_Info___('-- MSL Use Before Date ' || before_date_);
+      IF SYSDATE >= before_date_ THEN
          RETURN TRUE;   
       END IF;
       RETURN FALSE;
-   END Before_Date_Exceeded___;
-      
+   END Before_Date_Exceeded___;      
 BEGIN
    FOR rec_ IN get_parts_msl_location(transaction_code_,from_location_) LOOP
+      Log_Info___('Processing Part No '|| rec_.part_no ||' Serial No '||rec_.serial_no|| ' - Started');
       BEGIN
          task_exists_ := Transport_Task_Exists___(rec_.part_no,
                                                   rec_.contract,
@@ -5175,11 +5222,13 @@ BEGIN
                                              rec_.activity_seq,
                                              transaction_code_,
                                              from_location_);
-                                              
+            Log_Info___('-- Part Moved Date ' || start_date_);   
+            Log_Info___('-- MSL Before Days ' || before_days_);
+            
             before_date_exceeded_ := Before_Date_Exceeded___(start_date_,before_days_);
                      
             IF before_date_exceeded_ THEN
-            
+               Log_Info___('-- Creating Transport Task..');
                Create_Transport_Task___(rec_.part_no,
                                         rec_.contract,
                                         from_location_,
@@ -5190,14 +5239,19 @@ BEGIN
                                         rec_.eng_chg_level,
                                         rec_.waiv_dev_rej_no,
                                         rec_.activity_seq,
-                                        rec_.quantity);   
+                                        rec_.quantity);
+            ELSE
+               Log_Info___('Used before date has not passed. No transport task was created!');
             END IF;
+         ELSE
+            Log_Info___('-- Transport Task Exists!');
          END IF;
       EXCEPTION
          WHEN OTHERS THEN
-            RAISE;
+            Log_Warning___('-- An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
       END;
+      Log_Info___('Processing Part No '|| rec_.part_no ||' Serial No '||rec_.serial_no || ' - Completed');
    END LOOP;
-END Create_MSL_In_Use_Trans_Task;
+END Create_MSL_Drycab_Trans_Task;
 -- C0411 EntPrageG (END)
 -------------------- LU  NEW METHODS -------------------------------------
