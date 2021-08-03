@@ -674,7 +674,7 @@ IS
              objid
       FROM customer_order_line_cfv a
       WHERE order_no = order_no_
-      AND state IN ('Delivered', 'Invoiced/Closed');
+      AND state IN ('Delivered', 'Invoiced/Closed', 'Partially Delivered');
    
    CURSOR check_sales_part(catalog_ IN VARCHAR2) IS
       SELECT 1
