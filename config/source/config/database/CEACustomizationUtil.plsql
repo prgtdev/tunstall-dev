@@ -17,7 +17,7 @@ layer Core;
 -------------------- PRIVATE DECLARATIONS -----------------------------------
 
 -- C0411 EntPrageG (START)
-CURSOR get_parts_msl_location (transaction_code_ IN VARCHAR2,from_location_ IN VARCHAR2) IS
+CURSOR get_parts_msl_location (transaction_code_ IN VARCHAR2,max_days_ NUMBER) IS
    SELECT DISTINCT
           a.contract,
           a.part_no,
@@ -27,15 +27,17 @@ CURSOR get_parts_msl_location (transaction_code_ IN VARCHAR2,from_location_ IN V
           a.eng_chg_level,
           a.waiv_dev_rej_no,
           a.activity_seq,
-          a.quantity
+          b.qty_onhand quantity
      FROM inventory_transaction_hist2 a,inventory_part_in_stock_uiv b
     WHERE a.contract = b.contract
       AND a.part_no = b.part_no
       AND a.location_no = b.location_no
       AND a.lot_batch_no = b.lot_batch_no
-      AND a.location_no = from_location_
+      AND Inventory_Location_API.Get_Warehouse(a.contract, a.location_no) = 'SM'
+      AND Inventory_Location_API.get_bay_no(a.contract, a.location_no) = 'MSL'
       AND a.transaction_code = transaction_code_
-      AND b.qty_onhand > 0; 
+      AND b.qty_onhand > 0
+      AND date_time_created >= (SYSDATE - max_days_);
 -- C0411 EntPrageG (END)
 
 -------------------- LU SPECIFIC IMPLEMENTATION METHODS ---------------------
@@ -5233,7 +5235,8 @@ SELECT *
 
    EXECUTE IMMEDIATE sql_stmt;     
 END Create_Weekly_Loading_;
---210728 EntNadeeL C0567 (END) 
+--210728 EntNadeeL C0567 (END)
+
 -- C0411 EntPrageG (START)
 FUNCTION Get_Available_Date_ (
    part_no_     IN VARCHAR2,
@@ -5256,6 +5259,7 @@ PROCEDURE Create_MSL_In_Use_Trans_Task
 IS
    msl_level_objkey_ VARCHAR2(50);
    after_days_ NUMBER;
+   max_after_days_ NUMBER;
    after_date_exceeded_ BOOLEAN;
    task_exists_ BOOLEAN := FALSE;
    start_date_ DATE;
@@ -5263,6 +5267,16 @@ IS
    from_location_ VARCHAR2(20) := 'SM-MSL-DRYCAB';
    to_location_ VARCHAR2(20) := 'SM-MSL';
    transaction_code_ VARCHAR2(10) := 'INVM-IN';
+   
+   FUNCTION Get_Max_After_Days___ RETURN NUMBER
+   IS
+      max_after_days_ NUMBER;
+   BEGIN
+      SELECT MAX(cf$_after_days)
+        INTO max_after_days_
+        FROM m_s_l_type_maintenance_clv;
+      RETURN max_after_days_;
+   END Get_Max_After_Days___;
    
    FUNCTION After_Date_Exceeded___(
       start_date_  IN DATE, 
@@ -5277,7 +5291,9 @@ IS
       RETURN FALSE;
    END After_Date_Exceeded___;
 BEGIN
-   FOR rec_ IN get_parts_msl_location(transaction_code_,from_location_) LOOP
+   max_after_days_ := Get_Max_After_Days___;    
+   
+   FOR rec_ IN get_parts_msl_location(transaction_code_,max_after_days_) LOOP
       Log_Info___('Processing Part No '|| rec_.part_no ||' Serial No '||rec_.serial_no|| ' - Started');
       BEGIN
          task_exists_ := Transport_Task_Exists___(rec_.part_no,
@@ -5340,6 +5356,7 @@ PROCEDURE Create_MSL_Drycab_Trans_Task
 IS
    msl_level_objkey_ VARCHAR2(50);
    before_days_ NUMBER;
+   max_before_days_ NUMBER;
    before_date_exceeded_ BOOLEAN;   
    task_exists_ BOOLEAN := FALSE;
    
@@ -5348,6 +5365,16 @@ IS
    from_location_ VARCHAR2(20) := 'SM-MSL';
    to_location_ VARCHAR2(20) := 'SM-MSL-DRYCAB';
    transaction_code_ VARCHAR2(10) := 'INVM-IN';
+   
+   FUNCTION Get_Max_Before_Days___ RETURN NUMBER
+   IS
+      max_before_days_ NUMBER;
+   BEGIN
+      SELECT MAX(cf$_before_days)
+        INTO max_before_days_
+        FROM m_s_l_type_maintenance_clv;
+      RETURN max_before_days_;
+   END Get_Max_Before_Days___;
    
    FUNCTION Get_Before_Days___(
       objkey_ IN VARCHAR2) RETURN NUMBER
@@ -5374,7 +5401,9 @@ IS
       RETURN FALSE;
    END Before_Date_Exceeded___;      
 BEGIN
-   FOR rec_ IN get_parts_msl_location(transaction_code_,from_location_) LOOP
+   max_before_days_ := Get_Max_Before_Days___;    
+   
+   FOR rec_ IN get_parts_msl_location(transaction_code_,max_before_days_) LOOP
       Log_Info___('Processing Part No '|| rec_.part_no ||' Serial No '||rec_.serial_no|| ' - Started');
       BEGIN
          task_exists_ := Transport_Task_Exists___(rec_.part_no,
