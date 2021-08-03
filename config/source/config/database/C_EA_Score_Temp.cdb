@@ -1,26 +1,32 @@
 -----------------------------------------------------------------------------
 --  Module : CONFIG
 --
---  File   : C_EA_Emp_Previous_Score_Temp.cdb
+--  File   : C_EA_Score_Temp.cdb
 --
 --  IFS Developer Studio Template Version 2.6
 --
 --  Date     Sign        History
 --  ------   ----------  -----------------------------------------------------------------------------------------
+--  210803   EntMaheshR  Creating temporary tables REG_CURRENT_SCORE_TMP and REG_PREVIOUS_SCORE_TMP
+--                       in order to use in the rank calculation logic of the regions.
 --  210730   EntMaheshR  Creating temporary tables EMP_CURRENT_SCORE_TMP and EMP_PREVIOUS_SCORE_TMP
 --                       in order to use in the rank calculation logic of the employess.
 --  ------   ----------  -----------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------
 
 SET SERVEROUTPUT ON
-EXEC Installation_SYS.Log_Detail_Time_Stamp('CONFIG', 'C_EA_Emp_Previous_Score_Temp.cdb', 'Timestamp_1');
+EXEC Installation_SYS.Log_Detail_Time_Stamp('CONFIG', 'C_EA_Score_Temp.cdb', 'Timestamp_1');
 PROMPT Create global temporary tables EMP_CURRENT_SCORE_TMP AND EMP_PREVIOUS_SCORE_TMP to store employee score for the current period and previous  period.
-
+PROMPT Create global temporary tables REG_CURRENT_SCORE_TMP AND REG_PREVIOUS_SCORE_TMP to store region-wise score for the current period and previous  period.
 DECLARE 
    table_name1_    VARCHAR2(30) := 'EMP_CURRENT_SCORE_TMP'; 
-   table_name2_    VARCHAR2(30) := 'EMP_PREVIOUS_SCORE_TMP';   
+   table_name2_    VARCHAR2(30) := 'EMP_PREVIOUS_SCORE_TMP';  
+   table_name3_    VARCHAR2(30) := 'REG_CURRENT_SCORE_TMP'; 
+   table_name4_    VARCHAR2(30) := 'REG_PREVIOUS_SCORE_TMP';     
    columns1_       Installation_SYS.ColumnTabType;  
-   columns2_       Installation_SYS.ColumnTabType;   
+   columns2_       Installation_SYS.ColumnTabType; 
+   columns3_       Installation_SYS.ColumnTabType;  
+   columns4_       Installation_SYS.ColumnTabType;   
 BEGIN    
    Database_SYS.Set_Table_Column(columns1_, 'EMP_NO', 'VARCHAR2(11)', 'N');
    Database_SYS.Set_Table_Column(columns1_, 'SCORE',  'NUMBER', 'N');
@@ -28,10 +34,18 @@ BEGIN
    
    Database_SYS.Set_Table_Column(columns2_, 'EMP_NO', 'VARCHAR2(11)', 'N');
    Database_SYS.Set_Table_Column(columns2_, 'SCORE',  'NUMBER', 'N');
-   Database_SYS.Create_Temporary_Table(table_name2_, columns2_, TRUE);  
+   Database_SYS.Create_Temporary_Table(table_name2_, columns2_, TRUE); 
+   
+   Database_SYS.Set_Table_Column(columns3_, 'EMP_NO', 'VARCHAR2(11)', 'N');
+   Database_SYS.Set_Table_Column(columns3_, 'SCORE',  'NUMBER', 'N');
+   Database_SYS.Create_Temporary_Table(table_name3_, columns3_, TRUE);
+   
+   Database_SYS.Set_Table_Column(columns4_, 'EMP_NO', 'VARCHAR2(11)', 'N');
+   Database_SYS.Set_Table_Column(columns4_, 'SCORE',  'NUMBER', 'N');
+   Database_SYS.Create_Temporary_Table(table_name4_, columns4_, TRUE);    
 END;
 /
 
-EXEC Installation_SYS.Log_Detail_Time_Stamp('CONFIG', 'C_EA_Emp_Previous_Score_Temp.cdb', 'Done');
+EXEC Installation_SYS.Log_Detail_Time_Stamp('CONFIG', 'C_EA_Score_Temp.cdb', 'Done');
 SET SERVEROUTPUT OFF
 
