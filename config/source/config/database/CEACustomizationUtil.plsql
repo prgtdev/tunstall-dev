@@ -4822,6 +4822,144 @@ BEGIN
    RETURN rank_;
    
 END Get_Previous_Rank;
+
+FUNCTION Get_Regional_SLA (
+   org_code_   VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   count_ NUMBER := 0;
+   sum_sla_ NUMBER := 0;   
+   
+   CURSOR get_org_employees IS
+      SELECT me.emp_no 
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code = org_code_
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+BEGIN
+   FOR rec_ IN get_org_employees LOOP
+      sum_sla_ :=  sum_sla_ + Get_SLA(rec_.emp_no, company_, start_date_, end_date_);
+      count_ := count_ + 1;
+   END LOOP;
+   RETURN ROUND(sum_sla_/count_);  
+END Get_Regional_SLA;
+
+FUNCTION Get_Regional_First_Fix (
+   org_code_   VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   count_ NUMBER := 0;
+   sum_first_fix_ NUMBER := 0;   
+   
+   CURSOR get_org_employees IS
+      SELECT me.emp_no 
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code = org_code_
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+BEGIN
+   FOR rec_ IN get_org_employees LOOP
+      sum_first_fix_ :=  sum_first_fix_ + Get_First_Fix(rec_.emp_no, company_, start_date_, end_date_);
+      count_ := count_ + 1;
+   END LOOP;
+   RETURN ROUND(sum_first_fix_/count_);
+END Get_Regional_First_Fix;   
+
+FUNCTION Get_Regional_NPS (
+   org_code_   VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ IN DATE,
+   end_date_   IN DATE) RETURN NUMBER
+IS
+   count_ NUMBER := 0;
+   sum_nps_ NUMBER := 0;   
+   
+   CURSOR get_org_employees IS
+      SELECT me.emp_no 
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code = org_code_
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+BEGIN
+   FOR rec_ IN get_org_employees LOOP
+      sum_nps_ :=  sum_nps_ + Get_NPS(rec_.emp_no, company_, start_date_, end_date_);
+      count_ := count_ + 1;
+   END LOOP;
+   RETURN ROUND(sum_nps_/count_);
+END Get_Regional_NPS;
+
+FUNCTION Get_Regional_No_Access(
+   org_code_   VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ DATE,
+   end_date_   DATE) RETURN NUMBER
+IS
+   count_ NUMBER := 0;
+   sum_no_access_ NUMBER := 0;   
+   
+   CURSOR get_org_employees IS
+      SELECT me.emp_no 
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code = org_code_
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+BEGIN
+   FOR rec_ IN get_org_employees LOOP
+      sum_no_access_ :=  sum_no_access_ + Get_No_Access(rec_.emp_no, company_, start_date_, end_date_);
+      count_ := count_ + 1;
+   END LOOP;
+   RETURN ROUND(sum_no_access_/count_);
+END Get_Regional_No_Access; 
+
+FUNCTION Get_Regional_Value_Added_Work(
+   org_code_   VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ DATE,
+   end_date_   DATE) RETURN NUMBER
+IS
+   count_ NUMBER := 0;
+   sum_value_added_work_ NUMBER := 0;   
+   
+   CURSOR get_org_employees IS
+      SELECT me.emp_no 
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code = org_code_
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+BEGIN 
+   FOR rec_ IN get_org_employees LOOP
+      sum_value_added_work_ :=  sum_value_added_work_ + Get_Value_Added_Work(rec_.emp_no, company_, start_date_, end_date_);
+      count_ := count_ + 1;
+   END LOOP;
+   RETURN ROUND(sum_value_added_work_/count_);
+END Get_Regional_Value_Added_Work;
+
+FUNCTION Get_Regional_Nonval_Added_Work(
+   org_code_   VARCHAR2,
+   company_    VARCHAR2,
+   start_date_ DATE,
+   end_date_   DATE) RETURN NUMBER
+IS
+   count_ NUMBER := 0;
+   sum_non_value_added_work_ NUMBER := 0;   
+   
+   CURSOR get_org_employees IS
+      SELECT me.emp_no 
+      FROM maint_empolyee_uiv me, maint_person_employee mpe
+      WHERE me.org_code = org_code_
+      AND me.emp_no = mpe.emp_no
+      AND me.resource_seq = mpe.resource_seq;
+BEGIN
+   FOR rec_ IN get_org_employees LOOP
+      sum_non_value_added_work_ :=  sum_non_value_added_work_ + Get_Non_Value_Added_Work(rec_.emp_no, company_, start_date_, end_date_);
+      count_ := count_ + 1;
+   END LOOP;
+   RETURN ROUND(sum_non_value_added_work_/count_);   
+END Get_Regional_Nonval_Added_Work;    
 -- C458 EntMahesR (END)
 
 -- C364 EntNadeeL (START)
