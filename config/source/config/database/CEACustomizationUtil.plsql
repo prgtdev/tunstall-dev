@@ -4877,6 +4877,8 @@ FUNCTION Get_Regional_NPS (
 IS
    count_ NUMBER := 0;
    sum_nps_ NUMBER := 0;   
+   individual_nps_ NUMBER := 0;
+   return_value_ NUMBER := 0;
    
    CURSOR get_org_employees IS
       SELECT me.emp_no 
@@ -4886,10 +4888,19 @@ IS
       AND me.resource_seq = mpe.resource_seq;
 BEGIN
    FOR rec_ IN get_org_employees LOOP
-      sum_nps_ :=  sum_nps_ + Get_NPS(rec_.emp_no, company_, start_date_, end_date_);
-      count_ := count_ + 1;
-   END LOOP;
-   RETURN ROUND(sum_nps_/count_);
+      individual_nps_ := Get_NPS(rec_.emp_no, company_, start_date_, end_date_);
+      -- If anyone of employees has no surveys completed during time period will exit from the calculation and return 999   
+      -- instead, which is not a real value in this scenario, later this figure will show as 'No Data' in the crystal layout
+      IF (individual_nps_ = 999) THEN
+         return_value_ := 999;
+         EXIT;
+      ELSE
+         sum_nps_ :=  sum_nps_ + individual_nps_;
+         count_ := count_ + 1;
+      END IF; 
+      RETURN ROUND(sum_nps_/count_);
+   END LOOP;   
+   RETURN return_value_;
 END Get_Regional_NPS;
 
 FUNCTION Get_Regional_No_Access(
