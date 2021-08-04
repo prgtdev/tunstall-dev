@@ -5828,4 +5828,68 @@ BEGIN
    END LOOP;
 END Create_MSL_Drycab_Trans_Task;
 -- C0411 EntPrageG (END)
+
+-- C0740 EntChamuA (START)
+FUNCTION Get_Service_Contract_Notes_WO (wo_no_ IN NUMBER,
+                                        contract_id_ IN VARCHAR2, 
+                                        line_no_ IN NUMBER) RETURN VARCHAR2
+
+IS 
+    notes_            VARCHAR2(3200) := NULL;
+    task_contract_id_ VARCHAR2(3200);
+    task_line_no_     NUMBER;
+    
+    CURSOR get_header_notes(contract_id_ IN VARCHAR2) IS
+    SELECT notes 
+      FROM sc_service_contract
+     WHERE contract_id = contract_id_;
+
+    CURSOR get_line_notes(contract_id_ IN VARCHAR2, line_no_ IN NUMBER) IS
+    SELECT note
+      FROM psc_contr_product_uiv
+     WHERE contract_id = contract_id_
+       AND line_no = line_no_;
+       
+    CURSOR get_work_task(wo_no_ IN NUMBER) IS
+    SELECT contract_id, line_no 
+      FROM jt_task_uiv
+     WHERE wo_no = wo_no_;
+     
+BEGIN
+     
+   --get contract id and line no from WORK TASK
+   IF(contract_id_ IS NULL AND line_no_ IS NULL) THEN
+      OPEN get_work_task(wo_no_);
+      FETCH get_work_task INTO task_contract_id_, task_line_no_;
+      CLOSE get_work_task;
+      
+      -- Get notes of service contract header
+      FOR rec IN get_header_notes(task_contract_id_) LOOP
+         notes_ := rec.notes ||chr(13)||chr(10)|| notes_;
+      END LOOP;
+      
+      -- Get notes of service contract line
+      FOR rec_ IN get_line_notes(task_contract_id_, task_line_no_) LOOP
+         notes_ := rec_.note ||chr(13)||chr(10)|| notes_;
+      END LOOP;
+   ELSE 
+      IF(contract_id_ IS NOT NULL)THEN
+         -- Get notes of service contract header
+         FOR rec IN get_header_notes(contract_id_) LOOP
+            notes_ := rec.notes ||chr(13)||chr(10)|| notes_;
+         END LOOP;
+      END IF;
+   
+      IF(contract_id_ IS NOT NULL AND line_no_ IS NOT NULL) THEN
+         -- Get notes of service contract line
+         FOR rec_ IN get_line_notes(contract_id_, line_no_) LOOP
+            notes_ := rec_.note ||chr(13)||chr(10)|| notes_;
+         END LOOP;
+      END IF;
+   END IF;
+   
+   RETURN notes_;
+   
+END Get_Service_Contract_Notes_WO;
+-- C0740 EntChamuA (END)
 -------------------- LU  NEW METHODS -------------------------------------
