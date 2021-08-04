@@ -1966,6 +1966,92 @@ END Copy_Circuit_Reference__;
 --C0628 EntPrageG (END)
 
   --C0613 EntChathI (START)
+  FUNCTION Check_Chergeable(wo_no_   IN NUMBER,
+                          company_ VARCHAR2) RETURN VARCHAR2 
+IS
+   
+   dummy_ NUMBER;
+   ready_to_invoice_ VARCHAR2(5);
+   
+   CURSOR get_ready_to_invoice IS
+   SELECT cf$_ready_to_invoice
+     FROM ACTIVE_SEPARATE_CFT 
+    WHERE rowkey IN (SELECT objkey
+                      FROM ACTIVE_SEPARATE_UIV
+                     WHERE wo_no = wo_no_
+                       AND company =company_);
+                                       
+   CURSOR get_sales_line_info IS
+    SELECT 1
+      FROM JT_TASK_SALES_LINE_UIV 
+     WHERE wo_no = wo_no_
+       AND company = company_
+       AND state='Invoiceable';
+       
+BEGIN
+   
+    OPEN get_ready_to_invoice;
+    FETCH get_ready_to_invoice INTO ready_to_invoice_;
+    CLOSE get_ready_to_invoice;
+    
+    IF (NVL(ready_to_invoice_,'FALSE') ='FALSE')THEN
+         OPEN get_sales_line_info;
+         FETCH get_sales_line_info INTO dummy_;
+        IF(get_sales_line_info%FOUND)THEN
+           RETURN 'TRUE';
+        ELSE
+           CLOSE get_sales_line_info;
+           RETURN 'FALSE';
+        END IF;
+    ELSE
+        RETURN 'FALSE';
+    END IF;    
+   
+ END Check_Chergeable;
+ 
+ FUNCTION Check_Non_Chergeable(wo_no_   IN NUMBER,
+                               company_ VARCHAR2) RETURN VARCHAR2 
+IS
+   
+   dummy_ NUMBER;
+   ready_to_invoice_ VARCHAR2(5);
+   
+   CURSOR get_ready_to_invoice IS
+   SELECT cf$_ready_to_invoice
+     FROM ACTIVE_SEPARATE_CFT 
+    WHERE rowkey IN (SELECT objkey
+                      FROM ACTIVE_SEPARATE_UIV
+                     WHERE wo_no = wo_no_
+                       AND company =company_);
+                                       
+   CURSOR get_sales_line_info IS
+    SELECT 1
+      FROM JT_TASK_SALES_LINE_UIV 
+     WHERE wo_no = wo_no_
+       AND company = company_
+       AND state='Invoiceable';
+       
+BEGIN
+   
+    OPEN get_ready_to_invoice;
+    FETCH get_ready_to_invoice INTO ready_to_invoice_;
+    CLOSE get_ready_to_invoice;
+    
+    IF (NVL(ready_to_invoice_,'FALSE') ='FALSE')THEN
+         OPEN get_sales_line_info;
+         FETCH get_sales_line_info INTO dummy_;
+        IF(get_sales_line_info%NOTFOUND)THEN
+           RETURN 'TRUE';
+        ELSE
+           CLOSE get_sales_line_info;
+           RETURN 'FALSE';
+        END IF;
+    ELSE
+        RETURN 'FALSE';
+    END IF;    
+   
+ END Check_Non_Chergeable;
+ 
 FUNCTION Check_Cause_Discount(
    wo_no_   IN NUMBER,
    type_    IN VARCHAR2) RETURN VARCHAR2 
