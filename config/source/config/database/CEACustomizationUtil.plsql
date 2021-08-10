@@ -6176,4 +6176,137 @@ BEGIN
    
 END Get_Service_Contract_Notes_WO;
 -- C0740 EntChamuA (END)
+
+-- C0618 EntChamuA (START)
+PROCEDURE Create_NCR_And_CAPA__(supplier_no_ IN VARCHAR2,
+                                mrb_description_ IN VARCHAR2,
+                                mrb_code_ IN VARCHAR2,
+                                mrb_coordinator_ IN VARCHAR2,
+                                contract_ IN VARCHAR2,
+                                mrb_no_ IN VARCHAR2) 
+IS
+   supp_no_         VARCHAR2(200);
+   attr_ncr_ca_     VARCHAR2(3200) := null; 
+   attr_obj_conn_   VARCHAR2(3200) := null;
+   attr_handover_   VARCHAR2(3200) := null;
+   info_            VARCHAR2(3200);
+   attr_            VARCHAR2(500);
+   ncr_no_          VARCHAR2(25);
+   info_2_          VARCHAR2(3200);
+   info_3_          VARCHAR2(3200);
+   info_4_          VARCHAR2(3200);
+   key_ref_         VARCHAR2(3200);
+   key_ref_2_       VARCHAR2(3200);
+   objid_           VARCHAR2(3200);
+   objversion_      VARCHAR2(3200);
+   release_attr_    VARCHAR2(3200) := null;
+   ncr_objid_       VARCHAR2(3200) := null;
+   ncr_objv_        VARCHAR2(3200) := null;
+   info_5_          VARCHAR2(3200) := null;
+   
+   CURSOR get_details(no_ IN VARCHAR) IS
+      SELECT objid
+        FROM mrb_head t
+       WHERE t.mrb_number = no_;
+     
+   CURSOR get_ncr_dets(ncr_no_ IN VARCHAR) IS
+      SELECT objid, objversion
+        FROM non_conformance_report t
+       WHERE t.ncr_no = ncr_no_;
+    
+   CURSOR get_capa_dets(ncr_no_ IN VARCHAR) IS
+      SELECT objid, objversion
+        FROM ncr_corrective_action t
+       WHERE t.ncr_no = ncr_no_;
+BEGIN
+   supp_no_ := SUBSTR(supplier_no_,
+              ( INSTR(supplier_no_, '^')+1),
+              (length(supplier_no_) - INSTR(supplier_no_, '^')) );
+
+   Client_SYS.Add_To_Attr('DESCRIPTION', mrb_description_, attr_ );
+   Client_SYS.Add_To_Attr('NONCONFORMANCE_CODE', mrb_code_, attr_);
+   Client_SYS.Add_To_Attr('SEVERITY_ID', '20' , attr_);
+   Client_SYS.Add_To_Attr('RESPONSIBLE_PERSON_ID', mrb_coordinator_, attr_);
+   Client_SYS.Add_To_Attr('TARGET_COMPLETION_DATE', sysdate + 21, attr_);
+   Client_SYS.Add_To_Attr('COMPANY','1201', attr_);
+   Client_SYS.Add_To_Attr('CONTRACT', contract_, attr_);
+   Client_SYS.Add_To_Attr('RAISED_BY', mrb_coordinator_, attr_);
+   Client_SYS.Add_To_Attr('NCR_REFERENCE_DETAILS', supp_no_, attr_);
+   
+   ncr_no_ := Client_SYS.Get_Item_Value('NCR_NO', attr_);
+   Ncr_Util_API.New_Ncr_From_Wizard(info_ ,attr_ , attr_ncr_ca_, attr_obj_conn_, attr_handover_);
+   
+   key_ref_ := 'MRB_NUMBER='||mrb_no_||'^';
+   Client_Sys.Clear_Attr(attr_);
+   Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
+   Client_Sys.Add_To_Attr('LU_NAME', 'MrbHead', attr_ );
+   Client_Sys.Add_To_Attr('KEY_REF', key_ref_, attr_ );
+   
+   Ncr_Object_Connection_API.New__(info_2_ , objid_ , objversion_ , attr_ , 'DO' );
+
+   key_ref_2_  := 'SUPPLIER_ID='||supplier_no_||'^';
+   Client_Sys.Clear_Attr(attr_);
+   Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
+   Client_Sys.Add_To_Attr('LU_NAME', 'SupplierInfoGeneral', attr_ );
+   Client_Sys.Add_To_Attr('KEY_REF', key_ref_2_ , attr_ );
+  
+   objid_ := NULL;
+   objversion_ := NULL;
+   Ncr_Object_Connection_API.New__(info_3_ , objid_ , objversion_ , attr_ , 'DO' );  
+   
+   -- Setting the CREATED NCR CF
+   Client_Sys.Clear_Attr(attr_);
+   objid_ := NULL;
+   OPEN get_details(mrb_no_);
+   FETCH get_details INTO objid_;
+   CLOSE get_details;
+   Client_SYS.Add_To_Attr('CF$_CREATED_NCR', ncr_no_, attr_ );
+   MRB_HEAD_CFP.Cf_Modify__(info_4_, objid_, attr_, null , 'DO');
+   
+   --Release the NCR 
+   OPEN get_ncr_dets(ncr_no_);
+   FETCH get_ncr_dets INTO ncr_objid_, ncr_objv_;
+   CLOSE get_ncr_dets;
+
+   Non_Conformance_Report_API.Release__(info_5_, ncr_objid_, ncr_objv_ , release_attr_ , 'DO');
+
+   --Create CAPA
+   Ncr_Corrective_Action_API.New( ncr_no_ , NULL );
+   
+   --Modify CAPA
+   ncr_objv_  := NULL;
+   ncr_objid_  := NULL;
+
+   OPEN get_capa_dets(ncr_no_);
+   FETCH get_capa_dets INTO ncr_objid_, ncr_objv_;
+   CLOSE get_capa_dets;
+   Client_Sys.Clear_Attr(attr_);
+   Client_Sys.Add_To_Attr('NCR_CODE', Non_Conformance_Report_API.Get_Nonconformance_Code(ncr_no_), attr_ );
+   Client_Sys.Add_To_Attr('SEVERITY_ID', '20' , attr_);
+   Client_Sys.Add_To_Attr('RESPONSIBLE_PERSON_ID', Non_Conformance_Report_API.Get_Responsible_Person_Id(ncr_no_), attr_ );
+   Client_Sys.Add_To_Attr('NCR_REFERENCE_DETAILS', supplier_no_ , attr_);
+   Client_SYS.Add_To_Attr('RAISED_BY', mrb_coordinator_, attr_);
+   Client_SYS.Add_To_Attr('TARGET_COMPLETION_DATE', sysdate + 21, attr_);
+
+   --Object Connection for CAPA
+   key_ref_ := 'MRB_NUMBER='||mrb_no_||'^';
+   Client_Sys.Clear_Attr(attr_);
+   Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
+   Client_Sys.Add_To_Attr('LU_NAME', 'MrbHead', attr_ );
+   Client_Sys.Add_To_Attr('KEY_REF', key_ref_, attr_ );
+   
+   Capa_Object_Connection_API.New__(info_2_ , objid_ , objversion_ , attr_ , 'DO' );
+   
+   key_ref_2_  := 'SUPPLIER_ID='||supplier_no_||'^';
+   Client_Sys.Clear_Attr(attr_);
+   Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
+   Client_Sys.Add_To_Attr('LU_NAME', 'SupplierInfoGeneral', attr_ );
+   Client_Sys.Add_To_Attr('KEY_REF', key_ref_2_ , attr_ );
+  
+   objid_ := NULL;
+   objversion_ := NULL;
+   Capa_Object_Connection_API.New__(info_3_ , objid_ , objversion_ , attr_ , 'DO' );  
+   
+END Create_NCR_And_CAPA__;
+-- C0618 EntChamuA (END)
 -------------------- LU  NEW METHODS -------------------------------------
