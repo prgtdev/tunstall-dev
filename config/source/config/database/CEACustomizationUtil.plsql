@@ -6283,7 +6283,7 @@ BEGIN
    Client_Sys.Clear_Attr(attr_);
    Client_Sys.Add_To_Attr('NCR_CODE', Non_Conformance_Report_API.Get_Nonconformance_Code(ncr_no_), attr_ );
    Client_Sys.Add_To_Attr('SEVERITY_ID', '20' , attr_);
-   Client_Sys.Add_To_Attr('RESPONSIBLE_PERSON_ID', Non_Conformance_Report_API.Get_Responsible_Person_Id(ncr_no_), attr_ );
+   Client_Sys.Add_To_Attr('RESPONSIBLE_PERSON_ID', mrb_coordinator_, attr_ );
    Client_Sys.Add_To_Attr('NCR_REFERENCE_DETAILS', supplier_no_ , attr_);
    Client_SYS.Add_To_Attr('RAISED_BY', mrb_coordinator_, attr_);
    Client_SYS.Add_To_Attr('TARGET_COMPLETION_DATE', sysdate + 21, attr_);
