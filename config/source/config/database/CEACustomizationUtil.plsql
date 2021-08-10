@@ -6192,6 +6192,7 @@ IS
    info_            VARCHAR2(3200);
    attr_            VARCHAR2(500);
    ncr_no_          VARCHAR2(25);
+   capa_            VARCHAR2(25);
    info_2_          VARCHAR2(3200);
    info_3_          VARCHAR2(3200);
    info_4_          VARCHAR2(3200);
@@ -6203,6 +6204,7 @@ IS
    ncr_objid_       VARCHAR2(3200) := null;
    ncr_objv_        VARCHAR2(3200) := null;
    info_5_          VARCHAR2(3200) := null;
+   info_6_          VARCHAR2(3200) := null;
    
    CURSOR get_details(no_ IN VARCHAR) IS
       SELECT objid
@@ -6218,6 +6220,11 @@ IS
       SELECT objid, objversion
         FROM ncr_corrective_action t
        WHERE t.ncr_no = ncr_no_;
+       
+   CURSOR get_capa_no(ncr_no_ IN VARCHAR)IS
+      SELECT corrective_action_no
+        FROM ncr_corrective_action
+       WHERE ncr_no = ncr_no_;
 BEGIN
    supp_no_ := SUBSTR(supplier_no_,
               ( INSTR(supplier_no_, '^')+1),
@@ -6233,9 +6240,9 @@ BEGIN
    Client_SYS.Add_To_Attr('RAISED_BY', mrb_coordinator_, attr_);
    Client_SYS.Add_To_Attr('NCR_REFERENCE_DETAILS', supp_no_, attr_);
    
-   ncr_no_ := Client_SYS.Get_Item_Value('NCR_NO', attr_);
    Ncr_Util_API.New_Ncr_From_Wizard(info_ ,attr_ , attr_ncr_ca_, attr_obj_conn_, attr_handover_);
    
+   ncr_no_ := Client_SYS.Get_Item_Value('NCR_NO', attr_);
    key_ref_ := 'MRB_NUMBER='||mrb_no_||'^';
    Client_Sys.Clear_Attr(attr_);
    Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
@@ -6244,7 +6251,7 @@ BEGIN
    
    Ncr_Object_Connection_API.New__(info_2_ , objid_ , objversion_ , attr_ , 'DO' );
 
-   key_ref_2_  := 'SUPPLIER_ID='||supplier_no_||'^';
+   key_ref_2_  := 'SUPPLIER_ID='||supp_no_||'^';
    Client_Sys.Clear_Attr(attr_);
    Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
    Client_Sys.Add_To_Attr('LU_NAME', 'SupplierInfoGeneral', attr_ );
@@ -6253,15 +6260,17 @@ BEGIN
    objid_ := NULL;
    objversion_ := NULL;
    Ncr_Object_Connection_API.New__(info_3_ , objid_ , objversion_ , attr_ , 'DO' );  
-   
+
    -- Setting the CREATED NCR CF
    Client_Sys.Clear_Attr(attr_);
    objid_ := NULL;
+   
    OPEN get_details(mrb_no_);
    FETCH get_details INTO objid_;
    CLOSE get_details;
+   
    Client_SYS.Add_To_Attr('CF$_CREATED_NCR', ncr_no_, attr_ );
-   MRB_HEAD_CFP.Cf_Modify__(info_4_, objid_, attr_, null , 'DO');
+   Mrb_Head_CFP.Cf_Modify__(info_4_, objid_, attr_, null , 'DO');
    
    --Release the NCR 
    OPEN get_ncr_dets(ncr_no_);
@@ -6272,7 +6281,7 @@ BEGIN
 
    --Create CAPA
    Ncr_Corrective_Action_API.New( ncr_no_ , NULL );
-   
+
    --Modify CAPA
    ncr_objv_  := NULL;
    ncr_objid_  := NULL;
@@ -6287,22 +6296,28 @@ BEGIN
    Client_Sys.Add_To_Attr('NCR_REFERENCE_DETAILS', supplier_no_ , attr_);
    Client_SYS.Add_To_Attr('RAISED_BY', mrb_coordinator_, attr_);
    Client_SYS.Add_To_Attr('TARGET_COMPLETION_DATE', sysdate + 21, attr_);
-
+     
+   Ncr_Corrective_Action_API.Modify__(info_6_, ncr_objid_, ncr_objv_, attr_, 'DO');
+   
    --Object Connection for CAPA
+   OPEN get_capa_no(ncr_no_);
+   FETCH get_capa_no INTO capa_;
+   CLOSE get_capa_no;
+   
    key_ref_ := 'MRB_NUMBER='||mrb_no_||'^';
    Client_Sys.Clear_Attr(attr_);
-   Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
+   Client_Sys.Add_To_Attr('CORRECTIVE_ACTION_NO', capa_, attr_ );
    Client_Sys.Add_To_Attr('LU_NAME', 'MrbHead', attr_ );
    Client_Sys.Add_To_Attr('KEY_REF', key_ref_, attr_ );
    
    Capa_Object_Connection_API.New__(info_2_ , objid_ , objversion_ , attr_ , 'DO' );
    
-   key_ref_2_  := 'SUPPLIER_ID='||supplier_no_||'^';
+   key_ref_2_  := 'SUPPLIER_ID='||supp_no_||'^';
    Client_Sys.Clear_Attr(attr_);
-   Client_Sys.Add_To_Attr('NCR_NO', ncr_no_, attr_ );
+   Client_Sys.Add_To_Attr('CORRECTIVE_ACTION_NO', capa_, attr_ );
    Client_Sys.Add_To_Attr('LU_NAME', 'SupplierInfoGeneral', attr_ );
    Client_Sys.Add_To_Attr('KEY_REF', key_ref_2_ , attr_ );
-  
+
    objid_ := NULL;
    objversion_ := NULL;
    Capa_Object_Connection_API.New__(info_3_ , objid_ , objversion_ , attr_ , 'DO' );  
