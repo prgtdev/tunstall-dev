@@ -673,8 +673,7 @@ IS
              catalog_desc,
              cf$_object_id,
              buy_qty_due,
-             objid,
-             DECODE(catalog_type_db, 'INV', qty_shipped, NULL) AS delivered_qty
+             objid
       FROM customer_order_line_cfv a
       WHERE order_no = order_no_
       AND state IN ('Delivered', 'Invoiced/Closed', 'Partially Delivered');
@@ -718,8 +717,7 @@ BEGIN
                   object_id_,
                   rec_.objid,
                   rec_.real_ship_date,
-                  rec_.buy_qty_due,
-                  rec_.delivered_qty);
+                  rec_.buy_qty_due);
                temps_ := 0;
             ELSE
                Create_Functional_Object_(rec_.catalog_no,
@@ -888,8 +886,7 @@ PROCEDURE Create_Serial_Object__(
    object_id_       IN VARCHAR2,
    col_objid_       IN VARCHAR2,
    real_ship_date_  IN DATE,
-   buy_qty_due_     IN NUMBER,
-   delivered_qty_   IN NUMBER) 
+   buy_qty_due_     IN NUMBER) 
 IS  
    max_value_    NUMBER;
    unit_         VARCHAR2(10);
@@ -1002,7 +999,7 @@ BEGIN
 
             OPEN get_co_line_obj(order_no_, catalog_no_);
             FETCH get_co_line_obj INTO obj_created_;
-            IF(obj_created_ IS NULL OR (delivered_qty_ = buy_qty_due_))THEN
+            IF(obj_created_ IS NULL OR (REGEXP_COUNT(obj_created_, ';') < buy_qty_due_))THEN
               
               --CREATE NEW SERIAL OBJECTS
                Equipment_Serial_API.Create_Maintenance_Aware(catalog_no_, obj.serial_no, contract_, NULL, 'FALSE');
