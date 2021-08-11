@@ -673,7 +673,8 @@ IS
              catalog_desc,
              cf$_object_id,
              buy_qty_due,
-             objid
+             objid,
+             DECODE(catalog_type_db, 'INV', qty_shipped, NULL) AS delivered_qty
       FROM customer_order_line_cfv a
       WHERE order_no = order_no_
       AND state IN ('Delivered', 'Invoiced/Closed', 'Partially Delivered');
@@ -716,7 +717,9 @@ BEGIN
                   rec_.cust_warranty_id,
                   object_id_,
                   rec_.objid,
-                  rec_.real_ship_date);
+                  rec_.real_ship_date,
+                  rec_.buy_qty_due,
+                  rec_.delivered_qty);
                temps_ := 0;
             ELSE
                Create_Functional_Object_(rec_.catalog_no,
@@ -767,9 +770,6 @@ IS
    current_sup_mch_code_  VARCHAR2(3200);
    attr_2_                VARCHAR2(3200);
    attr_cf_               VARCHAR2(3200);
-   temps_3_               NUMBER;
-   parent_part_no_        VARCHAR2(3200);
-   parent_object_         VARCHAR2(3200);
    
    --to get lot number and qty 
    CURSOR get_lot_batch_dets(order_no_   IN VARCHAR2,
@@ -879,15 +879,17 @@ BEGIN
 END Create_Functional_Object_;
 
 PROCEDURE Create_Serial_Object__(
-   catalog_no_     IN VARCHAR2,
-   order_no_       IN VARCHAR2,
-   line_no_        IN VARCHAR2,
-   line_item_no_   IN VARCHAR2,
-   rel_no_         IN VARCHAR2,
-   warranty_id_    IN VARCHAR2,
-   object_id_      IN VARCHAR2,
-   col_objid_      IN VARCHAR2,
-   real_ship_date_ IN DATE) 
+   catalog_no_      IN VARCHAR2,
+   order_no_        IN VARCHAR2,
+   line_no_         IN VARCHAR2,
+   line_item_no_    IN VARCHAR2,
+   rel_no_          IN VARCHAR2,
+   warranty_id_     IN VARCHAR2,
+   object_id_       IN VARCHAR2,
+   col_objid_       IN VARCHAR2,
+   real_ship_date_  IN DATE,
+   buy_qty_due_     IN NUMBER,
+   delivered_qty_   IN NUMBER) 
 IS  
    max_value_    NUMBER;
    unit_         VARCHAR2(10);
@@ -904,12 +906,10 @@ IS
    contract_     VARCHAR2(50) := '2013';
    warr_objkey_  VARCHAR2(3200);
    values_       VARCHAR2(10);
-   attr_cf_      VARCHAR2(3200);
    sup_mch_code_ VARCHAR2(2000);
-   location_     VARCHAR2(10) := NULL;
    obj_created_  VARCHAR2(2000);
    concat_obj_   VARCHAR2(3200):= NULL;
-   code_         VARCHAR2(3200);
+   serial_obj_   VARCHAR2(3200):= NULL;
    
    --To get serial objects qty per CO line
    CURSOR get_serial_objects_col(catalog_   IN VARCHAR2,
@@ -971,64 +971,70 @@ BEGIN
       --create serial object
       FOR obj IN get_serial_objects_col(catalog_no_, order_no_, line_no_,  line_item_no_, rel_no_) LOOP
          
-         --For each object get warranty details
-         OPEN get_serial_warranty_dets(catalog_no_, warranty_id_, obj.serial_no);
-         FETCH get_serial_warranty_dets INTO max_value_, unit_;
-         CLOSE get_serial_warranty_dets;
-         
-         IF (unit_ = 'Year') THEN
-            max_value_ := max_value_ * 12;
-         END IF;
-         
-         values_ := max_value_ || 'M';
-         
-         IF (values_ IS NOT NULL) THEN
-            OPEN get_objkey(values_);
-            FETCH get_objkey INTO warr_objkey_;
-            CLOSE get_objkey;
-         END IF;
-         
-         sstep1_ := Equipment_Serial_API.Check_Serial_Exist(catalog_no_,obj.serial_no);
-         
-         sstep2_ := Maintenance_Site_Utility_API.Is_User_Allowed_Site(contract_);
-         
-         sstep3_ := Part_Serial_Catalog_API.Get_Objstate(catalog_no_,obj.serial_no);
-         
-         sstep4_ := Part_Serial_Catalog_API.Delivered_To_Internal_Customer(catalog_no_,obj.serial_no);
+         serial_obj_ := catalog_no_ ||'-'||obj.serial_no;
 
-         OPEN get_co_line_obj(order_no_, catalog_no_);
-         FETCH get_co_line_obj INTO obj_created_;
-         IF(obj_created_ IS null)THEN
-            --CREATE NEW SERIAL OBJECTS
-            Equipment_Serial_API.Create_Maintenance_Aware(catalog_no_, obj.serial_no, contract_, NULL, 'FALSE');
-            Equipment_Serial_API.Get_Obj_Info_By_Part(site_, mch_code_, catalog_no_, obj.serial_no);
-            Equipment_Object_API.Move_From_Invent_To_Facility(contract_, object_id_, catalog_no_, obj.serial_no, mch_code_);
-            
-            OPEN modify_serial_obj_date(mch_code_, obj.serial_no);
-            FETCH modify_serial_obj_date INTO objid_, objversion_;
-            CLOSE modify_serial_obj_date;
-            
-            Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
-            Equipment_Serial_API.Modify__(info_,objid_,objversion_, attr_,'DO');
-            
-            Client_Sys.Clear_Attr(attr_);
-            
-            Client_Sys.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
-            Client_Sys.Add_To_Attr('CF$_CUSTOMER_ORDER_NO', order_no_, attr_);
-            Equipment_Serial_CFP.Cf_Modify__(info_, objid_, attr_, ' ', 'DO');
-            
-            concat_obj_ := mch_code_||';'||concat_obj_;
-         ELSE
-            FOR rec_modify_ IN get_serial_object(order_no_, catalog_no_)LOOP
-               sup_mch_code_:= Equipment_Serial_API.Get_Sup_Mch_Code(contract_, rec_modify_.mch_code);
-               IF(sup_mch_code_ != object_id_ )THEN  
-                  Client_SYS.Clear_Attr(attr_);
-                  Client_Sys.Add_To_Attr('SUP_MCH_CODE', object_id_, attr_);
-                  Equipment_Serial_API.Modify__(info_, rec_modify_.objid, rec_modify_.objversion, attr_, 'DO');
-               END IF;
-            END LOOP;
+         IF NOT EQUIPMENT_SERIAL_API.Exists(contract_, serial_obj_) THEN
+
+            --For each object get warranty details
+            OPEN get_serial_warranty_dets(catalog_no_, warranty_id_, obj.serial_no);
+            FETCH get_serial_warranty_dets INTO max_value_, unit_;
+            CLOSE get_serial_warranty_dets;
+
+            IF (unit_ = 'Year') THEN
+               max_value_ := max_value_ * 12;
+            END IF;
+
+            values_ := max_value_ || 'M';
+
+            IF (values_ IS NOT NULL) THEN
+               OPEN get_objkey(values_);
+               FETCH get_objkey INTO warr_objkey_;
+               CLOSE get_objkey;
+            END IF;
+
+            sstep1_ := Equipment_Serial_API.Check_Serial_Exist(catalog_no_,obj.serial_no);
+
+            sstep2_ := Maintenance_Site_Utility_API.Is_User_Allowed_Site(contract_);
+
+            sstep3_ := Part_Serial_Catalog_API.Get_Objstate(catalog_no_,obj.serial_no);
+
+            sstep4_ := Part_Serial_Catalog_API.Delivered_To_Internal_Customer(catalog_no_,obj.serial_no);
+
+            OPEN get_co_line_obj(order_no_, catalog_no_);
+            FETCH get_co_line_obj INTO obj_created_;
+            IF(obj_created_ IS NULL OR (delivered_qty_ = buy_qty_due_))THEN
+              
+              --CREATE NEW SERIAL OBJECTS
+               Equipment_Serial_API.Create_Maintenance_Aware(catalog_no_, obj.serial_no, contract_, NULL, 'FALSE');
+               Equipment_Serial_API.Get_Obj_Info_By_Part(site_, mch_code_, catalog_no_, obj.serial_no);
+
+               Equipment_Object_API.Move_From_Invent_To_Facility(contract_, object_id_, catalog_no_, obj.serial_no, mch_code_);
+
+               OPEN modify_serial_obj_date(mch_code_, obj.serial_no);
+               FETCH modify_serial_obj_date INTO objid_, objversion_;
+               CLOSE modify_serial_obj_date;
+
+               Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
+               Equipment_Serial_API.Modify__(info_,objid_,objversion_, attr_,'DO');
+
+               Client_Sys.Clear_Attr(attr_);
+               Client_Sys.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
+               Client_Sys.Add_To_Attr('CF$_CUSTOMER_ORDER_NO', order_no_, attr_);
+               Equipment_Serial_CFP.Cf_Modify__(info_, objid_, attr_, ' ', 'DO');
+
+               concat_obj_ := mch_code_||';'||concat_obj_;
+            ELSE
+               FOR rec_modify_ IN get_serial_object(order_no_, catalog_no_)LOOP
+                  sup_mch_code_:= Equipment_Serial_API.Get_Sup_Mch_Code(contract_, rec_modify_.mch_code);
+                  IF(sup_mch_code_ != object_id_ )THEN  
+                     Client_SYS.Clear_Attr(attr_);
+                     Client_Sys.Add_To_Attr('SUP_MCH_CODE', object_id_, attr_);
+                     Equipment_Serial_API.Modify__(info_, rec_modify_.objid, rec_modify_.objversion, attr_, 'DO');
+                  END IF;
+               END LOOP;
+            END IF;
+            CLOSE get_co_line_obj;
          END IF;
-         CLOSE get_co_line_obj;
       END LOOP;
       IF(obj_created_ IS null) THEN
          Client_Sys.Clear_Attr(attr_);
