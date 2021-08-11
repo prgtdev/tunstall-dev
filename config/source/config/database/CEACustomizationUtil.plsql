@@ -6327,7 +6327,7 @@ END Create_NCR_And_CAPA__;
 
 
 -- C200 EntNadeeL (START)
-PROCEDURE Mps_Build_Temp_Qry_ IS
+PROCEDURE Create_Mps_Build_ IS
    sql_stmt          VARCHAR2(32000);
    pivot_clause      CLOB;
    pivot_clause_date CLOB;
@@ -6355,6 +6355,6 @@ BEGIN
   Transaction_Sys.Set_Status_Info('Level1Part',sql_stmt);            
    EXECUTE IMMEDIATE sql_stmt; 
    
-   END Mps_Build_Temp_Qry_;
+   END Create_Mps_Build_;
 -- C200 EntNadeeL (END)
 -------------------- LU  NEW METHODS -------------------------------------
