@@ -6334,25 +6334,21 @@ PROCEDURE Create_Mps_Build_ IS
 BEGIN
    
    sql_stmt := 'CREATE OR REPLACE VIEW MPS_BUILD_TEMP_QRY AS
-               --invenotry_transaction_hist
                SELECT ''123456789'' AS objversion, ''ITH'' AS table_type,h.part_no,h.contract,h.transaction_code,h.date_created,SUM(h.quantity) AS qty,0 AS net_supply
                FROM  inventory_transaction_hist2 h 
                GROUP BY h.part_no,h.contract,h.transaction_code,h.date_created
 
                UNION ALL
-               --peggedsupplyext
-
                SELECT ''123456789'' AS objversion,''PSD'' AS table_type,p.part_no,p.contract,'''' AS transaction_code,p.date_required,SUM(p.qty_demand),0 AS net_supply
                FROM pegged_supply_demand_ext p 
                GROUP BY p.part_no,p.contract,p.date_required
 
-               UNION ALL
-               --shoporder
+               UNION ALL               
                SELECT ''123456789'' AS objversion,''SO'' AS table_type,s.part_no,s.contract,s.state AS transaction_code,s.revised_due_date,SUM(s.qty_complete) ,SUM(s.remaining_net_supply_qty)
                FROM shop_ord s
                GROUP BY s.part_no,s.contract,s.state,s.revised_due_date';  
 
-  Transaction_Sys.Set_Status_Info('Level1Part',sql_stmt);            
+   Transaction_SYS.Set_Status_Info(sql_stmt, 'INFO');            
    EXECUTE IMMEDIATE sql_stmt; 
    
    END Create_Mps_Build_;
