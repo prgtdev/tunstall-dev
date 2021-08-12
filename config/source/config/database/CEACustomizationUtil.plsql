@@ -6302,7 +6302,6 @@ BEGIN
    Client_Sys.Add_To_Attr('SEVERITY_ID', '20' , attr_);
    Client_Sys.Add_To_Attr('RESPONSIBLE_PERSON_ID', mrb_coordinator_, attr_ );
    Client_Sys.Add_To_Attr('NCR_REFERENCE_DETAILS', supplier_no_ , attr_);
-   Client_SYS.Add_To_Attr('CREATED_BY', mrb_coordinator_, attr_);
    Client_SYS.Add_To_Attr('TARGET_DATE', sysdate + 21, attr_);
      
    Ncr_Corrective_Action_API.Modify__(info_6_, ncr_objid_, ncr_objv_, attr_, 'DO');
