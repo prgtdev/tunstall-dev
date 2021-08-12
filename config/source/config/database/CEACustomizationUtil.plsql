@@ -1498,13 +1498,15 @@ BEGIN
               OR fee_code IN
                   (SELECT s.fee_code
                    FROM   statutory_fee_cfv s
-                   where  s.cf$_c_always_allowed_db = ''TRUE''
+                   WHERE  s.cf$_c_always_allowed_db = ''TRUE''
+                   AND    s.company = :5
+                   AND    TRUNC(sysdate) BETWEEN s.valid_from AND s.valid_until
                   ))        
               AND COMPANY = :5)';
    IF Database_SYS.View_Exist('SALES_PART_TAX_CODE_CLV') AND Database_SYS.View_Exist('CUST_APPLICABLE_TAX_CODE_CLV') AND Database_SYS.View_Exist('STATUTORY_FEE_CFV') THEN
       EXECUTE IMMEDIATE stmt_    
          INTO allowed_tax_codes_
-        USING catalog_no_,contract_,company_,customer_,company_;
+        USING catalog_no_,contract_,company_,customer_,company_,company_;
    END IF;          
    RETURN allowed_tax_codes_;
 EXCEPTION
