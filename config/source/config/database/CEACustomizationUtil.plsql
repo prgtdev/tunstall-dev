@@ -6356,4 +6356,44 @@ BEGIN
    
    END Create_Mps_Build_;
 -- C200 EntNadeeL (END)
+
+-- 210812 EntDinusK C621 (START)
+FUNCTION Get_Absence_Days_For_Period (
+   start_date_ IN DATE,
+   end_date_   IN DATE,
+   company_    IN VARCHAR2,
+   emp_no_     IN VARCHAR2) RETURN NUMBER
+IS
+   absence_days_       NUMBER := 0;
+   total_absence_days_ NUMBER := 0;
+   CURSOR get_absence_days IS 
+      SELECT company_id, emp_no, date_from, date_to, time_from, time_to
+      FROM   absence_details
+      WHERE  company_id = company_
+      AND    emp_no     = emp_no_
+      AND ((date_From >=  start_date_  AND
+           date_to <= end_date_)  OR 
+           (date_From < start_date_ AND (date_to > start_date_ AND  date_to <= end_date_)) OR 
+           ((date_From >= start_date_ AND date_From <=  end_date_) AND  date_to > end_date_) OR 
+           (date_From <  start_date_  AND date_to > end_date_));
+BEGIN
+   FOR rec_ IN get_absence_days LOOP
+      IF (rec_.date_to >= end_date_) THEN
+         IF (rec_.date_from >= start_date_) THEN 
+            absence_days_ := Absence_Registration_API.Get_Absence_Duration (rec_.company_id, rec_.emp_no, 'WORKINGDAYS', rec_.date_from, end_date_, NULL, NULL);
+         ELSE 
+            absence_days_ := Absence_Registration_API.Get_Absence_Duration (rec_.company_id, rec_.emp_no, 'WORKINGDAYS', start_date_, end_date_, NULL, NULL);
+         END IF;
+      ELSE
+         IF (rec_.date_from >= start_date_) THEN 
+            absence_days_ := Absence_Registration_API.Get_Absence_Duration (rec_.company_id, rec_.emp_no, 'WORKINGDAYS', rec_.date_from, rec_.date_to, NULL, NULL);
+         ELSE 
+            absence_days_ := Absence_Registration_API.Get_Absence_Duration (rec_.company_id, rec_.emp_no, 'WORKINGDAYS', start_date_, rec_.date_to, NULL, NULL);
+         END IF;
+      END IF; 
+      total_absence_days_ := total_absence_days_ + absence_days_;
+   END LOOP;   
+	RETURN total_absence_days_;
+END Get_Absence_Days_For_Period;
+-- 210812 EntDinusK C621 (END)
 -------------------- LU  NEW METHODS -------------------------------------
