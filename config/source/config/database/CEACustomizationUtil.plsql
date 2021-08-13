@@ -6402,4 +6402,178 @@ BEGIN
 	RETURN total_absence_days_;
 END Get_Absence_Days_For_Period;
 -- 210812 EntDinusK C621 (END)
+
+--240521 ISURUG Calculate Shift Admin Time (START)
+FUNCTION Calculate_Shift_Admin_Time (emp_name_ IN VARCHAR2) RETURN NUMBER
+IS
+   employee_name_            VARCHAR2(2000) := '%' || emp_name_ || '%';
+   survey_daily_vec_check_   NUMBER;
+   survey_monthly_vec_check_ NUMBER;
+   survey_non_wo_mileage_    NUMBER;
+   survey_non_wo_time_       NUMBER;
+   shift_admin_time_         NUMBER;
+   
+   CURSOR daily_vec_check IS
+      SELECT NVL(SUM(v.ANSWER) / 60, 0)
+      FROM JT_TASK_SURVEY_ANSWERS v 
+      WHERE v.survey_id = 'DAILY_VEC_CHECK' 
+        AND SURVEY_QUESTION_API.Get_Question_No(v.survey_id, v.question_id) = 5
+        AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(employee_name_,'%');
+        
+   CURSOR monthly_vec_check IS
+      SELECT NVL(SUM(v.ANSWER ) / 60, 0)
+      FROM JT_TASK_SURVEY_ANSWERS v 
+      WHERE v.SURVEY_ID = 'MON_VEC_CHECK' 
+        AND SURVEY_QUESTION_API.Get_Question_No(v.survey_id, v.question_id) = 14
+        AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(employee_name_,'%');
+        
+   CURSOR non_wo_mileage IS
+      SELECT NVL(SUM((t2.Answer2 - t1.Answer1) * 24), 0)
+      FROM (
+         SELECT TO_DATE(v.ANSWER, 'YYYY-MM-DD-HH24.MI.SS') Answer1
+         FROM JT_TASK_SURVEY_ANSWERS v 
+         WHERE v.SURVEY_ID = 'NON WO MILEAGE' 
+           AND SURVEY_QUESTION_API.Get_Question_No(v.survey_id, v.question_id) = 2
+           AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(employee_name_,'%')
+      ) t1,
+      (
+         SELECT TO_DATE(v.ANSWER, 'YYYY-MM-DD-HH24.MI.SS') Answer2
+         FROM JT_TASK_SURVEY_ANSWERS v 
+         WHERE v.SURVEY_ID = 'NON WO MILEAGE' 
+           AND SURVEY_QUESTION_API.Get_Question_No(v.survey_id, v.question_id) = 4
+           AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(employee_name_,'%')
+      ) t2;
+      
+   CURSOR non_wo_time IS
+      SELECT NVL(SUM((t2.Answer2 - t1.Answer1) * 24), 0)
+      FROM (
+         SELECT TO_DATE(v.ANSWER, 'YYYY-MM-DD-HH24.MI.SS') Answer1 
+         FROM JT_TASK_SURVEY_ANSWERS v 
+         WHERE v.SURVEY_ID = 'NON WO TIME' 
+           AND SURVEY_QUESTION_API.Get_Question_No(v.survey_id, v.question_id) = 2
+           AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(employee_name_,'%')
+      ) t1,
+      (
+         SELECT TO_DATE(v.ANSWER, 'YYYY-MM-DD-HH24.MI.SS') Answer2 
+         FROM JT_TASK_SURVEY_ANSWERS v 
+         WHERE v.SURVEY_ID = 'NON WO TIME' 
+           AND SURVEY_QUESTION_API.Get_Question_No(v.survey_id, v.question_id) = 3
+           AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(employee_name_,'%')
+      ) t2;
+BEGIN
+   OPEN daily_vec_check;
+   FETCH daily_vec_check INTO survey_daily_vec_check_;
+   CLOSE daily_vec_check; 
+   
+   OPEN monthly_vec_check;
+   FETCH monthly_vec_check INTO survey_monthly_vec_check_;
+   CLOSE monthly_vec_check; 
+   
+   OPEN non_wo_mileage;
+   FETCH non_wo_mileage INTO survey_non_wo_mileage_;
+   CLOSE non_wo_mileage; 
+   
+   OPEN non_wo_time;
+   FETCH non_wo_time INTO survey_non_wo_time_;
+   CLOSE non_wo_time; 
+
+   shift_admin_time_ := survey_daily_vec_check_ + survey_monthly_vec_check_ + survey_non_wo_mileage_ + survey_non_wo_time_;
+
+   RETURN shift_admin_time_;
+END Calculate_Shift_Admin_Time;
+--240521 ISURUG Calculate Shift Admin Time (END)
+
+--240521 ISURUG Calculate Idle Time (START)
+FUNCTION Calculate_Idle_Time (emp_name_ IN VARCHAR2, sdate_ IN VARCHAR2, edate_ IN VARCHAR2) RETURN NUMBER
+IS
+   employee_name_         VARCHAR2(3000) := '%'||emp_name_||'%';
+   start_date_            VARCHAR2(2000) := sdate_;
+   stop_date_             VARCHAR2(2000) := edate_;
+   answer_work_hours_     NUMBER;
+   answer_travel_hours_   NUMBER;
+   shift_admin_time_      NUMBER;
+   answer_shift_end_time_ NUMBER;
+   idle_time_             NUMBER;
+
+   --Get work hours
+   CURSOR work_hours(ename_ VARCHAR2, st_date_ VARCHAR2, end_date_ VARCHAR2) IS
+         SELECT NVL(SUM(v.work_hours), 0) work_hours
+         FROM JT_TASK_CLOCKING_UIV v
+         WHERE v.clocking_category = 'Work'
+           AND v.employee_name LIKE NVL(ename_,'%')
+           AND((TRUNC(v.start_time) >= TO_DATE(st_date_, 'DD/MM/YYYY') AND TRUNC(v.stop_time) <= TO_DATE(end_date_, 'DD/MM/YYYY'))
+              OR (TRUNC(v.start_time) = TO_DATE(st_date_, 'DD/MM/YYYY'))
+              OR (TRUNC(v.stop_time) = TO_DATE(end_date_, 'DD/MM/YYYY'))
+              OR (TO_CHAR(v.start_time, 'DD/MM/YYYY') LIKE NVL(st_date_,'%') AND TO_CHAR(v.stop_time, 'DD/MM/YYYY') LIKE NVL(end_date_,'%')));
+
+   --Get travel hours    
+   CURSOR travel_hours(ename_ VARCHAR2, st_date_ VARCHAR2, end_date_ VARCHAR2) IS
+         SELECT NVL(SUM(v.work_hours), 0) travel_hours
+         FROM JT_TASK_CLOCKING_UIV v
+         WHERE v.clocking_category = 'Travel'
+           AND v.employee_name LIKE NVL(ename_,'%')
+           AND((TRUNC(v.start_time) >= TO_DATE(st_date_, 'DD/MM/YYYY') AND TRUNC(v.stop_time) <= TO_DATE(end_date_, 'DD/MM/YYYY'))
+              OR (TRUNC(v.start_time) = TO_DATE(st_date_, 'DD/MM/YYYY'))
+              OR (TRUNC(v.stop_time) = TO_DATE(end_date_, 'DD/MM/YYYY'))
+              OR (TO_CHAR(v.start_time, 'DD/MM/YYYY') LIKE NVL(st_date_,'%') AND TO_CHAR(v.stop_time, 'DD/MM/YYYY') LIKE NVL(end_date_,'%')));
+
+   CURSOR shift_end_time_(ename_ VARCHAR2) IS
+      SELECT NVL((et.end_time - st1.start_time) * 24, 0) + NVL((et.end_time - st2.start_time) * 24, 0)
+      FROM (
+         SELECT v.date_created end_time
+         FROM (
+            SELECT v.*
+            FROM JT_TASK_SURVEY_ANSWERS v
+            ORDER BY v.answer_set DESC, v.emp_no ASC, v.date_created ASC, v.answer_id ASC
+         ) v 
+         WHERE v.SURVEY_ID = 'END_MILEAGE'
+           AND COMPANY_EMP_API.Get_Name(v.company_id, v.emp_no) LIKE NVL(ename_,'%') 
+           AND rownum = 1
+      ) et,
+      (
+         SELECT v1.date_created start_time
+         FROM (
+            SELECT v.*
+            FROM JT_TASK_SURVEY_ANSWERS v
+            ORDER BY v.answer_set DESC, v.emp_no ASC, v.date_created ASC, v.answer_id ASC
+         ) v1
+         WHERE v1.SURVEY_ID = 'DAILY_VEC_CHECK'
+           AND COMPANY_EMP_API.Get_Name(v1.company_id, v1.emp_no) LIKE NVL(ename_,'%') 
+           AND rownum = 1
+      ) st1,
+      (
+         SELECT v2.date_created start_time
+         FROM (
+            SELECT v.*
+            FROM JT_TASK_SURVEY_ANSWERS v
+            ORDER BY v.answer_set DESC, v.emp_no ASC, v.date_created ASC, v.answer_id ASC
+         ) v2 
+         WHERE v2.SURVEY_ID = 'MON_VEC_CHECK'
+           AND COMPANY_EMP_API.Get_Name(v2.company_id, v2.emp_no) LIKE NVL(ename_,'%')
+            AND rownum = 1
+      ) st2; 
+BEGIN
+   OPEN work_hours(employee_name_, start_date_, stop_date_);
+   FETCH work_hours INTO answer_work_hours_;
+   CLOSE work_hours;
+
+   OPEN travel_hours(employee_name_, start_date_, stop_date_);
+   FETCH travel_hours INTO answer_travel_hours_;
+   CLOSE travel_hours;
+
+   OPEN shift_end_time_(employee_name_);
+   FETCH shift_end_time_ INTO answer_shift_end_time_;
+   CLOSE shift_end_time_;
+
+   shift_admin_time_ := Calculate_Shift_Admin_Time(employee_name_);
+
+   IF answer_shift_end_time_ IS NULL THEN
+      answer_shift_end_time_ := 0;
+   END IF;
+
+   idle_time_ := answer_shift_end_time_ - (answer_work_hours_ + answer_travel_hours_ + shift_admin_time_);
+
+   RETURN idle_time_;
+END Calculate_Idle_Time;
+--240521 ISURUG Calculate Idle Time (END)
 -------------------- LU  NEW METHODS -------------------------------------
