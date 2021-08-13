@@ -1037,6 +1037,10 @@ BEGIN
          Client_Sys.Clear_Attr(attr_);
          Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
          Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
+      ELSE
+         concat_obj_ := concat_obj_ ||';'||obj_created_;
+         Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
+         Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
       END IF;
    END IF; 
 END Create_Serial_Object__;
