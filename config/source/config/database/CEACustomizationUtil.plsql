@@ -2816,7 +2816,42 @@ BEGIN
          END IF;
          
          RETURN out_;
-   END  Check_Note_Latest; 
+      END  Check_Note_Latest; 
+   
+          FUNCTION Check_Cr_Note_Complete(company_ IN VARCHAR2,
+                                       identity_ IN VARCHAR2, 
+                                       invoice_id_ IN NUMBER,
+                                       note_id_ IN NUMBER)RETURN VARCHAR2
+      IS
+         dummy_ NUMBER;
+         out_ VARCHAR2(5) :='FALSE';
+         
+         CURSOR get_complete_note IS
+         SELECT max(note_id)
+           FROM invoice_header_notes
+          WHERE company = company_ 
+            AND identity = identity_
+            AND invoice_id = invoice_id_
+            AND party_type = 'Customer' 
+            AND Credit_Note_Status_API.Get_Note_Status_Description(company,note_status_id) = 'Complete';
+            
+      BEGIN
+         OPEN get_complete_note;
+         FETCH get_complete_note INTO dummy_;
+         IF(get_complete_note%FOUND)THEN
+            IF(note_id_ <= dummy_)THEN 
+               out_ := 'TRUE';
+            ELSE
+               out_ :='FALSE';
+            END IF;
+            
+         ELSE
+            CLOSE get_complete_note;
+            out_ :='FALSE';
+         END IF;
+         
+         RETURN out_;
+      END Check_Cr_Note_Complete;
 --C0367 EntChathI (END)
 
 --C0448 EntPrageG (START)
