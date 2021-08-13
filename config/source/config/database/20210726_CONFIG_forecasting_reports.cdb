@@ -8,6 +8,8 @@
 --  Date     Sign       History
 --  ------   --------   --------------------------------------------------------------------------------------------
 --  210726   EntNadeeL	Added two new views DEMAND_FORECAST_TEMP_QRY and SUPPLIER_FORECAST_TEMP_QRY
+--  210729   EntNadeeL	Added the new view WEEKLY_LOADING_TEMP_QRY
+--  210813   EntNadeeL	Added the new view MPS_BUILD_TEMP_QRY
 --  ------   --------   --------------------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------
 SET SERVEROUTPUT ON
