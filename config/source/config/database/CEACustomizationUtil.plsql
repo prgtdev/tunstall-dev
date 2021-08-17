@@ -6920,7 +6920,7 @@ IS
    source_key_ref_list_ VARCHAR2(32000);
   
    CURSOR get_part_nos(company_ IN VARCHAR2, series_id_ IN VARCHAR2, payment_id_ IN NUMBER, trans_id_ IN VARCHAR2) IS
-      SELECT SHORT_NAME, RECONCILED_DATE
+      SELECT short_name, reconciled_date
         FROM payment_transaction_tab
        WHERE company = company_
          AND series_id = series_id_
@@ -6940,7 +6940,7 @@ BEGIN
    FOR rec_ IN get_part_nos(company_, series_id_, payment_id_, trans_id_) LOOP
     
       source_key_ref_ := 'COMPANY=' || company_ || '^RECONCILIATION_DATE=' ||
-                         rec_.RECONCILED_DATE || '^SHORT_NAME=' || rec_.SHORT_NAME || '^';
+                         rec_.reconciled_date || '^SHORT_NAME=' || rec_.short_name || '^';
 
       Obj_Connect_Lu_Transform_API.Add_To_Source_Key_Ref_List(source_key_ref_list_,
                                                               source_key_ref_);
