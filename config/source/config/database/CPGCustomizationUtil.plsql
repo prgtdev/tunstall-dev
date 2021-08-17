@@ -47,7 +47,7 @@ CURSOR get_inventory_transaction_history_line (wo_no_ NUMBER,maint_material_orde
           AND source_ref3 = maint_material_order_no_
           AND contract = contract_
           AND part_no = part_no_
-          AND date_created > (SYSDATE - 1)
+          AND date_time_created > (SYSDATE - 1)
           AND serial_no != '*';
 --C0380 EntPrageG (START)       
 
@@ -169,6 +169,22 @@ EXCEPTION
    WHEN OTHERS THEN
       RAISE; -- TO-DO: Log Error
 END Fixed_Asset_Object_Exist___;
+
+FUNCTION Get_Condition_Code___(
+   object_id_ IN VARCHAR2) RETURN VARCHAR2
+IS
+   condition_code_ VARCHAR2(10);
+BEGIN
+   SELECT value_string
+     INTO condition_code_
+     FROM fa_object_property
+    WHERE object_id = object_id_
+      AND property_code = 'CONDITION CODE';
+   RETURN condition_code_;
+EXCEPTION
+   WHEN OTHERS THEN
+      RETURN NULL;
+END Get_Condition_Code___;
    
 PROCEDURE Get_Preposting_Data___(
       code_b_            OUT VARCHAR2,
@@ -210,10 +226,12 @@ BEGIN
    pre_accounting_id_ := Jt_Task_API.Get_Pre_Accounting_Id(task_seq_);
    wt_code_f_ :=Pre_Accounting_API.Get_Codeno_F(pre_accounting_id_); 
    fa_code_f_ := Fa_Object_API.Get_Code_F(company_,object_id_); 
-   IF wt_code_f_ != fa_code_f_ THEN
-      RETURN TRUE;
+   IF wt_code_f_ != NVL(fa_code_f_,'FA_CONTRACT') THEN
+      Log_Info___('-- Contract has changed! FA Object Contract: ' || fa_code_f_ || ' Work Task Contract: ' || wt_code_f_);
+      RETURN TRUE;    
    END IF;
-   RETURN FALSE;
+   --Log_Info___('-- Contract has not changed! FA Object Contract: ' || fa_code_f_ || ' Work Task Contract: ' || wt_code_f_);
+   RETURN FALSE;    
 END Contract_Has_Changed___;
 
 PROCEDURE Create_Property___ (
@@ -244,7 +262,7 @@ IS
    END Get_Attr___;
 BEGIN
    attr_ := Get_Attr___;  
-   Fa_Object_Property_API.New__(info_,objid_,objversion_,attr_,'DO');
+   Fa_Object_Property_API.New__(info_,objid_,objversion_,attr_,'DO');  
 END Create_Property___;
 
 PROCEDURE Update_Property___(
@@ -271,9 +289,9 @@ IS
 BEGIN
    objversion_ := obj_version_;
    attr_ := Get_Attr___;  
-   dbms_output.put_line(attr_);
-   dbms_output.put_line(objid_);
-   dbms_output.put_line(objversion_);
+   --dbms_output.put_line(attr_);
+   --dbms_output.put_line(objid_);
+   --dbms_output.put_line(objversion_);
    Fa_Object_Property_API.Modify__(info_,objid_,objversion_,attr_,'DO');
 END Update_Property___;
 
@@ -322,12 +340,10 @@ IS
    property_val_string_ VARCHAR2(100);
    property_val_number_ NUMBER;
    property_val_date_ DATE;
-   prev_condition_code_ VARCHAR2(20);
 
    property_exists_ BOOLEAN := FALSE;   
    val_string_ VARCHAR2(100) := value_string_;
 BEGIN
-
    property_exists_ :=  Property_Exists___(objid_,
                                            objversion_,
                                            property_val_string_,
@@ -336,25 +352,20 @@ BEGIN
                                            company_,
                                            object_id_,                                           
                                            property_code_);
-   prev_condition_code_ := property_val_string_;                                        
-   CASE property_code_      
-      WHEN 'PREV_COND_CODE' THEN
-         property_exists_ := Property_Exists___(objid_,
-                                                objversion_,
-                                                property_val_string_,
-                                                property_val_number_,
-                                                property_val_date_,
-                                                company_,
-                                                object_id_,        
-                                                'CONDITION_CODE');           
-         val_string_ := property_val_string_;
-      ELSE
-         NULL;
-   END CASE;
    IF property_exists_ THEN
-      Update_Property___(objid_,objversion_,val_string_,value_number_,value_date_);
+      Update_Property___(objid_,objversion_,val_string_,value_number_,value_date_);    
+      Log_Info___('---- Update Property: Property Code ' || property_code_ 
+                                                         || ' Value: '
+                                                         || value_string_
+                                                         || value_number_
+                                                         || value_date_); 
    ELSE
       Create_Property___(company_,object_id_,property_code_,value_string_,value_number_,value_date_);
+      Log_Info___('---- Create Property: Property Code ' || property_code_ 
+                                                   || ' Value: '
+                                                   || value_string_
+                                                   || value_number_
+                                                   || value_date_); 
    END IF;   
 END Create_Or_Update_Property___;
 
@@ -397,7 +408,7 @@ PROCEDURE Scrap_Fa_Object___ (
       retroactive_date_:= event_date_;
       
       attr_:= Get_Attr___;
-      dbms_output.put_line(attr_);
+      ---dbms_output.put_line(attr_);
       object_rec_ := Fa_Object_API.Get(company_,object_id_);
       objid_ := object_rec_."rowid";
       objversion_ := TO_CHAR(object_rec_.rowversion,'YYYYMMDDHH24MISS');
@@ -468,24 +479,28 @@ PROCEDURE Scrap_Fa_Object___ (
       accounting_year_ NUMBER;
       accounting_period_ NUMBER;
       acc_period_desc_ VARCHAR2(50);
-      deins_acc_period_desc_ VARCHAR2(50);
+      deins_acc_period_desc_ VARCHAR2(50) := NULL;
       part_desc_ VARCHAR2(100);
-      
+      prev_condition_code_ VARCHAR2(100);
    BEGIN
       contract_id_ := Active_Separate_API.Get_Contract_Id(wo_no_);
       customer_no_ := Active_Separate_API.Get_Customer_No(wo_no_);            
       Accounting_Period_API.Get_Accounting_Year(accounting_year_,accounting_period_,company_,date_created_);      
       acc_period_desc_:= Accounting_Period_API.Get_Description(company_,accounting_year_,accounting_period_);
       part_desc_ := Inventory_Part_API.Get_Description(contract_,part_no_);
-   
-      Accounting_Period_API.Get_Accounting_Year(accounting_year_,accounting_period_,company_,deinstall_date_);
-      deins_acc_period_desc_:= Accounting_Period_API.Get_Description(company_,accounting_year_,accounting_period_);
-
+      
+      IF deinstall_date_ IS NOT NULL THEN
+         Accounting_Period_API.Get_Accounting_Year(accounting_year_,accounting_period_,company_,deinstall_date_);         
+         deins_acc_period_desc_:= Accounting_Period_API.Get_Description(company_,accounting_year_,accounting_period_);
+      END IF;
+      
+      prev_condition_code_ := Get_Condition_Code___(object_id_);
+      
       Create_Or_Update_Property___(company_,object_id_,'CONTRACT',contract_id_);
       Create_Or_Update_Property___(company_,object_id_,'CUSTOMER',customer_no_);
       Create_Or_Update_Property___(company_,object_id_,'DATEDEP',value_date_ => date_created_);
       Create_Or_Update_Property___(company_,object_id_,'ACCOUNTING_PERIOD',acc_period_desc_);
-      Create_Or_Update_Property___(company_,object_id_,'PREV_CONDITION_CODE');
+      Create_Or_Update_Property___(company_,object_id_,'PREV_CONDITION_CODE',prev_condition_code_);
       Create_Or_Update_Property___(company_,object_id_,'CONDITION CODE',condition_code_);
       Create_Or_Update_Property___(company_,object_id_,'DEINSTALLATION_DATE',value_date_ => deinstall_date_);
       Create_Or_Update_Property___(company_,object_id_,'DEINSTALL_ACC_PERIOD',deins_acc_period_desc_);
@@ -500,7 +515,8 @@ PROCEDURE Scrap_Fa_Object___ (
       object_id_      IN VARCHAR2,
       spare_contract_ IN VARCHAR2,
       cost_category_  IN VARCHAR2,
-      cost_           IN NUMBER)
+      cost_           IN NUMBER,
+      quantity_       IN NUMBER)
    IS
       unit_of_measure_ VARCHAR2(10);      
       transaction_id_ NUMBER;
@@ -522,8 +538,8 @@ PROCEDURE Scrap_Fa_Object___ (
                                                         NULL,
                                                         NULL,
                                                         unit_of_measure_,
-                                                        (cost_ * -1), -- total cost = qty * cost
-                                                        -1,
+                                                        (cost_ * quantity_), -- total cost = qty * cost
+                                                        quantity_,
                                                         SYSDATE,
                                                         cost_category_,
                                                         Get_Comment___);
@@ -952,7 +968,7 @@ PROCEDURE Create_Voucher_Row___(
                             code_b_,
                             code_d_,
                             code_e_,
-                            code_f_,
+                            NULL,--code_f_,
                             code_i_,
                             text_);
       
@@ -1194,7 +1210,8 @@ BEGIN
                                              object_id_,
                                              req_line_rec_.spare_contract,
                                              'CREATEFA',
-                                             cost_);
+                                             cost_,
+                                             -1);
                                              
                Log_Info___('- Creating manual voucher');                                                      
                Create_Manual_Voucher___(voucher_no_,
@@ -1220,7 +1237,7 @@ BEGIN
                Update_Object_Status___(objid_,objversion_,'ACTIVE');
                success_ := TRUE;
                Log_Info___('- FA Object flow completed successfully');
-               Log_Info___('----------');
+               Log_Info___('------------------------------------------------------------');
             END IF;
             @ApproveTransactionStatement(2021-07-12,EntPragG)
             COMMIT;
@@ -1228,7 +1245,7 @@ BEGIN
             WHEN OTHERS THEN
                Log_Warning___('  - '||SUBSTR(SQLERRM, 1, 200));
                Log_Info___('- Roll Back Transaction');
-               Log_Info___('----------');
+               Log_Info___('------------------------------------------------------------');
                @ApproveTransactionStatement(2021-07-12,EntPragG)
                ROLLBACK;
          END;
@@ -1287,10 +1304,13 @@ BEGIN
                                                                         req_line_rec_.part_no)                                                                              
       LOOP
          BEGIN
+            Log_Progress___('- Check for existing FA Object Part No: ' || trans_his_line_rec_.part_no || ' Serial No: ' ||trans_his_line_rec_.serial_no );
             IF Fixed_Asset_Object_Exist___(object_id_,trans_his_line_rec_.part_no,trans_his_line_rec_.serial_no) THEN
+               Log_Progress___('- Object Found ' || object_id_);
+               Log_Progress___('- Check whether the contract has changed... ');
                IF Contract_Has_Changed___(trans_his_line_rec_.company,object_id_,req_line_rec_.task_seq) THEN
                   
-                  Log_Info___('Updating Object '|| object_id_);
+                  Log_Info___('-- Updating Object '|| object_id_);
                   Update_Fixed_Asset_Object___(trans_his_line_rec_.company,object_id_,req_line_rec_.task_seq); 
                   deinstall_date_ := Get_Deinstallation_Date___(req_line_rec_.wo_no,
                                                                 req_line_rec_.task_seq,
@@ -1298,7 +1318,7 @@ BEGIN
                                                                 req_line_rec_.line_item_no,
                                                                 req_line_rec_.part_no,
                                                                 trans_his_line_rec_.serial_no);
-                  Log_Info___('Updating Object properties');                                              
+                  Log_Info___('- Updating Object properties');                                              
                   Update_Properties___(object_id_,
                                        trans_his_line_rec_.company,
                                        req_line_rec_.contract,
@@ -1306,7 +1326,7 @@ BEGIN
                                        req_line_rec_.part_no,
                                        trans_his_line_rec_.date_created,
                                        trans_his_line_rec_.condition_code,                                    
-                                       trans_his_line_rec_.date_created); 
+                                       NULL); 
                   success_ := TRUE;
                END IF;   
             END IF;
@@ -1340,7 +1360,7 @@ IS
              cf$_created_date date_created
         FROM work_order_returns_uiv_cfv
        WHERE condition_code = 'FATBR';
-       
+      
    PROCEDURE Update_Fixed_Asset_Object___(
       company_   IN VARCHAR2,
       object_id_ IN VARCHAR2)
@@ -1383,14 +1403,16 @@ IS
       deins_acc_period_desc_ VARCHAR2(50);
       deinstall_date_ DATE;
       condition_code_ VARCHAR2(10) := 'FATBR';
+      prev_condition_code_ VARCHAR2(10);
    BEGIN     
       deinstall_date_ := date_created_;      
       Accounting_Period_API.Get_Accounting_Year(accounting_year_,accounting_period_,company_,deinstall_date_);
       deins_acc_period_desc_:= Accounting_Period_API.Get_Description(company_,accounting_year_,accounting_period_);
+      prev_condition_code_ := Get_Condition_Code___(object_id_);
       
       Create_Or_Update_Property___(company_,object_id_,'CONTRACT',contract_);
       Create_Or_Update_Property___(company_,object_id_,'CUSTOMER',customer_no_);
-      Create_Or_Update_Property___(company_,object_id_,'PREV_CONDITION_CODE',condition_code_);
+      Create_Or_Update_Property___(company_,object_id_,'PREV_CONDITION_CODE',prev_condition_code_);
       Create_Or_Update_Property___(company_,object_id_,'CONDITION CODE',condition_code_);
       Create_Or_Update_Property___(company_,object_id_,'DEINSTALLATION_DATE',value_date_ => deinstall_date_);
       Create_Or_Update_Property___(company_,object_id_,'DEINSTALL_ACC_PERIOD',deins_acc_period_desc_);
@@ -1404,8 +1426,9 @@ BEGIN
             Log_Info___('Updating Object '|| object_id_);
             Update_Fixed_Asset_Object___(rec_.company,object_id_); 
             
-            Log_Info___('Updating Object properties');
-            Update_Properties___(object_id_,rec_.company,rec_.date_created);         
+            Log_Info___('- Updating Object properties');
+            Update_Properties___(object_id_,rec_.company,rec_.date_created);
+            success_ := TRUE;
          END IF;
       EXCEPTION
             WHEN OTHERS THEN
@@ -1430,22 +1453,27 @@ IS
    success_ BOOLEAN := FALSE;
    
    CURSOR get_scrap_inventory
-      IS
+IS
         SELECT Site_API.Get_Company(contract) company,
                part_no,
                serial_no
           FROM inventory_transaction_hist
          WHERE serial_no IS NOT NULL
-           AND date_created < (SYSDATE - 1);
+           AND transaction_code IN ('INVSCRAP', 'CO-SCRAP') 
+           AND source_ref1 IS NULL 
+           AND quantity > qty_reversed
+           AND date_time_created > (SYSDATE - 1);
 BEGIN
    Log_Progress___('Scrap FA Objects From FA Register - Started');
    FOR scrap_inventory_rec_ IN get_scrap_inventory
    LOOP
       BEGIN
+         Log_Info___('Check if FA Object exists Part No '|| scrap_inventory_rec_.part_no || ' Serial No ' || scrap_inventory_rec_.serial_no);
          IF Fixed_Asset_Object_Exist___(object_id_,scrap_inventory_rec_.part_no,scrap_inventory_rec_.serial_no) THEN
+            Log_Info___('- FA Object found ' || object_id_);
             state_ := Fa_Object_API.Get_State(scrap_inventory_rec_.company, object_id_);
             IF state_ != 'Scrapped' THEN
-               Log_Info___('Scrapping FA Object '|| object_id_);
+               Log_Info___('- Scrapping FA Object '|| object_id_);
                Scrap_Fa_Object___(scrap_inventory_rec_.company,object_id_,disposal_reason_);   
             END IF;   
          END IF;
@@ -1472,6 +1500,27 @@ IS
    disposal_reason_ VARCHAR2(20) := 'SCRAPSERVCON';
    
    success_ BOOLEAN;
+   
+   CURSOR get_material_req_lines_scrap
+    IS
+      SELECT Maint_Material_Requisition_API.Get_Contract(maint_material_order_no) contract,
+             Sc_Service_Contract_API.Get_Contract_Type(Active_Separate_API.Get_Contract_Id(wo_no)) contract_type,
+             wo_no,
+             task_seq,
+             maint_material_order_no,
+             line_item_no,
+             part_no,
+             spare_contract,
+             qty
+        FROM maint_material_re155500812_cfv t--maint_material_req_line_uiv
+       WHERE (SELECT cf$_convert_to_fa_db 
+                FROM inventory_part_cfv 
+               WHERE part_no = t.part_no 
+                 AND contract = t.spare_contract)= 'TRUE'
+         AND (SELECT NVL(cf$_fa_contract_db,'FALSE')
+                FROM sc_contract_type_cfv 
+               WHERE contract_type = Sc_Service_Contract_API.Get_Contract_Type(Active_Separate_API.Get_Contract_Id(t.wo_no))) != 'TRUE'
+         AND  qty > 0;
    
    FUNCTION Get_Book_Id___(
       company_   IN VARCHAR2,
@@ -1514,19 +1563,20 @@ IS
    END Get_Cost___;
 BEGIN
    Log_Progress___('Scrap None FA Contract FA Objects - Started'); 
-   FOR req_line_rec_ IN  get_material_req_lines
+   FOR req_line_rec_ IN  get_material_req_lines_scrap
    LOOP
       FOR trans_his_line_rec_ IN get_inventory_transaction_history_line(req_line_rec_.wo_no, 
-                                                                         req_line_rec_.maint_material_order_no,
-                                                                         req_line_rec_.contract,
-                                                                         req_line_rec_.part_no)                                                                              
+                                                                        req_line_rec_.maint_material_order_no,
+                                                                        req_line_rec_.contract,
+                                                                        req_line_rec_.part_no)                                                                              
       LOOP         
          BEGIN
-            IF NOT Fa_Contract___(req_line_rec_.contract_type) AND Convert_To_Fa___(req_line_rec_.contract,req_line_rec_.part_no) THEN
+            --IF NOT Fa_Contract___(req_line_rec_.contract_type) AND Convert_To_Fa___(req_line_rec_.contract,req_line_rec_.part_no) THEN
+               Log_Info___('Check for exising FA Objects Part No ' || trans_his_line_rec_.part_no || ' Serial No '|| trans_his_line_rec_.serial_no);
                IF Fixed_Asset_Object_Exist___(object_id_,trans_his_line_rec_.part_no,trans_his_line_rec_.serial_no) THEN              
                   Log_Info___('Updating FA Object ' || object_id_);
                   Update_Fixed_Asset_Object___(trans_his_line_rec_.company,object_id_,req_line_rec_.task_seq);
-                  Log_Info___('Updating FA Properties');
+                  Log_Info___('- Updating FA Properties');
                   Update_Properties___(object_id_,
                                        trans_his_line_rec_.company,
                                        req_line_rec_.contract,
@@ -1534,12 +1584,10 @@ BEGIN
                                        req_line_rec_.part_no,
                                        trans_his_line_rec_.date_created,
                                        trans_his_line_rec_.condition_code,
-                                       SYSDATE); 
-                  Log_Info___('Scrapping FA Object');      
-                  Scrap_Fa_Object___(trans_his_line_rec_.company,object_id_,disposal_reason_);
-
+                                       NULL); 
+                  
                   cost_ := Get_Cost___(trans_his_line_rec_.company,object_id_);
-                  Log_Info___('Creating Manual Transactions'); 
+                  Log_Info___('- Creating Manual Transactions'); 
                   Create_Manual_Transaction___ (voucher_amount_,
                                                 req_line_rec_.wo_no,
                                                 req_line_rec_.task_seq,
@@ -1548,13 +1596,28 @@ BEGIN
                                                 object_id_,
                                                 req_line_rec_.spare_contract,
                                                 'CONVERTFA',
-                                                cost_);
+                                                cost_,
+                                                1);
+                                                
+                  Log_Info___('- Scrapping FA Object');      
+                  Scrap_Fa_Object___(trans_his_line_rec_.company,object_id_,disposal_reason_);
+                  
                   success_ := TRUE;
+                  Log_Info___('- Scrap FA Object flow completed successfully');
+                  Log_Info___('------------------------------------------------------------');
+               ELSE
+                  Log_Info___('No FA Objects found!');   
                END IF;
-            END IF;
+            --END IF;
+            @ApproveTransactionStatement(2021-07-12,EntPragG)
+            COMMIT;   
          EXCEPTION
             WHEN OTHERS THEN
-               Log_Warning___(SUBSTR(SQLERRM, 1, 200));
+               Log_Warning___('  - '||SUBSTR(SQLERRM, 1, 200));
+               Log_Info___('- Roll Back Transaction');
+               Log_Info___('------------------------------------------------------------');
+               @ApproveTransactionStatement(2021-08-16,EntPragG)
+               ROLLBACK;
          END;          
       END LOOP;   
    END LOOP;
