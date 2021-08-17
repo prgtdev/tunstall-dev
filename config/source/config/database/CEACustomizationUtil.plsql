@@ -6907,4 +6907,47 @@ BEGIN
    END LOOP;
 END Replenish_Sm_Stock_;
 -- 210817 EntNadeeL C290 (END)
+
+-- 210817 EntChamuA C629 (START)
+FUNCTION Attach_Matched_Trasactions(target_key_ref_ IN VARCHAR2,
+                                    service_name_   IN VARCHAR2)
+  RETURN VARCHAR2 IS
+  company_            payment_transaction_tab.company%TYPE;
+  series_id_          payment_transaction_tab.series_id%TYPE;
+  payment_id_         payment_transaction_tab.PAYMENT_ID%TYPE;
+  trans_id_           payment_transaction_tab.TRANS_ID%TYPE;
+
+  source_key_ref_      VARCHAR2(32000);
+  source_key_ref_list_ VARCHAR2(32000);
+
+  CURSOR get_part_nos(company_ IN VARCHAR2, series_id_ IN VARCHAR2, payment_id_ IN NUMBER, trans_id_ IN VARCHAR2) IS
+    SELECT SHORT_NAME, RECONCILED_DATE
+      FROM payment_transaction_tab
+     WHERE company = company_
+       AND series_id = series_id_
+       AND payment_id = payment_id_
+       AND trans_id = trans_id_;
+
+BEGIN
+   company_    := Client_SYS.Get_Key_Reference_Value(target_key_ref_,
+                                                  'COMPANY');
+   series_id_  := Client_SYS.Get_Key_Reference_Value(target_key_ref_,
+                                                    'SERIES_ID');
+   payment_id_ := Client_SYS.Get_Key_Reference_Value(target_key_ref_,
+                                                    'PAYMENT_ID');
+   trans_id_   := Client_SYS.Get_Key_Reference_Value(target_key_ref_,
+                                                  'TRANS_ID');
+   FOR rec_ IN get_part_nos(company_, series_id_, payment_id_, trans_id_) LOOP
+
+      source_key_ref_ := 'COMPANY=' || company_ || '^RECONCILIATION_DATE=' ||
+                       TO_DATE(rec_.RECONCILED_DATE, 'DD/MM/YYYY') || '^SHORT_NAME=' || rec_.SHORT_NAME || '^';
+
+      Obj_Connect_Lu_Transform_API.Add_To_Source_Key_Ref_List(source_key_ref_list_,
+                                                            source_key_ref_);
+   END LOOP;
+
+   RETURN source_key_ref_list_;
+END Attach_Matched_Trasactions;
+-- 210817 EntChamuA C629 (END)
+
 -------------------- LU  NEW METHODS -------------------------------------
