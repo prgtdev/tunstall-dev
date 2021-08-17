@@ -1,0 +1,44 @@
+-----------------------------------------------------------------------------
+--  Module : CONFIG
+--
+--  File   : C_SM_REPLENISHMENT.cdb
+--
+--  IFS Developer Studio Template Version 2.6
+--
+--  Date     Sign        History
+--  ------   ----------  -----------------------------------------------------------------------------------------
+--  210817   EntNadeeL  Creating table C_SM_REPLENISH_TAB to get the report output on SM REPLENISHMENT data for
+--                      CRIM C0290
+--  ------   ----------  -----------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+
+SET SERVEROUTPUT ON
+EXEC Installation_SYS.Log_Detail_Time_Stamp('CONFIG', 'C_SM_REPLENISHMENT.cdb', 'Timestamp_1');
+PROMPT Create global table C_SM_REPLENISHMENT_TAB to SM replenishment data.
+DECLARE 
+   table_name_    VARCHAR2(30) := 'C_SM_REPLENISHMENT_TAB';      
+   columns_       Installation_SYS.ColumnTabType; 
+BEGIN    
+   Database_SYS.Reset_Column_Table(columns_);
+   Database_SYS.Set_Table_Column(columns_, 'CONTRACT', 'VARCHAR2(100)', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PART_NO', 'VARCHAR2(100)', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'PART_DESCRIPTION', 'VARCHAR2(100)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ORDER_REQUIREMENT', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SM_STOCK', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'AU_SM_MIN', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'WAREHOUSE', 'VARCHAR2(100)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'LOCATION', 'VARCHAR2(100)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'QUANTITY', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SM_SHORTAGE', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'SHORTAGE_ROUNDED', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'TRANSPORT_TASK_ID', 'NUMBER', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'COMMENTS', 'VARCHAR2(1000)', 'Y');
+   Database_SYS.Set_Table_Column(columns_, 'ROWVERSION', 'DATE', 'N');
+   Database_SYS.Set_Table_Column(columns_, 'ROWKEY', 'VARCHAR2(50)', 'N','sys_guid()');
+   Database_SYS.Create_Or_Replace_Table(table_name_, columns_,'&IFSAPP_DATA',NULL,TRUE);   
+   
+END;
+/
+EXEC Installation_SYS.Log_Detail_Time_Stamp('CONFIG', 'C_SM_REPLENISHMENT.cdb', 'Done');
+SET SERVEROUTPUT OFF
+
