@@ -6912,7 +6912,7 @@ BEGIN
 END Replenish_Sm_Stock_;
 -- 210817 EntNadeeL C290 (END)
 
---210818 EntChamuA (START)
+--C629 EntChamuA (START)
 FUNCTION Attach_Matched_Trasactions(target_key_ref_ IN VARCHAR2,
                                     service_name_   IN VARCHAR2)RETURN VARCHAR2
 IS
@@ -6954,6 +6954,6 @@ BEGIN
   
    RETURN source_key_ref_list_;
 END Attach_Matched_Trasactions;
---210818 EntChamuA (END)
+-- C629 EntChamuA (END)
 
 -------------------- LU  NEW METHODS -------------------------------------
