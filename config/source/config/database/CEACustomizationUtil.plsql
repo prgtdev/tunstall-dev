@@ -6749,7 +6749,7 @@ BEGIN
           FETCH get_min_qty INTO part_min_qty_;
           CLOSE get_min_qty;
           
-          IF part_min_qty_>0 THEN
+          IF NVL(part_min_qty_,0)>0 THEN
              rounded_required_qty_ := part_min_qty_ * CEIL((required_qty_/part_min_qty_));
           ELSE
              rounded_required_qty_ := required_qty_;
