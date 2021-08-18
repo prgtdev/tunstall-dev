@@ -6658,7 +6658,7 @@ END Calculate_Idle_Time;
 
 -- 210817 EntNadeeL C290 (START)
 PROCEDURE Replenish_Sm_Stock_ IS
-sql_stmt_               VARCHAR2(1000);        
+   sql_stmt_               VARCHAR2(1000);        
    attr_                   VARCHAR2(1000);
    cf_attr_                VARCHAR2(1000);
    info_                   VARCHAR2(1000);
@@ -6691,8 +6691,9 @@ sql_stmt_               VARCHAR2(1000);
       SELECT t.part_no,t.contract,SUM(t.demand_qty) AS mrp_req 
       FROM MRP_PART_SUPPLY_DEMAND_UIV t 
       WHERE to_date(t.required_date,'DD/MM/YY') between to_date(SYSDATE,'DD/MM/YY') AND to_date(SYSDATE+10,'DD/MM/YY')
-      --AND t.part_no ='S1750188'
-      GROUP BY t.contract,t.part_no;
+      --AND t.part_no ='D5707401A'
+      GROUP BY t.contract,t.part_no
+      ORDER BY t.part_no ASC;
       
    CURSOR get_sm_onhand_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS
       SELECT NVL(SUM(ip.qty_onhand),0) AS QTY_ONHAND , ip.location_no,ip.contract
@@ -6733,7 +6734,7 @@ BEGIN
               EXECUTE IMMEDIATE sql_stmt_;
    --Go through the parts that has a demand for the next 10 days and get the consolidated demand quantity 
    FOR part_rec_ IN get_consolidated_mrp_req LOOP
-   
+       sm_onhand_qty_ := 0.0;
        --Check the available on hand quantity in SM% warehouses
        OPEN get_sm_onhand_qty(part_rec_.contract,part_rec_.part_no);
        FETCH get_sm_onhand_qty INTO sm_onhand_qty_,to_location_,to_contract_;
@@ -6743,7 +6744,7 @@ BEGIN
        IF (part_rec_.mrp_req > NVL(sm_onhand_qty_,0)) THEN
           
           required_qty_ := part_rec_.mrp_req - NVL(sm_onhand_qty_,0);
-          
+          part_min_qty_ := 0.0;
           --Requested amount to warehouses AU, C01,C02 and GM will be rounded up depending on the min quantity in Supplier for Purchase part 
           OPEN get_min_qty(part_rec_.contract,part_rec_.part_no);
           FETCH get_min_qty INTO part_min_qty_;
