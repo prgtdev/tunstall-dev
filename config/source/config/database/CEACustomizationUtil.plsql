@@ -6912,6 +6912,7 @@ BEGIN
 END Replenish_Sm_Stock_;
 -- 210817 EntNadeeL C290 (END)
 
+--210818 EntChamuA (START)
 FUNCTION Attach_Matched_Trasactions(target_key_ref_ IN VARCHAR2,
                                     service_name_   IN VARCHAR2)RETURN VARCHAR2
 IS
@@ -6943,13 +6944,16 @@ BEGIN
                                                     
    FOR rec_ IN get_part_nos(company_, series_id_, payment_id_, trans_id_) LOOP
     
-      source_key_ref_ := 'COMPANY=' || company_ || '^RECONCILIATION_DATE=' ||
-                         rec_.reconciled_date || '^SHORT_NAME=' || rec_.short_name || '^';
-
+      Client_SYS.Add_To_Key_Reference(source_key_ref_, 'COMPANY', company_);
+      Client_SYS.Add_To_Key_Reference(source_key_ref_, 'RECONCILIATION_DATE', rec_.reconciled_date);
+      Client_SYS.Add_To_Key_Reference(source_key_ref_, 'SHORT_NAME', rec_.short_name);
+                  
       Obj_Connect_Lu_Transform_API.Add_To_Source_Key_Ref_List(source_key_ref_list_,
                                                               source_key_ref_);
    END LOOP;
   
    RETURN source_key_ref_list_;
 END Attach_Matched_Trasactions;
+--210818 EntChamuA (END)
+
 -------------------- LU  NEW METHODS -------------------------------------
