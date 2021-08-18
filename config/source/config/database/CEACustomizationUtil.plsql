@@ -6772,7 +6772,7 @@ BEGIN
           
           --Get available quantity in warehouses AU, C01,C02 and GM and create transport tasks accordingly
           FOR avail_rec_ IN get_available_qty(part_rec_.contract,part_rec_.part_no) LOOP
-          
+          order_qty_:=0;
           dbms_output.put_line('location:'||avail_rec_.location_no); 
           dbms_output.put_line('Available Quantity:'||avail_rec_.avail_qty);   
               IF (rounded_required_qty_ > 0) THEN
@@ -6795,6 +6795,7 @@ BEGIN
               FETCH get_exist_transport_task INTO task_status_,old_transport_task_id_,old_objid_,old_objversion_,old_order_qty_;
               CLOSE get_exist_transport_task;
               dbms_output.put_line('rowid:'||old_objid_);
+              
               
               --If the task is in Created status and generated from SM replenishment logic delete and recreate
               IF (task_status_ = 'CREATED' AND Transport_Task_Cfp.Get_Cf$_Source(Transport_Task_Cfp.Get_Objkey(old_transport_task_id_)) = 'SM REPLENISHMENT') THEN
@@ -6834,7 +6835,7 @@ BEGIN
               Client_Sys.Add_To_Attr('PART_NO',avail_rec_.part_no,line_attr_);
               Client_Sys.Add_To_Attr('CONFIGURATION_ID',avail_rec_.configuration_id,line_attr_);
               Transport_Task_Line_Api.New__(line_info_, line_objid_,line_objversion_,line_attr_, 'DO');
-              END IF;
+              
               rounded_required_qty_ := rounded_required_qty_ - order_qty_;     
               
               dbms_output.put_line('transport Task ID - '||transport_task_id_);
@@ -6874,7 +6875,7 @@ BEGIN
                   transport_task_id_,
                   '',
                   SYSDATE);                  
-                  
+             END IF;     
     EXCEPTION 
       WHEN OTHERS THEN
          ROLLBACK;
