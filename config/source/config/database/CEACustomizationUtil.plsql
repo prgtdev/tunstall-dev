@@ -707,7 +707,8 @@ BEGIN
             OPEN check_serialized(rec_.catalog_no);
             FETCH check_serialized INTO seriliazed_;
             IF (check_serialized%FOUND) THEN
-               
+               TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.real_ship_date--->'||rec_.real_ship_date);
+               TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.catalog_no--->'||rec_.catalog_no);
                Create_Serial_Object__(rec_.catalog_no,
                   order_no_,
                   rec_.line_no,
@@ -1012,6 +1013,7 @@ BEGIN
                CLOSE modify_serial_obj_date;
 
                Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
+               TRACE_SYS.MESSAGE('AAAAAAAAAA attr_-->'||attr_);
                Equipment_Serial_API.Modify__(info_,objid_,objversion_, attr_,'DO');
 
                Client_Sys.Clear_Attr(attr_);
@@ -1038,9 +1040,11 @@ BEGIN
          Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
          Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
       ELSE
-         concat_obj_ := concat_obj_ ||';'||obj_created_;
-         Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
-         Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
+         IF(concat_obj_ IS NOT NULL)THEN
+            concat_obj_ := concat_obj_ ||';'||obj_created_;
+            Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
+            Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
+         END IF;
       END IF;
    END IF; 
 END Create_Serial_Object__;
