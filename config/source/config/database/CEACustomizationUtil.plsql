@@ -6956,4 +6956,36 @@ BEGIN
 END Attach_Matched_Trasactions;
 -- C629 EntChamuA (END)
 
+-- C0678 EntDarshP (START)
+PROCEDURE Approve_Incoming_Docs(
+  receiver_person_ IN VARCHAR2,
+  date_logged_     IN VARCHAR2,
+  doc_class_       IN VARCHAR2,
+  doc_no_          IN VARCHAR2,
+  doc_rev_         IN VARCHAR2,
+  doc_sheet_       IN VARCHAR2,
+  free_text_       IN VARCHAR2)
+IS
+  objid_      VARCHAR2(100);
+  objversion_ VARCHAR2(100);
+  attr_       VARCHAR2(3200);
+  info_       VARCHAR2(3200);
+  date_       TIMESTAMP;
+  sql_stmt_   VARCHAR2(300);
+
+BEGIN
+  IF(LENGTH(free_text_) > 2) THEN
+     SELECT to_timestamp(date_logged_, 'yyyy-MM-dd"T"hh24:mi:ss"Z"') INTO date_ FROM DUAL ;
+     Doc_Dist_List_History_Api.Get_Id_Version_By_Keys(doc_class_, doc_no_, doc_sheet_, doc_rev_, objid_, objversion_, receiver_person_, date_ );
+     Doc_Dist_List_History_Api.Approve__( info_ ,  objid_ , objversion_ , attr_ , 'DO' );
+     IF(database_SYS.View_Exist('DOC_DIST_LIST_HISTORY_CFV')) THEN
+        sql_stmt_ := 'UPDATE DOC_DIST_LIST_HISTORY_CFT SET cf$_signed_date = SYSDATE WHERE rowkey = (SELECT rowkey FROM DOC_DIST_LIST_HISTORY_TAB t where t.rowid = :1)';
+        EXECUTE IMMEDIATE sql_stmt_ USING objid_;  
+     END IF;
+  ELSE
+    Error_Sys.Record_General('Error', 'Please enter your name and then click the Sign Document button');
+  END IF;
+END Approve_Incoming_Docs;
+-- C0678 EntDarshP (FINISH)
+
 -------------------- LU  NEW METHODS -------------------------------------
