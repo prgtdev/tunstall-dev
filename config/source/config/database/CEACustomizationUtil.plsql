@@ -6691,7 +6691,6 @@ PROCEDURE Replenish_Sm_Stock_ IS
       SELECT t.part_no,t.contract,SUM(t.demand_qty) AS mrp_req 
       FROM MRP_PART_SUPPLY_DEMAND_UIV t 
       WHERE to_date(t.required_date,'DD/MM/YY') between to_date(SYSDATE,'DD/MM/YY') AND to_date(SYSDATE+10,'DD/MM/YY')
-      --AND t.part_no ='D5707401A'
       GROUP BY t.contract,t.part_no
       ORDER BY t.part_no ASC;
       
@@ -6719,11 +6718,12 @@ PROCEDURE Replenish_Sm_Stock_ IS
          SELECT MAX(t.transport_task_id) + 1
            FROM TRANSPORT_TASK t;
            
-   CURSOR get_exist_transport_task(part_no_ VARCHAR2) IS
+   CURSOR get_exist_transport_task(part_no_ VARCHAR2,from_location_ VARCHAR2) IS
    SELECT l.transport_task_status_db,t.transport_task_id,t.objid,t.objversion,l.quantity
    FROM Transport_Task t LEFT OUTER JOIN Transport_Task_Line l 
    ON t.transport_task_id = l.transport_task_id AND t.part_no = l.part_no
    WHERE t.part_no = part_no_
+   AND t.from_location_no = from_location_
    AND l.transport_task_status_db IN ('PICKED','CREATED');     
         
 BEGIN
@@ -6788,10 +6788,10 @@ BEGIN
               line_objid_     :=null;
               line_objversion_ :=null;
               
-              
+              old_transport_task_id_ := null;
               BEGIN              
               --Check already existing transport tasks
-              OPEN get_exist_transport_task(part_rec_.part_no);
+              OPEN get_exist_transport_task(part_rec_.part_no,avail_rec_.location_no);
               FETCH get_exist_transport_task INTO task_status_,old_transport_task_id_,old_objid_,old_objversion_,old_order_qty_;
               CLOSE get_exist_transport_task;
               dbms_output.put_line('rowid:'||old_objid_);
@@ -6807,6 +6807,7 @@ BEGIN
               FETCH get_next_transport_task_id INTO transport_task_id_;
               CLOSE get_next_transport_task_id;
              
+             IF (order_qty_ >0) THEN
               Client_Sys.Clear_Attr(attr_);
               Client_Sys.Add_To_Attr('TRANSPORT_TASK_ID',transport_task_id_,attr_);              
               Transport_Task_API.New__(info_,objid_,objversion_,attr_,'DO');
@@ -6833,7 +6834,7 @@ BEGIN
               Client_Sys.Add_To_Attr('PART_NO',avail_rec_.part_no,line_attr_);
               Client_Sys.Add_To_Attr('CONFIGURATION_ID',avail_rec_.configuration_id,line_attr_);
               Transport_Task_Line_Api.New__(line_info_, line_objid_,line_objversion_,line_attr_, 'DO');
-          
+              END IF;
               rounded_required_qty_ := rounded_required_qty_ - order_qty_;     
               
               dbms_output.put_line('transport Task ID - '||transport_task_id_);
