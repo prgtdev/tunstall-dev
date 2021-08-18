@@ -5896,8 +5896,8 @@ BEGIN
            AND to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),'DD/MM/YY') BETWEEN to_date(SYSDATE, 'DD/MM/YY') AND
                to_date(SYSDATE, 'DD/MM/YY') + (10 * 7));
  Transaction_Sys.Set_Status_Info(pivot_clause,'INFO');
-   sql_stmt := 'CREATE OR REPLACE VIEW WEEKLY_LOADING_TEMP_QRY AS
-            SELECT *
+   sql_stmt := 'CREATE OR REPLACE VIEW WEEKLY_LOADING_TEMP_QRY AS          
+      SELECT *
   FROM (SELECT 
        to_date(Work_Time_Calendar_API.Get_Work_Day(Period_Template_API.Get_Calendar_Id(t.contract,t.template_id),t.period_end_counter),''DD/MM/YY'') AS ms_date,
        CASE
@@ -5950,22 +5950,29 @@ SELECT *
                PIVOT(SUM(left_days) FOR ms_date IN(' ||pivot_clause|| '))
                
             UNION ALL
-
+               
          SELECT  *
          FROM (SELECT   t.contract,
-         ifsapp.Inventory_Product_Family_API.Get_Description(ifsapp.Inventory_Part_Api.Get_Part_Product_Family(t.contract,t.part_no)) "Product Family",
-            t.part_no AS "Part No",
-            Inventory_Part_Api.Get_Description(t.contract,t.part_no) AS "Description",
-            ifsapp.Inventory_Part_Api.Get_Part_Product_Code(t.contract,t.part_no) "Product Code",
+         (CASE WHEN GROUPING(t.part_no)=1  THEN
+          NVL(ifsapp.Inventory_Product_Family_API.Get_Description(ifsapp.Inventory_Part_Api.Get_Part_Product_Family(t.contract,t.part_no)),''NOT DEFINED'') || '' Total'' ELSE 
+            NVL(ifsapp.Inventory_Product_Family_API.Get_Description(ifsapp.Inventory_Part_Api.Get_Part_Product_Family(t.contract,t.part_no)),''NOT DEFINED'') END) product_family,
+            t.part_no,
+            Inventory_Part_Api.Get_Description(t.contract,t.part_no) AS description,
+            ifsapp.Inventory_Part_Api.Get_Part_Product_Code(t.contract,t.part_no) product_code,
             to_date(t.ms_date,''DD/MM/YY'') AS ms_date,                
-            t.supply
+            SUM(t.supply) supply
          FROM level_1_forecast t
          WHERE t.ms_set = 1
+         AND t.contract = ''2011''
+         AND ifsapp.Inventory_Part_Api.Get_Type_Code(t.contract,t.part_no) = ''Manufactured''
          AND to_date(t.ms_date, ''DD/MM/YY'') >= to_date(SYSDATE, ''DD/MM/YY'')
-         ORDER BY "Product Family" ASC)                  
-         PIVOT ( SUM(supply) FOR ms_date IN (' ||pivot_clause|| '))';  
-
-   EXECUTE IMMEDIATE sql_stmt;     
+         GROUP BY CUBE(t.contract,t.part_no,t.ms_date,ifsapp.Inventory_Product_Family_API.Get_Description(ifsapp.Inventory_Part_Api.Get_Part_Product_Family(t.contract,t.part_no)))
+         ORDER BY product_family ASC)                  
+         PIVOT ( SUM(supply) FOR ms_date IN (' ||pivot_clause|| '))
+         WHERE contract IS NOT NULL        
+         ORDER BY 1,2,3 ASC';  
+   dbms_output.put_line(sql_stmt);    
+   EXECUTE IMMEDIATE sql_stmt;    
 END Create_Weekly_Loading_;
 --210728 EntNadeeL C0567 (END)
 
