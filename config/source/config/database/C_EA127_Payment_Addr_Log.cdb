@@ -1,0 +1,58 @@
+-----------------------------------------------------------------------------
+--  Module : CONFIG
+--
+--  File   : C_EA127_Payment_Addr_Log.cdb
+--
+--  IFS Developer Studio Template Version 2.6
+--
+--  Date     Sign      History
+--  ------   --------- --------------------------------------------------
+--  210816   EntDarshP Created.
+--  ------   --------- --------------------------------------------------
+-----------------------------------------------------------------------------
+
+SET SERVEROUTPUT ON
+DECLARE
+   table_name1_    VARCHAR2(30) := 'C_PAY_ADDR_MOD_LOG_TAB';     
+   columns1_       Installation_SYS.ColumnTabType; 
+BEGIN
+   Database_SYS.Set_Table_Column(columns1_, 'USER_NAME', 'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'TIME',  'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'DATE_MODIFIED', 'DATE', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'IP_ADDRESS',  'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'MAC_ADDRESS', 'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'COMPANY',  'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'IDENTITY',  'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'PARTY_TYPE',  'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'WAY_ID',  'VARCHAR2(20)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'ADDRESS_ID',  'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'ACCOUNT',  'VARCHAR2(50)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'DATA1',  'VARCHAR2(100)', 'Y');
+   Database_SYS.Set_Table_Column(columns1_, 'ROWVERSION',  'DATE', 'N');
+   Database_SYS.Set_Table_Column(columns1_, 'ROWKEY',  'VARCHAR2(50)', 'N', 'sys_guid()');
+   Database_SYS.Create_Or_Replace_Table(table_name1_, columns1_, '&ifsapp_data', NULL, TRUE);
+END;
+
+
+SET SERVEROUTPUT OFF
+
+SET SERVEROUTPUT ON
+CREATE OR REPLACE VIEW C_PAY_ADDR_MOD_LOG AS
+SELECT 
+   user_name            user_name,
+   date_modified        date_modified,
+   time                 TIME,
+   company              company,
+   identity             identity,
+   party_type           party_type,
+   way_id               way_id,
+   address_id           address_id,
+   account              account,
+   data1                data1,
+   to_char(rowversion,'YYYYMMDDHH24MISS') objversion
+FROM C_PAY_ADDR_MOD_LOG_TAB
+ORDER BY date_modified, time
+WITH READ ONLY;
+comment on column C_PAY_ADDR_MOD_LOG.DATE_MODIFIED is 'PROMPT=Date^';
+
+SET SERVEROUTPUT OFF
