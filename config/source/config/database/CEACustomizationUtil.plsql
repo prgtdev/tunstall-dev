@@ -6658,7 +6658,7 @@ END Calculate_Idle_Time;
 
 -- 210817 EntNadeeL C290 (START)
 PROCEDURE Replenish_Sm_Stock_ IS
-sql_stmt_               VARCHAR2(1000);        
+   sql_stmt_               VARCHAR2(1000);        
    attr_                   VARCHAR2(1000);
    cf_attr_                VARCHAR2(1000);
    info_                   VARCHAR2(1000);
@@ -6691,8 +6691,8 @@ sql_stmt_               VARCHAR2(1000);
       SELECT t.part_no,t.contract,SUM(t.demand_qty) AS mrp_req 
       FROM MRP_PART_SUPPLY_DEMAND_UIV t 
       WHERE to_date(t.required_date,'DD/MM/YY') between to_date(SYSDATE,'DD/MM/YY') AND to_date(SYSDATE+10,'DD/MM/YY')
-      --AND t.part_no ='S1750188'
-      GROUP BY t.contract,t.part_no;
+      GROUP BY t.contract,t.part_no
+      ORDER BY t.part_no ASC;
       
    CURSOR get_sm_onhand_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS
       SELECT NVL(SUM(ip.qty_onhand),0) AS QTY_ONHAND , ip.location_no,ip.contract
@@ -6718,11 +6718,12 @@ sql_stmt_               VARCHAR2(1000);
          SELECT MAX(t.transport_task_id) + 1
            FROM TRANSPORT_TASK t;
            
-   CURSOR get_exist_transport_task(part_no_ VARCHAR2) IS
+   CURSOR get_exist_transport_task(part_no_ VARCHAR2,from_location_ VARCHAR2) IS
    SELECT l.transport_task_status_db,t.transport_task_id,t.objid,t.objversion,l.quantity
    FROM Transport_Task t LEFT OUTER JOIN Transport_Task_Line l 
    ON t.transport_task_id = l.transport_task_id AND t.part_no = l.part_no
    WHERE t.part_no = part_no_
+   AND t.from_location_no = from_location_
    AND l.transport_task_status_db IN ('PICKED','CREATED');     
         
 BEGIN
@@ -6733,7 +6734,7 @@ BEGIN
               EXECUTE IMMEDIATE sql_stmt_;
    --Go through the parts that has a demand for the next 10 days and get the consolidated demand quantity 
    FOR part_rec_ IN get_consolidated_mrp_req LOOP
-   
+       sm_onhand_qty_ := 0.0;
        --Check the available on hand quantity in SM% warehouses
        OPEN get_sm_onhand_qty(part_rec_.contract,part_rec_.part_no);
        FETCH get_sm_onhand_qty INTO sm_onhand_qty_,to_location_,to_contract_;
@@ -6743,13 +6744,13 @@ BEGIN
        IF (part_rec_.mrp_req > NVL(sm_onhand_qty_,0)) THEN
           
           required_qty_ := part_rec_.mrp_req - NVL(sm_onhand_qty_,0);
-          
+          part_min_qty_ := 0.0;
           --Requested amount to warehouses AU, C01,C02 and GM will be rounded up depending on the min quantity in Supplier for Purchase part 
           OPEN get_min_qty(part_rec_.contract,part_rec_.part_no);
           FETCH get_min_qty INTO part_min_qty_;
           CLOSE get_min_qty;
           
-          IF part_min_qty_>0 THEN
+          IF NVL(part_min_qty_,0)>0 THEN
              rounded_required_qty_ := part_min_qty_ * CEIL((required_qty_/part_min_qty_));
           ELSE
              rounded_required_qty_ := required_qty_;
@@ -6771,7 +6772,7 @@ BEGIN
           
           --Get available quantity in warehouses AU, C01,C02 and GM and create transport tasks accordingly
           FOR avail_rec_ IN get_available_qty(part_rec_.contract,part_rec_.part_no) LOOP
-          
+          order_qty_:=0;
           dbms_output.put_line('location:'||avail_rec_.location_no); 
           dbms_output.put_line('Available Quantity:'||avail_rec_.avail_qty);   
               IF (rounded_required_qty_ > 0) THEN
@@ -6787,13 +6788,14 @@ BEGIN
               line_objid_     :=null;
               line_objversion_ :=null;
               
-              
+              old_transport_task_id_ := null;
               BEGIN              
               --Check already existing transport tasks
-              OPEN get_exist_transport_task(part_rec_.part_no);
+              OPEN get_exist_transport_task(part_rec_.part_no,avail_rec_.location_no);
               FETCH get_exist_transport_task INTO task_status_,old_transport_task_id_,old_objid_,old_objversion_,old_order_qty_;
               CLOSE get_exist_transport_task;
               dbms_output.put_line('rowid:'||old_objid_);
+              
               
               --If the task is in Created status and generated from SM replenishment logic delete and recreate
               IF (task_status_ = 'CREATED' AND Transport_Task_Cfp.Get_Cf$_Source(Transport_Task_Cfp.Get_Objkey(old_transport_task_id_)) = 'SM REPLENISHMENT') THEN
@@ -6806,6 +6808,7 @@ BEGIN
               FETCH get_next_transport_task_id INTO transport_task_id_;
               CLOSE get_next_transport_task_id;
              
+             IF (order_qty_ >0) THEN
               Client_Sys.Clear_Attr(attr_);
               Client_Sys.Add_To_Attr('TRANSPORT_TASK_ID',transport_task_id_,attr_);              
               Transport_Task_API.New__(info_,objid_,objversion_,attr_,'DO');
@@ -6832,7 +6835,7 @@ BEGIN
               Client_Sys.Add_To_Attr('PART_NO',avail_rec_.part_no,line_attr_);
               Client_Sys.Add_To_Attr('CONFIGURATION_ID',avail_rec_.configuration_id,line_attr_);
               Transport_Task_Line_Api.New__(line_info_, line_objid_,line_objversion_,line_attr_, 'DO');
-          
+              
               rounded_required_qty_ := rounded_required_qty_ - order_qty_;     
               
               dbms_output.put_line('transport Task ID - '||transport_task_id_);
@@ -6872,7 +6875,7 @@ BEGIN
                   transport_task_id_,
                   '',
                   SYSDATE);                  
-                  
+             END IF;     
     EXCEPTION 
       WHEN OTHERS THEN
          ROLLBACK;
