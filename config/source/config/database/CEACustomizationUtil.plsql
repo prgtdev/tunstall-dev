@@ -6707,7 +6707,7 @@ PROCEDURE Replenish_Sm_Stock_ IS
       WHERE t.part_no = part_no_ AND t.contract = contract_; 
        
    CURSOR get_available_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS   
-   SELECT SUM(t.qty_onhand) avail_qty,t.warehouse,t.lot_batch_no ,t.serial_no,t.waiv_dev_rej_no,t.eng_chg_level,t.activity_seq,t.handling_unit_id,t.location_no,t.contract,t.part_no,t.configuration_id
+   SELECT SUM(t.qty_onhand-t.qty_reserved) avail_qty,t.warehouse,t.lot_batch_no ,t.serial_no,t.waiv_dev_rej_no,t.eng_chg_level,t.activity_seq,t.handling_unit_id,t.location_no,t.contract,t.part_no,t.configuration_id
       FROM Inventory_Part_In_Stock_Uiv t
       WHERE t.warehouse IN ('C01','C02','AU','GM')
       AND t.part_no = part_no_
