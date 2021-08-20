@@ -6699,16 +6699,23 @@ PROCEDURE Replenish_Sm_Stock_ IS
       SELECT t.part_no,t.contract,SUM(t.demand_qty) AS mrp_req 
       FROM MRP_PART_SUPPLY_DEMAND_UIV t 
       WHERE to_date(t.required_date,'DD/MM/YY') between to_date(SYSDATE,'DD/MM/YY') AND to_date(SYSDATE+10,'DD/MM/YY')
+      AND Inventory_Part_Api.Get_Type_Code_Db(t.contract,t.part_no) ='4'
+      AND t.contract = '2011'
      -- AND t.part_no ='XX-D6801015B'
       GROUP BY t.contract,t.part_no
       ORDER BY t.part_no ASC;
       
    CURSOR get_sm_onhand_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS
-      SELECT NVL(SUM(ip.qty_onhand),0) AS QTY_ONHAND , ip.location_no,ip.contract
+      SELECT NVL(SUM(ip.qty_onhand),0) AS QTY_ONHAND
       FROM INVENTORY_PART_IN_STOCK_UIV ip 
       WHERE ip.warehouse LIKE 'SM%' AND ip.part_no = part_no_ AND ip.contract = contract_
       GROUP BY ip.contract,ip.location_no;
       
+   CURSOR get_default_sm_location(contract_ VARCHAR2,part_no_ VARCHAR2) IS
+      SELECT NVL(t.cf$_Location_No,t.cf$_Location_No_2) sm_loc
+      FROM INVENTORY_PART_DEF_LOC_CFV t 
+      WHERE t.part_no = part_no_ AND t.contract = contract_; 
+         
    CURSOR get_min_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS
       SELECT t.MINIMUM_QTY 
       FROM Purchase_part_supplier t 
@@ -6717,7 +6724,7 @@ PROCEDURE Replenish_Sm_Stock_ IS
    CURSOR get_available_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS   
    SELECT SUM(t.qty_onhand-t.qty_reserved) avail_qty,t.warehouse,t.lot_batch_no ,t.serial_no,t.waiv_dev_rej_no,t.eng_chg_level,t.activity_seq,t.handling_unit_id,t.location_no,t.contract,t.part_no,t.configuration_id
       FROM Inventory_Part_In_Stock_Uiv t
-      WHERE t.warehouse IN ('C01','C02','AU','GM')
+      WHERE t.warehouse IN ('C01','C02','AU')
       AND t.part_no = part_no_
       AND t.contract = contract_
       GROUP BY t.contract,t.part_no,t.warehouse,t.serial_no,t.waiv_dev_rej_no,t.eng_chg_level,t.location_no,t.configuration_id,t.activity_seq,t.handling_unit_id,lot_batch_no
@@ -6738,18 +6745,22 @@ PROCEDURE Replenish_Sm_Stock_ IS
 BEGIN
    --clear old data from C_SM_REPLENISH_TEMP table
     sql_stmt_ := 'DELETE FROM C_SM_REPLENISHMENT_TAB
-                                   COMMIT';
+                                  COMMIT';
               dbms_output.put_line(sql_stmt_);
               EXECUTE IMMEDIATE sql_stmt_;
    --Go through the parts that has a demand for the next 10 days and get the consolidated demand quantity 
    FOR part_rec_ IN get_consolidated_mrp_req LOOP
-       sm_onhand_qty_ := 0.0;
-       to_location_   :=   NULL;
-       to_contract_   :=   NULL;
-       --Check the available on hand quantity in SM% warehouses
+      --Check the available on hand quantity in SM% warehouses
+       sm_onhand_qty_ := 0.0;       
        OPEN get_sm_onhand_qty(part_rec_.contract,part_rec_.part_no);
-       FETCH get_sm_onhand_qty INTO sm_onhand_qty_,to_location_,to_contract_;
+       FETCH get_sm_onhand_qty INTO sm_onhand_qty_;
        CLOSE get_sm_onhand_qty;
+       --Get default SM location to receive quantity
+       to_location_ := NULL;
+       OPEN get_default_sm_location(part_rec_.contract,part_rec_.part_no);
+       FETCH get_default_sm_location INTO to_location_;
+       CLOSE get_default_sm_location;
+       
        
        --If the available on hand quantity in SM% warehouses is less than the demand quantity then the balance will be ordered from warehouses AU, C01,C02 and GM
        IF (part_rec_.mrp_req > NVL(sm_onhand_qty_,0)) THEN
@@ -6768,10 +6779,8 @@ BEGIN
           END IF;          
           
           --Get available quantity in warehouses AU, C01,C02 and GM and create transport tasks accordingly
-          FOR avail_rec_ IN get_available_qty(part_rec_.contract,part_rec_.part_no) LOOP
+          FOR avail_rec_ IN get_available_qty(part_rec_.contract,part_rec_.part_no) LOOP          
           
-          dbms_output.put_line('location:'||avail_rec_.location_no); 
-          dbms_output.put_line('Available Quantity:'||avail_rec_.avail_qty);   
               IF (rounded_required_qty_ > 0) THEN
                  
               IF rounded_required_qty_ >= avail_rec_.avail_qty THEN
@@ -6779,7 +6788,6 @@ BEGIN
               ELSE
                  order_qty_ := rounded_required_qty_;
               END IF; 
-               dbms_output.put_line('Order Quantity:'||order_qty_);   
               objid_     :=NULL;
               objversion_ :=NULL;
               line_objid_     :=NULL;
@@ -6796,7 +6804,6 @@ BEGIN
               OPEN get_exist_transport_task(part_rec_.part_no,avail_rec_.location_no);
               FETCH get_exist_transport_task INTO task_status_,old_transport_task_id_,old_objid_,old_objversion_,old_order_qty_;
               CLOSE get_exist_transport_task;
-              dbms_output.put_line('rowid:'||old_objid_);
               
               --If the task is in Created status and generated from SM replenishment logic delete and recreate
               IF (task_status_ = 'CREATED' AND Transport_Task_Cfp.Get_Cf$_Source(Transport_Task_Cfp.Get_Objkey(old_transport_task_id_)) = 'SM REPLENISHMENT') THEN
@@ -6808,23 +6815,7 @@ BEGIN
               OPEN  get_next_transport_task_id;
               FETCH get_next_transport_task_id INTO transport_task_id_;
               CLOSE get_next_transport_task_id;
-             IF (order_qty_ >0) THEN
-                
-             dbms_output.put_line('------------------------------------------------------------');
-             dbms_output.put_line('Part No:'||part_rec_.part_no);
-             dbms_output.put_line('Demand:'||part_rec_.mrp_req);
-             dbms_output.put_line('SM Onhand Qunatity:'||sm_onhand_qty_);
-             dbms_output.put_line('Part Min Quantity:'||part_min_qty_);
-             dbms_output.put_line('Required Quantity:'||required_qty_);
-             dbms_output.put_line('Rounded Required Quantity:'||rounded_required_qty_);
-             
-             Transaction_Sys.Set_Status_Info('Part No:'||part_rec_.part_no,'INFO');
-             Transaction_Sys.Set_Status_Info('Demand:'||part_rec_.mrp_req,'INFO');
-             Transaction_Sys.Set_Status_Info('SM Onhand Qunatity:'||sm_onhand_qty_,'INFO');
-             Transaction_Sys.Set_Status_Info('Part Min Quantity:'||part_min_qty_,'INFO');
-             Transaction_Sys.Set_Status_Info('Required Quantity:'||required_qty_,'INFO');
-             Transaction_Sys.Set_Status_Info('Rounded Required Quantity:'||rounded_required_qty_,'INFO');
-          
+             IF (order_qty_ >0) THEN    
               Client_Sys.Clear_Attr(attr_);
               Client_Sys.Add_To_Attr('TRANSPORT_TASK_ID',transport_task_id_,attr_);              
               Transport_Task_API.New__(info_,objid_,objversion_,attr_,'DO');
@@ -6845,21 +6836,32 @@ BEGIN
               Client_Sys.Add_To_Attr('DESTINATION','Move to inventory',line_attr_);
               Client_Sys.Add_To_Attr('FROM_CONTRACT',avail_rec_.contract,line_attr_);
               Client_Sys.Add_To_Attr('FROM_LOCATION_NO',avail_rec_.location_no,line_attr_);
-              Client_Sys.Add_To_Attr('TO_CONTRACT',NVL(to_contract_,'2011'),line_attr_);
-              Client_Sys.Add_To_Attr('TO_LOCATION_NO',NVL(to_location_,'SM-MSL'),line_attr_);
+              Client_Sys.Add_To_Attr('TO_CONTRACT','2011',line_attr_);
+              Client_Sys.Add_To_Attr('TO_LOCATION_NO',to_location_,line_attr_);
               Client_Sys.Add_To_Attr('PART_NO',avail_rec_.part_no,line_attr_);
               Client_Sys.Add_To_Attr('CONFIGURATION_ID',avail_rec_.configuration_id,line_attr_);
               Transport_Task_Line_Api.New__(line_info_, line_objid_,line_objversion_,line_attr_, 'DO');
           
-              rounded_required_qty_ := rounded_required_qty_ - order_qty_;     
-              dbms_output.put_line('To location - '||attr_);
-              dbms_output.put_line('transport Task ID - '||transport_task_id_);
-              dbms_output.put_line('------------------------------------------------------------');
-              Transaction_Sys.Set_Status_Info('Transport Task ID:'||transport_task_id_,'INFO');       
-                      
-             
+              rounded_required_qty_ := rounded_required_qty_ - order_qty_;   
               
-              INSERT INTO C_SM_REPLENISHMENT_TAB
+               dbms_output.put_line('------------------------------------------------------------');
+               dbms_output.put_line('Part No:'||part_rec_.part_no);
+               dbms_output.put_line('Demand:'||part_rec_.mrp_req);
+               dbms_output.put_line('SM Onhand Qunatity:'||sm_onhand_qty_);
+               dbms_output.put_line('Part Min Quantity:'||part_min_qty_);
+               dbms_output.put_line('Required Quantity:'||required_qty_);
+               dbms_output.put_line('Rounded Required Quantity:'||rounded_required_qty_);  
+               dbms_output.put_line('To location - '||to_location_);
+               dbms_output.put_line('Order Quantity:'||order_qty_); 
+               dbms_output.put_line('source location:'||avail_rec_.location_no); 
+               dbms_output.put_line('Available Quantity:'||avail_rec_.avail_qty);   
+               dbms_output.put_line('transport Task ID - '||transport_task_id_);
+               dbms_output.put_line('------------------------------------------------------------');
+              
+              Transaction_Sys.Set_Status_Info('Part No:'||part_rec_.part_no || ' | Demand:'||part_rec_.mrp_req||' | SM Onhand Qunatity:'||sm_onhand_qty_||' | Part Min Quantity:'||part_min_qty_
+             ||' | Required Quantity:'||required_qty_||' | Rounded Required Quantity:'||rounded_required_qty_||' | Transport Task ID:'||transport_task_id_,'INFO');
+            
+            INSERT INTO C_SM_REPLENISHMENT_TAB
                  (CONTRACT,
                   PART_NO,
                   PART_DESCRIPTION,
