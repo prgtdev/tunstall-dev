@@ -6895,7 +6895,6 @@ BEGIN
                   
     EXCEPTION 
       WHEN OTHERS THEN
-         ROLLBACK;
          dbms_output.put_line('Error'||SQLERRM); 
          Transaction_Sys.Set_Status_Info(SQLERRM,'INFO'); 
          error_ :=SQLERRM;  
