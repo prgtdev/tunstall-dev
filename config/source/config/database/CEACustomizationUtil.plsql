@@ -1016,32 +1016,30 @@ BEGIN
                FETCH modify_serial_obj_date INTO objid_, objversion_;
                CLOSE modify_serial_obj_date;
 
-               --Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
                --UPDATE PRODUCTION DATE
                UPDATE equipment_object_tab
                SET production_date = real_ship_date_
                WHERE rowid = objid_
                AND rowversion = objversion_;
-               
-              --Equipment_Serial_API.Modify__(info_,objid_,objversion_, attr_,'DO');
-
+              
                Client_Sys.Clear_Attr(attr_);
                Client_Sys.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
                Client_Sys.Add_To_Attr('CF$_CUSTOMER_ORDER_NO', order_no_, attr_);
                Equipment_Serial_CFP.Cf_Modify__(info_, objid_, attr_, ' ', 'DO');
 
                concat_obj_ := mch_code_||';'||concat_obj_;
-            ELSE
-               FOR rec_modify_ IN get_serial_object(order_no_, catalog_no_)LOOP
-                  sup_mch_code_:= Equipment_Serial_API.Get_Sup_Mch_Code(contract_, rec_modify_.mch_code);
-                  IF(sup_mch_code_ != object_id_ )THEN  
-                     Client_SYS.Clear_Attr(attr_);
-                     Client_Sys.Add_To_Attr('SUP_MCH_CODE', object_id_, attr_);
-                     Equipment_Serial_API.Modify__(info_, rec_modify_.objid, rec_modify_.objversion, attr_, 'DO');
-                  END IF;
-               END LOOP;
             END IF;
             CLOSE get_co_line_obj;
+            
+         ELSE
+            FOR rec_modify_ IN get_serial_object(order_no_, catalog_no_)LOOP
+               sup_mch_code_:= Equipment_Serial_API.Get_Sup_Mch_Code(contract_, rec_modify_.mch_code);
+               IF(sup_mch_code_ != object_id_ )THEN  
+                  Client_SYS.Clear_Attr(attr_);
+                  Client_Sys.Add_To_Attr('SUP_MCH_CODE', object_id_, attr_);
+                  Equipment_Serial_API.Modify__(info_, rec_modify_.objid, rec_modify_.objversion, attr_, 'DO');
+               END IF;
+               END LOOP;
          END IF;
 
       END LOOP;
