@@ -974,8 +974,8 @@ BEGIN
          objid_ := NULL;
          objversion_ := NULL;
          serial_obj_ := catalog_no_ ||'-'||obj.serial_no;
+
          IF NOT EQUIPMENT_SERIAL_API.Exists(contract_, serial_obj_) THEN
-            ERROR_SYS.RECORD_GENERAL('AAAA', serial_obj_);
 
             --For each object get warranty details
             OPEN get_serial_warranty_dets(catalog_no_, warranty_id_, obj.serial_no);
@@ -1017,10 +1017,10 @@ BEGIN
                CLOSE modify_serial_obj_date;
 
                --UPDATE PRODUCTION DATE
-               UPDATE equipment_object_tab
-               SET production_date = real_ship_date_
-               WHERE rowid = objid_
-               AND rowversion = objversion_;
+               Client_SYS.Clear_Attr(attr_);
+               Client_Sys.Add_To_Attr('PRODUCTION_DATE', TO_CHAR(real_ship_date_, 'DD/MM/YYYY'), attr_);
+               Equipment_Serial_API.Modify__(info_, objid_, objversion_, attr_, 'DO');
+               objversion_ := NULL;
               
                Client_Sys.Clear_Attr(attr_);
                Client_Sys.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
@@ -1048,7 +1048,7 @@ BEGIN
          Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
          Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
       ELSE
-         IF(concat_obj_ IS NOT NULL AND NOT EQUIPMENT_SERIAL_API.Exists(contract_, serial_obj_))THEN
+         IF(concat_obj_ IS NOT NULL )THEN
             concat_obj_ := concat_obj_ ||';'||obj_created_;
             Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
             Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
