@@ -6714,12 +6714,13 @@ PROCEDURE Replenish_Sm_Stock_ IS
    CURSOR get_default_sm_location(contract_ VARCHAR2,part_no_ VARCHAR2) IS
       SELECT NVL(t.cf$_Location_No,t.cf$_Location_No_2) sm_loc
       FROM INVENTORY_PART_DEF_LOC_CFV t 
-      WHERE t.part_no = part_no_ AND t.contract = contract_; 
+      WHERE t.part_no = part_no_ AND t.contract = contract_
+      AND  Inventory_Location_Api.Get_Warehouse(t.CONTRACT,t.LOCATION_NO) IN ('C01','C02','AU');  
          
    CURSOR get_min_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS
       SELECT t.MINIMUM_QTY 
       FROM Purchase_part_supplier t 
-      WHERE t.part_no = part_no_ AND t.contract = contract_; 
+      WHERE t.part_no = part_no_ AND t.contract = contract_;      
        
    CURSOR get_available_qty(contract_ VARCHAR2,part_no_ VARCHAR2) IS   
    SELECT SUM(t.qty_onhand-t.qty_reserved) avail_qty,t.warehouse,t.lot_batch_no ,t.serial_no,t.waiv_dev_rej_no,t.eng_chg_level,t.activity_seq,t.handling_unit_id,t.location_no,t.contract,t.part_no,t.configuration_id
