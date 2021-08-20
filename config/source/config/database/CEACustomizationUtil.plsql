@@ -709,6 +709,8 @@ BEGIN
             IF (check_serialized%FOUND) THEN
                TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.real_ship_date--->'||rec_.real_ship_date);
                TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.catalog_no--->'||rec_.catalog_no);
+               TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.buy_qty_due--->'||rec_.buy_qty_due);
+
                Create_Serial_Object__(rec_.catalog_no,
                   order_no_,
                   rec_.line_no,
@@ -968,10 +970,12 @@ BEGIN
    IF (object_id_ IS NOT NULL) THEN
       --create serial object
       FOR obj IN get_serial_objects_col(catalog_no_, order_no_, line_no_,  line_item_no_, rel_no_) LOOP
-         
+         Client_SYS.Clear_Attr(attr_);
+         objid_ := NULL;
+         objversion_ := NULL;
          serial_obj_ := catalog_no_ ||'-'||obj.serial_no;
-
          IF NOT EQUIPMENT_SERIAL_API.Exists(contract_, serial_obj_) THEN
+            ERROR_SYS.RECORD_GENERAL('AAAA', serial_obj_);
 
             --For each object get warranty details
             OPEN get_serial_warranty_dets(catalog_no_, warranty_id_, obj.serial_no);
@@ -997,11 +1001,11 @@ BEGIN
             sstep3_ := Part_Serial_Catalog_API.Get_Objstate(catalog_no_,obj.serial_no);
 
             sstep4_ := Part_Serial_Catalog_API.Delivered_To_Internal_Customer(catalog_no_,obj.serial_no);
-
+ 
             OPEN get_co_line_obj(order_no_, catalog_no_);
             FETCH get_co_line_obj INTO obj_created_;
             IF(obj_created_ IS NULL OR (REGEXP_COUNT(obj_created_, ';') < buy_qty_due_))THEN
-              
+         
               --CREATE NEW SERIAL OBJECTS
                Equipment_Serial_API.Create_Maintenance_Aware(catalog_no_, obj.serial_no, contract_, NULL, 'FALSE');
                Equipment_Serial_API.Get_Obj_Info_By_Part(site_, mch_code_, catalog_no_, obj.serial_no);
@@ -1012,9 +1016,14 @@ BEGIN
                FETCH modify_serial_obj_date INTO objid_, objversion_;
                CLOSE modify_serial_obj_date;
 
-               Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
-               TRACE_SYS.MESSAGE('AAAAAAAAAA attr_-->'||attr_);
-               Equipment_Serial_API.Modify__(info_,objid_,objversion_, attr_,'DO');
+               --Client_Sys.Add_To_Attr('PRODUCTION_DATE', real_ship_date_, attr_);
+               --UPDATE PRODUCTION DATE
+               UPDATE equipment_object_tab
+               SET production_date = real_ship_date_
+               WHERE rowid = objid_
+               AND rowversion = objversion_;
+               
+              --Equipment_Serial_API.Modify__(info_,objid_,objversion_, attr_,'DO');
 
                Client_Sys.Clear_Attr(attr_);
                Client_Sys.Add_To_Attr('CF$_SERVICE_WARRANTY', warr_objkey_, attr_);
@@ -1034,13 +1043,14 @@ BEGIN
             END IF;
             CLOSE get_co_line_obj;
          END IF;
+
       END LOOP;
-      IF(obj_created_ IS null) THEN
+      IF(obj_created_ IS NULL AND NOT EQUIPMENT_SERIAL_API.Exists(contract_, serial_obj_)) THEN
          Client_Sys.Clear_Attr(attr_);
          Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
          Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
       ELSE
-         IF(concat_obj_ IS NOT NULL)THEN
+         IF(concat_obj_ IS NOT NULL AND NOT EQUIPMENT_SERIAL_API.Exists(contract_, serial_obj_))THEN
             concat_obj_ := concat_obj_ ||';'||obj_created_;
             Client_Sys.Add_To_Attr('CF$_OBJECT_CREATED', concat_obj_, attr_);
             Customer_Order_Line_CFP.Cf_Modify__(info_, col_objid_, attr_, ' ', 'DO');
