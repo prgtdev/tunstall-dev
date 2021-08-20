@@ -7018,4 +7018,204 @@ BEGIN
 END Approve_Incoming_Docs;
 -- C0678 EntDarshP (FINISH)
 
+-- C209 EntMahesR (START)
+-- Note that here contract 2011 has hardcoded because it is the only manufacturing site
+-- and this will be mentioned in delivery notes as well
+FUNCTION Get_Occurrence_Count(
+   component_part_no_   IN VARCHAR2,
+   prod_structure_list_  IN VARCHAR2) RETURN NUMBER
+IS
+   product_structures_   Utility_SYS.STRING_TABLE;
+   no_of_structures_     NUMBER;
+   count_                NUMBER := 0;
+   no_of_occurences_     NUMBER := 0;
+   found_                NUMBER := 0;
+   
+   CURSOR check_exist(part_no_ VARCHAR2) IS
+      SELECT 1 FROM(SELECT component_part
+                    FROM prod_structure 
+                    START WITH part_no = part_no_
+                    CONNECT BY PRIOR component_part = part_no
+                    AND contract = '2011')
+      WHERE component_part = component_part_no_;
+   
+BEGIN
+   Utility_SYS.Tokenize(prod_structure_list_, ';', product_structures_, no_of_structures_);
+   WHILE (count_ < no_of_structures_) LOOP       
+      count_ := count_+ 1;
+      OPEN check_exist(product_structures_(count_));
+      FETCH check_exist INTO found_;
+      IF check_exist%FOUND THEN
+         no_of_occurences_ := no_of_occurences_ + found_;
+      END  IF;
+      CLOSE check_exist;
+   END LOOP; 
+   RETURN no_of_occurences_;
+END Get_Occurrence_Count; 
+
+-- Note that here contract '2011' has hardcoded because it is the only manufacturing site.
+-- Also considering Structure Type 'Manufacturing'('M') only in the product structure and 
+-- this will be mentioned in delivery notes as well.
+FUNCTION Check_Phrase_In_Out_Dates(
+   part_no_             IN VARCHAR2,   
+   revision_no_         IN VARCHAR2,
+   required_date_       IN DATE) RETURN NUMBER
+IS   
+   eff_phase_in_date_    DATE;
+   eff_phase_out_date_   DATE;
+   
+   CURSOR get_dates IS
+      SELECT eff_phase_in_date, eff_phase_out_date
+      FROM prod_structure_head
+      WHERE contract = '2011' 
+      AND part_no = part_no_
+      AND eng_chg_level =  revision_no_
+      AND bom_type_db = 'M';      
+BEGIN
+   OPEN get_dates;
+   FETCH get_dates INTO eff_phase_in_date_, eff_phase_out_date_;
+   CLOSE get_dates;  
+   IF (TRUNC(eff_phase_in_date_) > TRUNC(SYSDATE)) THEN
+      RETURN 0;
+   ELSIF (TRUNC(required_date_) > TRUNC(eff_phase_in_date_) AND TRUNC(required_date_) > TRUNC(eff_phase_out_date_)) THEN 
+      RETURN 0;
+   ELSIF (Prod_Struct_Alternate_API.Get_State_Db('2011', part_no_, revision_no_, 'M', '*' ) != 'Buildable') THEN  
+      RETURN 0; 
+   END IF;   
+   RETURN 1;   
+END Check_Phrase_In_Out_Dates;
+
+-- Note that here contract 2011 has hardcoded because it is the only manufacturing site
+-- and this will be mentioned in delivery notes as well
+FUNCTION Get_Total_Mrp_Demand (
+   part_no_         IN VARCHAR2,
+   required_date_   IN DATE ) RETURN NUMBER
+IS 
+   mrp_total_demand_  NUMBER;
+   CURSOR get_mrp_total_demand IS  
+      SELECT SUM(demand_qty) 
+      FROM mrp_part_supply_demand_all     
+      WHERE contract = '2011'
+      AND part_no = part_no_
+      AND required_date BETWEEN TRUNC(SYSDATE) AND required_date_;      
+BEGIN   
+   OPEN get_mrp_total_demand;
+   FETCH get_mrp_total_demand INTO mrp_total_demand_;
+   CLOSE get_mrp_total_demand; 
+   RETURN NVL(mrp_total_demand_, 0);     
+END Get_Total_Mrp_Demand;
+
+-- Note that here contract 2011 has hardcoded because it is the only manufacturing site
+-- and this will be mentioned in delivery notes as well
+FUNCTION Get_Total_Mrp_Specific_Demand(
+   part_no_              IN VARCHAR2,
+   prod_structure_list_  IN VARCHAR2,
+   required_date_        IN DATE ) RETURN NUMBER
+IS
+   mrp_specific_total_demand_  NUMBER := 0;
+   mrp_specific_demand_        NUMBER := 0;   
+   product_structures_         Utility_SYS.STRING_TABLE;
+   no_of_structures_           NUMBER;
+   count_                      NUMBER := 0;
+   CURSOR get_mrp_specific_total_demand(part_no_ VARCHAR2, parent_part_no_ VARCHAR2) IS  
+      SELECT SUM(demand_qty)
+      FROM mrp_part_supply_demand_all     
+      WHERE contract = '2011'
+      AND part_no = part_no_
+      AND parent_part_no = parent_part_no_
+      AND required_date BETWEEN TRUNC(SYSDATE) AND required_date_;      
+BEGIN  
+   Utility_SYS.Tokenize(prod_structure_list_, ';', product_structures_, no_of_structures_);
+   WHILE (count_ < no_of_structures_) LOOP       
+      count_ := count_+ 1;
+      OPEN get_mrp_specific_total_demand(part_no_, product_structures_(count_));
+      FETCH get_mrp_specific_total_demand INTO mrp_specific_demand_;
+      CLOSE get_mrp_specific_total_demand;
+      mrp_specific_total_demand_ := mrp_specific_total_demand_ + NVL(mrp_specific_demand_, 0);
+   END LOOP;  
+   RETURN mrp_specific_total_demand_;     
+END Get_Total_Mrp_Specific_Demand;
+
+-- Note that here contract 2011 has hardcoded because it is the only manufacturing site
+-- and this will be mentioned in delivery notes as well
+FUNCTION Get_Total_Sales_Mrp_Demand (
+   part_no_         IN VARCHAR2,
+   required_date_   IN DATE ) RETURN NUMBER
+IS 
+   mrp_total_sales_demand_  NUMBER;
+   -- Note that here mrp_source_db '1' represents Cust Order entries and 
+   -- mrp_source_db '27' represents Distribution Order entries 
+   CURSOR get_mrp_total_sales_demand IS  
+      SELECT SUM(demand_qty)
+      FROM mrp_part_supply_demand_all     
+      WHERE contract = '2011'
+      AND part_no = part_no_
+      AND (mrp_source_db = '1' OR mrp_source_db ='27')
+      AND required_date BETWEEN TRUNC(SYSDATE) AND required_date_;        
+BEGIN   
+   OPEN get_mrp_total_sales_demand;
+   FETCH get_mrp_total_sales_demand INTO mrp_total_sales_demand_;
+   CLOSE get_mrp_total_sales_demand; 
+   RETURN NVL(mrp_total_sales_demand_, 0);     
+END Get_Total_Sales_Mrp_Demand;
+
+-- Get the total MRP requirement for site 2013
+FUNCTION Get_Total_Drp_Demand (
+   part_no_         IN VARCHAR2,
+   required_date_   IN DATE ) RETURN NUMBER
+IS 
+   total_drp_demand_  NUMBER;
+   CURSOR get_drp_total_demand IS  
+      SELECT SUM(demand_qty) 
+      FROM mrp_part_supply_demand_all     
+      WHERE contract = '2013'
+      AND part_no = part_no_
+      AND required_date BETWEEN TRUNC(SYSDATE) AND required_date_;      
+BEGIN   
+   OPEN get_drp_total_demand;
+   FETCH get_drp_total_demand INTO total_drp_demand_;
+   CLOSE get_drp_total_demand; 
+   RETURN NVL(total_drp_demand_, 0);     
+END Get_Total_Drp_Demand;
+
+-- Note that here contract 2011 has hardcoded because it is the only manufacturing site
+-- and this will be mentioned in delivery notes as well
+FUNCTION Get_Bom_Count (
+   part_no_         IN VARCHAR2,
+   required_date_   IN DATE ) RETURN NUMBER
+IS
+   bom_count_ NUMBER;   
+   CURSOR get_bom_count IS  
+      SELECT COUNT(*)
+      FROM manuf_structure
+      WHERE contract = '2011'
+      AND component_part = part_no_
+      AND Prod_Struct_Alternate_API.Get_State_Db('2011', part_no, eng_chg_level, 'M', '*' ) = 'Buildable'
+      AND required_date_ > eff_phase_in_date 
+      AND ((required_date_ < eff_phase_out_date) OR (eff_phase_out_date IS NULL)); 
+BEGIN
+   OPEN get_bom_count;
+   FETCH get_bom_count INTO bom_count_;
+   CLOSE get_bom_count;
+   RETURN NVL(bom_count_, 0);
+END  Get_Bom_Count; 
+
+-- Note that here contract 2011 has hardcoded because it is the only manufacturing site
+-- and this will be mentioned in delivery notes as well
+FUNCTION Get_Std_Cost (
+   part_no_         IN VARCHAR2) RETURN NUMBER
+IS
+   std_cost_ NUMBER;   
+   CURSOR get_std_cost IS  
+      SELECT SUM(Inventory_Part_Unit_Cost_API.Get_Inventory_Value_By_Method(contract,part_no,configuration_id,lot_batch_no,serial_no)) 
+      FROM inventory_part_unit_cost_sum
+      WHERE part_no = part_no_
+      AND contract = '2011';
+BEGIN
+   OPEN get_std_cost;
+   FETCH get_std_cost INTO std_cost_;
+   CLOSE get_std_cost;
+   RETURN std_cost_;
+END  Get_Std_Cost; 
+-- C209 EntMahesR (END)
 -------------------- LU  NEW METHODS -------------------------------------
