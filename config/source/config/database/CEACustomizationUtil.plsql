@@ -707,9 +707,6 @@ BEGIN
             OPEN check_serialized(rec_.catalog_no);
             FETCH check_serialized INTO seriliazed_;
             IF (check_serialized%FOUND) THEN
-               TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.real_ship_date--->'||rec_.real_ship_date);
-               TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.catalog_no--->'||rec_.catalog_no);
-               TRACE_SYS.MESSAGE('AAAAAAAAAAAA  rec_.buy_qty_due--->'||rec_.buy_qty_due);
 
                Create_Serial_Object__(rec_.catalog_no,
                   order_no_,
